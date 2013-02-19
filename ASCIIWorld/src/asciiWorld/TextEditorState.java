@@ -4,7 +4,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
@@ -23,7 +22,6 @@ public class TextEditorState extends BasicGameState {
 	private int _stateID;
 	private ScriptingWindow _scriptingWindow;
 	
-	private UnicodeFont _font;
 	private RootVisualPanel _ui;
 	
 	public TextEditorState(int stateID) {
@@ -33,8 +31,11 @@ public class TextEditorState extends BasicGameState {
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		_font = FontFactory.get().getDefaultFont();
-		
+	}
+	
+	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
 		try {
 			_ui = generateUI(container, game);
 		} catch (Exception e) {
@@ -75,8 +76,8 @@ public class TextEditorState extends BasicGameState {
 		menuButtonPanel.addChild(Button.createActionButton("Exit :-(", new MethodBinding(container, "exit")));
 		
 		RootVisualPanel root = new RootVisualPanel(container);
-		root.addChild(new Label(new Vector2f(10, 10), _font, "Text Editor", Color.red)); // create the title label
-		root.addChild(new Label(new Vector2f(10, 30), _font, "Press F11 to execute the Javascript.", Color.red)); // create the title label
+		root.addChild(new Label(new Vector2f(10, 10), "Text Editor", Color.red)); // create the title label
+		root.addChild(new Label(new Vector2f(10, 30), "Press F11 to execute the Javascript.", Color.red)); // create the title label
 		root.addChild(_scriptingWindow);
 		root.addChild(menuButtonPanel);
 		return root;

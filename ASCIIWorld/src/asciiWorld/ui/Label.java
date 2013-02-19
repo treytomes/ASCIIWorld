@@ -2,13 +2,17 @@ package asciiWorld.ui;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.FontFactory;
 import asciiWorld.tiles.StaticText;
 
 public class Label extends FrameworkElement {
+
+	private static UnicodeFont _defaultFont = null;
 	
 	private Rectangle _bounds;
 	private UnicodeFont _font = null;
@@ -19,6 +23,13 @@ public class Label extends FrameworkElement {
 	private VerticalAlignment _verticalContentAlignment;
 
 	private String _lastFrameText;
+	
+	private static UnicodeFont getDefaultFont() throws SlickException {
+		if (_defaultFont == null) {
+			_defaultFont = FontFactory.get().getDefaultFont();
+		}
+		return _defaultFont;
+	}
 
 	public Label(Vector2f position, UnicodeFont font, Object textBinding, Color color) {
 		_font = font;
@@ -36,6 +47,10 @@ public class Label extends FrameworkElement {
 	
 	public Label(UnicodeFont font, String text, Color color) {
 		this(new Vector2f(0, 0), font, new StaticText(text), color);
+	}
+	
+	public Label(Vector2f position, String text, Color color) throws SlickException {
+		this(position, getDefaultFont(), new StaticText(text), color);
 	}
 	
 	public HorizontalAlignment getHorizontalContentAlignment() {
