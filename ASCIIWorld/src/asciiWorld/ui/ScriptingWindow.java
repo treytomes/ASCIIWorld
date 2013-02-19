@@ -1,7 +1,5 @@
 package asciiWorld.ui;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -13,6 +11,7 @@ import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.FontFactory;
+import asciiWorld.JavascriptContext;
 import asciiWorld.TextFactory;
 
 //Reference: https://developer.mozilla.org/en-US/docs/Rhino
@@ -30,12 +29,12 @@ public class ScriptingWindow extends Border implements KeyListener {
 	
 	private Border _textContainer;
 	
-	private Context _context;
-	private Scriptable _scope;
 	private String _text;
 	private UnicodeFont _textFont;
 	private int _cursorIndex;
 	private Boolean _controlIsPressed;
+	
+	private JavascriptContext _context;
 	
 	/**
 	 * This is used to manage the cursor blink.
@@ -48,10 +47,10 @@ public class ScriptingWindow extends Border implements KeyListener {
 		
 		createUI();
 		
-		initializeScriptingContext();
-		
 		container.getInput().enableKeyRepeat();
 		container.getInput().addKeyListener(this);
+		
+		_context = new JavascriptContext();
 
 		_textFont = FontFactory.get().getResource(TEXT_SIZE);
 
@@ -63,13 +62,7 @@ public class ScriptingWindow extends Border implements KeyListener {
 	
 	public void executeScript() {
 		try {
-			// Evaluate the text as Javascript.
-			Object result = _context.evaluateString(_scope, _text, "<cmd>", 1, null);
-			
-			// Convert the result to a string and display it.
-			String scriptOutput = Context.toString(result);
-			
-			getRoot().showMessageBox(true, scriptOutput, "Script Output");
+			getRoot().showMessageBox(true, JavascriptContext.toString(_context.executeScript(_text)), "Script Output");
 		} catch (Exception e) {
 			getRoot().showMessageBox(true, e.getMessage(), "Runtime Error");
 		}
@@ -90,7 +83,6 @@ public class ScriptingWindow extends Border implements KeyListener {
 	}
 	
 	public void close(GameContainer container) {
-		Context.exit();
 		container.getInput().disableKeyRepeat();
 		container.getInput().removeKeyListener(this);
 	}
@@ -179,16 +171,6 @@ public class ScriptingWindow extends Border implements KeyListener {
 				}
 			}
 		}
-	}
-	
-	private void initializeScriptingContext() {
-		// Create and enter a Context.  The Context stores information about the execution environment of a script.
-		_context = Context.enter();
-		
-		// Initialize the standard objects (Object, Function, etc.).
-		// This must be done before scripts can be executed.
-		// Returns a scope object that we use in later calls.
-		_scope = _context.initStandardObjects();
 	}
 	
 	@Override
