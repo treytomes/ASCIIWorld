@@ -10,11 +10,12 @@
 	<classpathentry exported="true" kind="lib" path="lib/jnlp.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/tinylinepp.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="lib/lwjgl.jar">
+	<classpathentry kind="lib" path="/ASCIIWorld/lib/lwjgl-2.8.5/jar/lwjgl_util_applet.jar"/>
+	<classpathentry kind="lib" path="/ASCIIWorld/lib/lwjgl-2.8.5/jar/lwjgl.jar" sourcepath="/ASCIIWorld/lib/lwjgl-2.8.5/lwjgl-source-2.8.5.zip">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Slick1/native/windows"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/ASCIIWorld/lib/lwjgl-2.8.5/lwjgl-docs-2.8.5.zip!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="ASCIIWorld/lib/lwjgl-2.8.5/native/windows"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="lib/lwjgl_util_applet.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

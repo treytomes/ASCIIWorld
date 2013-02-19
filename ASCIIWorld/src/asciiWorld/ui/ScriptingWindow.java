@@ -130,15 +130,6 @@ public class ScriptingWindow extends Border implements KeyListener {
 	@Override
 	public void update(GameContainer container, int delta) {
 		_totalTime += delta;
-		
-		Input input = container.getInput();
-		_controlIsPressed = input.isKeyDown(Input.KEY_LCONTROL) || input.isKeyDown(Input.KEY_RCONTROL);
-		if (_controlIsPressed) {
-			_text = "true";
-		} else {
-			_text = "false";
-		}
-		
 		super.update(container, delta);
 	}
 	
@@ -269,6 +260,10 @@ public class ScriptingWindow extends Border implements KeyListener {
 			case Input.KEY_F11:
 				executeScript();
 				break;
+			case Input.KEY_LCONTROL:
+			case Input.KEY_RCONTROL:
+				_controlIsPressed = true;
+				break;
 			}
 		}
 	}
@@ -329,7 +324,8 @@ public class ScriptingWindow extends Border implements KeyListener {
 
 	@Override
 	public void keyReleased(int key, char c) {
-		// TODO Auto-generated method stub
-		
+		if ((key == Input.KEY_LCONTROL) || (key == Input.KEY_RCONTROL)) {
+			_controlIsPressed = false;
+		}
 	}
 }
