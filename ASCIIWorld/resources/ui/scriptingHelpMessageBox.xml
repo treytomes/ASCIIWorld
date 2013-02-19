@@ -1,0 +1,5 @@
+<MessageBox isModal="true" title="Help">
+	<Message>
+		<TextResource name="scriptingInstructions" />
+	</Message>
+</MessageBox>

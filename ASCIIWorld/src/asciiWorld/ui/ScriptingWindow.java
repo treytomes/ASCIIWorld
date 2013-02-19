@@ -38,7 +38,7 @@ public class ScriptingWindow extends TextEditorWindow {
 
 	public MessageBox showHelp() {
 		try {
-			return getRoot().showMessageBox(true, TextFactory.get().getResource("scriptingInstructions"), "Help");
+			return getRoot().loadMessageBox("resources/ui/scriptingHelpMessageBox.xml");
 		} catch (Exception e) {
 			System.err.println("Unable to show the scripting instructions.");
 			return null;
