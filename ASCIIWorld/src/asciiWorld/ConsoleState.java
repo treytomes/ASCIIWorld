@@ -1,29 +1,38 @@
 package asciiWorld;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.tiles.TileSet;
+import asciiWorld.ui.Button;
+import asciiWorld.ui.Label;
+import asciiWorld.ui.MethodBinding;
+import asciiWorld.ui.Orientation;
+import asciiWorld.ui.RootVisualPanel;
+import asciiWorld.ui.StackPanel;
 
 public class ConsoleState extends BasicGameState implements KeyListener {
 	
 	private static final int CURSOR_BLINK_INTERVAL = 500;
-	private static final String CURSOR_TEXT = "_";
+	private static final String TEXT_CURSOR = "_";
+	private static final Color TEXT_COLOR = Color.yellow;
+	private static final int TEXT_SIZE = 12;
+	private static String TEXT_PROMPT = "> ";
 	
 	private int _stateID;
-	private Context _context;
-	private String _text;
-	private String _scriptOutput;
-	private TileSet _font;
+	private RootVisualPanel _ui;
+	private JavascriptContext _context;
+	private String _allText;
+	private String _currentLine;
+	private UnicodeFont _textFont;
 	private int _cursorIndex;
 	private int _totalTime;
 	
@@ -34,110 +43,110 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
+		_textFont = FontFactory.get().getResource(TEXT_SIZE);
+
 		try {
-			_font = TileSet.load("resources/tileSets/OEM437.xml");
+			_ui = generateUI(container, game);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("Unable to generate the user interface.");
 		}
-	}
-	
-	@Override
-	public void enter(GameContainer container, StateBasedGame game)
-			throws SlickException {
-		// Create and enter a Context.  The Context stores information about the execution environment of a script.
-		_context = Context.enter();
+
+		_context = new JavascriptContext();
 		
-		_scriptOutput = "";
-		try {
-			// Initialize the standard objects (Object, Function, etc.).
-			// This must be done before scripts can be executed.
-			// Returns a scope object that we use in later calls.
-			Scriptable scope = _context.initStandardObjects();
-			
-			//String script = "Math.cos(Math.PI)";
-			String script = "function f(x) { return x + 1 } f(7)";
-			
-			// Now evaluate the script string.
-			Object result = _context.evaluateString(scope, script, "<cmd>", 1, null);
-			
-			// Convert the result to a string and print it.
-			_scriptOutput = Context.toString(result);
-		} finally {
-			
-		}
-		
-		container.getInput().enableKeyRepeat();
-		_text = "";
+		_allText = TEXT_PROMPT;
+		_currentLine = "";
 		_cursorIndex = 0;
 		_totalTime = 0;
 	}
 	
 	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		container.getInput().enableKeyRepeat();
+	}
+	
+	@Override
 	public void leave(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		Context.exit();
+		//_context.destroy();
 		container.getInput().disableKeyRepeat();
+	}
+
+	@Override
+	public void update(GameContainer container, StateBasedGame game, int delta)
+			throws SlickException {
+		_totalTime += delta;
+		_ui.update(container, delta);
 	}
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
+		g.clear();
+		
+		String renderingText = _allText.concat(_currentLine);
 		
 		Boolean cursorWasRendered = false;
-		Vector2f tileSize = _font.getTileSize();
-		Vector2f position = new Vector2f(0, 0);
-		for (int index = 0; index < _text.length(); index++) {
-			if ((index == _cursorIndex) && (((_totalTime / CURSOR_BLINK_INTERVAL) % 2) == 1)) {
-				_font.drawString(CURSOR_TEXT, position, Color.green);
+		Vector2f tileSize = new Vector2f(_textFont.getWidth("*"), _textFont.getLineHeight());
+		int textMarginTop = 30;
+		int textMarginLeft = 5;
+		Vector2f position = new Vector2f(textMarginLeft, textMarginTop);
+		for (int index = 0; index < renderingText.length(); index++) {
+			if ((index == (_allText.length() + _cursorIndex)) && (((_totalTime / CURSOR_BLINK_INTERVAL) % 2) == 1)) {
+				_textFont.drawString(position.x, position.y, TEXT_CURSOR, TEXT_COLOR);
 				cursorWasRendered = true;
 			}
 			
-			switch (_text.charAt(index)) {
+			switch (renderingText.charAt(index)) {
 			case '\n':
 				position.y += tileSize.y;
-				position.x = 0;
+				position.x = textMarginLeft;
 				break;
 			case '\t':
 				float tabSize = 4 * tileSize.x;
-				position.x += (tabSize - (position.x % tabSize));
+				position.x += (tabSize - ((position.x + tileSize.x) % tabSize));
 				break;
 			default:
-				_font.draw((int)_text.charAt(index), position, Color.green);
-				position.x += _font.getTileSize().x;
+				_textFont.drawString(position.x, position.y, Character.toString(renderingText.charAt(index)), TEXT_COLOR);
+				position.x += tileSize.x;
 				break;
 			}
 			
-			if (position.x > container.getWidth() - tileSize.x) {
-				position.x = 0;
+			if (position.x > container.getWidth() - tileSize.x - textMarginLeft) {
+				position.x = textMarginLeft;
 				position.y += tileSize.y;
+			}
+			if (position.y > container.getHeight() - tileSize.y - textMarginTop) {
+				break;
 			}
 		}
 		
 		if (!cursorWasRendered) {
 			if (((_totalTime / CURSOR_BLINK_INTERVAL) % 2) == 1) {
-				_font.drawString(CURSOR_TEXT, position, Color.green);
-				cursorWasRendered = true;
+				if (position.y <= container.getHeight() - tileSize.y - textMarginTop) {
+					_textFont.drawString(position.x, position.y, TEXT_CURSOR, TEXT_COLOR);
+					cursorWasRendered = true;
+				}
 			}
 		}
 		
-		_font.drawString(_scriptOutput, new Vector2f(100, 100), Color.magenta);
-		
-		_font.drawString(Integer.toString(_totalTime), new Vector2f(200, 200));
+		_ui.render(g);
 	}
 	
 	@Override
 	public void keyPressed(int key, char c) {
 		if ((' ' <= c) && (c <= '~')) {
-			_text = _text.substring(0, _cursorIndex).concat(Character.toString(c)).concat((_cursorIndex == _text.length()) ? "" : _text.substring(_cursorIndex, _text.length()));
+			_currentLine = _currentLine.substring(0, _cursorIndex).concat(Character.toString(c)).concat((_cursorIndex == _currentLine.length()) ? "" : _currentLine.substring(_cursorIndex, _currentLine.length()));
 			_cursorIndex++;
 		} else {
 			switch (key) {
 			case Input.KEY_ENTER:
-				_text = _text.substring(0, _cursorIndex).concat("\n").concat((_cursorIndex == _text.length()) ? "" : _text.substring(_cursorIndex, _text.length()));
+				_currentLine = _currentLine.substring(0, _cursorIndex).concat("\n").concat((_cursorIndex == _currentLine.length()) ? "" : _currentLine.substring(_cursorIndex, _currentLine.length()));
 				_cursorIndex++;
+				executeScript();
 				break;
 			case Input.KEY_TAB:
-				_text = _text.substring(0, _cursorIndex).concat("\t").concat((_cursorIndex == _text.length()) ? "" : _text.substring(_cursorIndex, _text.length()));
+				_currentLine = _currentLine.substring(0, _cursorIndex).concat("\t").concat((_cursorIndex == _currentLine.length()) ? "" : _currentLine.substring(_cursorIndex, _currentLine.length()));
 				_cursorIndex++;
 				break;
 			case Input.KEY_HOME:
@@ -148,13 +157,13 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 				break;
 			case Input.KEY_BACK:
 				if (_cursorIndex > 0) {
-					_text = _text.substring(0, _cursorIndex - 1).concat((_cursorIndex == _text.length()) ? "" : _text.substring(_cursorIndex, _text.length()));
+					_currentLine = _currentLine.substring(0, _cursorIndex - 1).concat((_cursorIndex == _currentLine.length()) ? "" : _currentLine.substring(_cursorIndex, _currentLine.length()));
 					_cursorIndex--;
 				}
 				break;
 			case Input.KEY_DELETE:
 				if (_cursorIndex > 0) {
-					_text = _text.substring(0, _cursorIndex).concat(((_cursorIndex + 1) == _text.length()) ? "" : _text.substring(_cursorIndex + 1, _text.length()));
+					_currentLine = _currentLine.substring(0, _cursorIndex).concat(((_cursorIndex + 1) == _currentLine.length()) ? "" : _currentLine.substring(_cursorIndex + 1, _currentLine.length()));
 				}
 				break;
 			case Input.KEY_UP:
@@ -166,7 +175,7 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 				break;
 			case Input.KEY_DOWN:
 				moveCursorToEndOfLine();
-				if (_cursorIndex < _text.length()) {
+				if (_cursorIndex < _currentLine.length()) {
 					_cursorIndex++;
 					moveCursorToBeginningOfLine();
 				}
@@ -179,19 +188,33 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 				break;
 			case Input.KEY_RIGHT: 
 				_cursorIndex++;
-				if (_cursorIndex > _text.length()) {
-					_cursorIndex = _text.length();
+				if (_cursorIndex > _currentLine.length()) {
+					_cursorIndex = _currentLine.length();
 				}
 				break;
 			}
 		}
 	}
 	
+	private void executeScript() {
+		StringBuilder sb = new StringBuilder(_allText);
+		sb.append(_currentLine);
+		try {
+			sb.append(JavascriptContext.toString(_context.executeScript(_currentLine)));
+		} catch (Exception e) {
+			sb.append(e.getMessage());
+		}
+		sb.append("\n").append(TEXT_PROMPT);
+		_allText = sb.toString();
+		_currentLine = "";
+		_cursorIndex = 0;
+	}
+	
 	private void moveCursorToBeginningOfLine() {
 		if (!cursorIsAtBeginningOfLine()) {
 			while (_cursorIndex > 0) {
 				_cursorIndex--;
-				if (_text.charAt(_cursorIndex) == '\n') {
+				if (_currentLine.charAt(_cursorIndex) == '\n') {
 					_cursorIndex++;
 					break;
 				}
@@ -203,7 +226,7 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 		if (!cursorIsAtEndOfLine()) {
 			while (true) {
 				_cursorIndex++;
-				if ((_cursorIndex == _text.length()) || (_text.charAt(_cursorIndex) == '\n')) {
+				if ((_cursorIndex == _currentLine.length()) || (_currentLine.charAt(_cursorIndex) == '\n')) {
 					break;
 				}
 			}
@@ -211,21 +234,27 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 	}
 	
 	private Boolean cursorIsAtBeginningOfLine() {
-		return (_cursorIndex == 0) || (_text.charAt(_cursorIndex - 1) == '\n');
+		return (_cursorIndex == 0) || (_currentLine.charAt(_cursorIndex - 1) == '\n');
 	}
 	
 	private Boolean cursorIsAtEndOfLine() {
-		return (_cursorIndex == _text.length()) || (_text.charAt(_cursorIndex) == '\n');
-	}
-
-	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta)
-			throws SlickException {
-		_totalTime += delta;
+		return (_cursorIndex == _currentLine.length()) || (_currentLine.charAt(_cursorIndex) == '\n');
 	}
 
 	@Override
 	public int getID() {
 		return _stateID;
+	}
+
+	private RootVisualPanel generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
+		int numberOfMenuOptions = 2;
+		StackPanel menuButtonPanel = new StackPanel(new Rectangle(container.getWidth() - 202 - 5, 5, 202, 42 * numberOfMenuOptions), Orientation.Vertical);
+		menuButtonPanel.addChild(Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU));
+		menuButtonPanel.addChild(Button.createActionButton("Exit :-(", new MethodBinding(container, "exit")));
+		
+		RootVisualPanel root = new RootVisualPanel(container);
+		root.addChild(new Label(new Vector2f(10, 10), "Console", Color.red)); // create the title label
+		root.addChild(menuButtonPanel);
+		return root;
 	}
 }

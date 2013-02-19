@@ -15,11 +15,11 @@ import asciiWorld.FontFactory;
 public class TextEditorWindow extends Border implements KeyListener {
 
 	private static final int CURSOR_BLINK_INTERVAL = 500;
-	private static final String CURSOR_TEXT = "_";
 	private static final Color COLOR_BORDER_TEXT = new Color(0.0f, 0.75f, 0.5f);
-	private static final Color COLOR_TEXT = Color.yellow;
 	private static final Color COLOR_BORDER_WINDOW_FILL = new Color(0.5f, 0.5f, 1.0f, 0.25f);
+	private static final String TEXT_CURSOR = "_";
 	private static final int TEXT_SIZE = 12;
+	private static final Color TEXT_COLOR = Color.yellow;
 	
 	private Border _textContainer;
 	
@@ -116,7 +116,7 @@ public class TextEditorWindow extends Border implements KeyListener {
 		Vector2f position = new Vector2f(_textContainer.getBounds().getMinX() + textMargin, _textContainer.getBounds().getMinY() + textMargin);
 		for (int index = 0; index < _text.length(); index++) {
 			if ((index == _cursorIndex) && (((_totalTime / CURSOR_BLINK_INTERVAL) % 2) == 1)) {
-				_textFont.drawString(position.x, position.y, CURSOR_TEXT, COLOR_TEXT);
+				_textFont.drawString(position.x, position.y, TEXT_CURSOR, TEXT_COLOR);
 				cursorWasRendered = true;
 			}
 			
@@ -130,7 +130,7 @@ public class TextEditorWindow extends Border implements KeyListener {
 				position.x += (tabSize - ((position.x + tileSize.x) % tabSize));
 				break;
 			default:
-				_textFont.drawString(position.x, position.y, Character.toString(_text.charAt(index)), COLOR_TEXT);
+				_textFont.drawString(position.x, position.y, Character.toString(_text.charAt(index)), TEXT_COLOR);
 				position.x += tileSize.x;
 				break;
 			}
@@ -147,7 +147,7 @@ public class TextEditorWindow extends Border implements KeyListener {
 		if (!cursorWasRendered) {
 			if (((_totalTime / CURSOR_BLINK_INTERVAL) % 2) == 1) {
 				if (position.y <= _textContainer.getBounds().getMaxY() - tileSize.y - textMargin) {
-					_textFont.drawString(position.x, position.y, CURSOR_TEXT, COLOR_TEXT);
+					_textFont.drawString(position.x, position.y, TEXT_CURSOR, TEXT_COLOR);
 					cursorWasRendered = true;
 				}
 			}

@@ -6,7 +6,6 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.RoundedRectangle;
 
 import asciiWorld.JavascriptContext;
-import asciiWorld.TextFactory;
 
 //Reference: https://developer.mozilla.org/en-US/docs/Rhino
 //Reference: https://developer.mozilla.org/en-US/docs/Rhino_documentation
