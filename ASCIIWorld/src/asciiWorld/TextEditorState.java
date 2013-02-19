@@ -69,17 +69,16 @@ public class TextEditorState extends BasicGameState {
 	public RootVisualPanel generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
 		_scriptingWindow = new ScriptingWindow(container, new Rectangle(90, 90, 660, 500 + 42 + 10));
 		
-		return new RootVisualPanel(container) {{
-			addChild(new Label(new Vector2f(10, 10), _font, "Text Editor", Color.red)); // create the title label
-			addChild(new Label(new Vector2f(10, 30), _font, "Press F11 to execute the Javascript.", Color.red)); // create the title label
-			
-			addChild(_scriptingWindow);
-			
-			int numberOfMenuOptions = 2;
-			addChild(new StackPanel(new Rectangle(getBounds().getWidth() - 202 - 5, 5, 202, 42 * numberOfMenuOptions), Orientation.Vertical) {{
-				addChild(Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU));
-				addChild(Button.createActionButton("Exit :-(", new MethodBinding(container, "exit")));
-			}});
-		}};
+		int numberOfMenuOptions = 2;
+		StackPanel menuButtonPanel = new StackPanel(new Rectangle(container.getWidth() - 202 - 5, 5, 202, 42 * numberOfMenuOptions), Orientation.Vertical);
+		menuButtonPanel.addChild(Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU));
+		menuButtonPanel.addChild(Button.createActionButton("Exit :-(", new MethodBinding(container, "exit")));
+		
+		RootVisualPanel root = new RootVisualPanel(container);
+		root.addChild(new Label(new Vector2f(10, 10), _font, "Text Editor", Color.red)); // create the title label
+		root.addChild(new Label(new Vector2f(10, 30), _font, "Press F11 to execute the Javascript.", Color.red)); // create the title label
+		root.addChild(_scriptingWindow);
+		root.addChild(menuButtonPanel);
+		return root;
 	}
 }

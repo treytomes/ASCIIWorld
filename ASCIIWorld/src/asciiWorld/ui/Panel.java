@@ -28,7 +28,8 @@ public abstract class Panel extends FrameworkElement {
 		if (!containsChild(child)) {
 			getChildren().add(child);
 			child.setParent(this);
-			setChildBounds(child);
+			//setChildBounds(child);
+			resetBounds();
 		}
 	}
 	
@@ -36,6 +37,7 @@ public abstract class Panel extends FrameworkElement {
 		if (containsChild(child)) {
 			getChildren().remove(child);
 			child.setParent(null);
+			resetBounds();
 		}
 	}
 	
@@ -110,6 +112,9 @@ public abstract class Panel extends FrameworkElement {
 		}
 	}
 	
+	/**
+	 * Re-calculate the position of all child elements.
+	 */
 	@Override
 	public void resetBounds() {
 		for (FrameworkElement child : _children) {

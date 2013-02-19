@@ -177,29 +177,29 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 	}
 	
 	private RootVisualPanel generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
-		final MethodBinding getPlayerPositionBinding = new MethodBinding(new MethodBinding(this, "getPlayer"), "getPosition");
+		MethodBinding getPlayerPositionBinding = new MethodBinding(new MethodBinding(this, "getPlayer"), "getPosition");
 		
-		final Button mainMenuButton = Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU);
-		final Button exitButton = Button.createActionButton("Exit", new MethodBinding(container, "exit"));
+		Button mainMenuButton = Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU);
+		Button exitButton = Button.createActionButton("Exit", new MethodBinding(container, "exit"));
 		
-		final Button zoomInButton = Button.createActionButton("Zoom +", new MethodBinding(this, "zoomIn"));
-		final Button zoomOutButton = Button.createActionButton("Zoom -", new MethodBinding(this, "zoomOut"));
+		Button zoomInButton = Button.createActionButton("Zoom +", new MethodBinding(this, "zoomIn"));
+		Button zoomOutButton = Button.createActionButton("Zoom -", new MethodBinding(this, "zoomOut"));
 		
-		return new RootVisualPanel(container) {{
-			addChild(new Label(new Vector2f(10, 10), _font, "Gameplay State", Color.red));
-			
-			addChild(new StackPanel(new Rectangle(getBounds().getWidth() - 202 - 5, 5, 202, 42 * 2), Orientation.Vertical) {{
-				addChild(mainMenuButton);
-				addChild(exitButton);
-			}});
-			
-			addChild(new StackPanel(new Rectangle(getBounds().getWidth() - 106 * 2 - 5, getBounds().getHeight() - 42 - 5, 106 * 2, 42)) {{
-				addChild(zoomOutButton);
-				addChild(zoomInButton);
-			}});
-			
-			addChild(new Label(new Vector2f(10, 30), _font, getPlayerPositionBinding, Color.blue));
-		}};
+		StackPanel menuButtonPanel = new StackPanel(new Rectangle(getBounds().getWidth() - 202 - 5, 5, 202, 42 * 2), Orientation.Vertical);
+		menuButtonPanel.addChild(mainMenuButton);
+		menuButtonPanel.addChild(exitButton);
+		
+		StackPanel zoomButtonPanel = new StackPanel(new Rectangle(getBounds().getWidth() - 106 * 2 - 5, getBounds().getHeight() - 42 - 5, 106 * 2, 42));
+		zoomButtonPanel.addChild(zoomOutButton);
+		zoomButtonPanel.addChild(zoomInButton);
+		
+		RootVisualPanel root = new RootVisualPanel(container);
+		root.addChild(new Label(new Vector2f(10, 10), _font, "Gameplay State", Color.red));
+		root.addChild(menuButtonPanel);
+		root.addChild(zoomButtonPanel);
+		root.addChild(new Label(new Vector2f(10, 30), _font, getPlayerPositionBinding, Color.blue));
+		
+		return root;
 	}
 	
 	public void zoomIn() {

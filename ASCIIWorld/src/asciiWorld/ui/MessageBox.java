@@ -140,7 +140,7 @@ public class MessageBox {
 		Color windowFillColor = new Color(COLOR_BORDER_WINDOW);
 		windowFillColor.a = 0.25f;
 		
-		Label messageLabel= new Label(new Vector2f(0, 0), font, _message, COLOR_TEXT_MESSAGE);
+		Label messageLabel = new Label(new Vector2f(0, 0), font, _message, COLOR_TEXT_MESSAGE);
 		messageLabel.getMargin().setValue(5);
 		messageLabel.setHorizontalContentAlignment(HorizontalAlignment.Left);
 		messageLabel.setVerticalContentAlignment(VerticalAlignment.Top);
