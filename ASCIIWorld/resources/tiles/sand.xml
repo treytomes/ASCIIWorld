@@ -1,0 +1,8 @@
+﻿<Tile>
+	<Frames framesPerSecond="1">
+		<Frame backgroundColor="FFFFEB59" foregroundColor="FFFFCD38" tileIndex="176" />
+	</Frames>
+	<Properties>
+		<Property name="Friction" value="0.5" />
+	</Properties>
+</Tile>

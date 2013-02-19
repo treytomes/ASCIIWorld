@@ -1,0 +1,8 @@
+﻿<Tile>
+	<Frames framesPerSecond="1">
+		<Frame backgroundColor="00000000" foregroundColor="FFA28756" tileIndex="116" />
+	</Frames>
+	<Transformations>
+		<Transformation effect="FlipVertically" />
+	</Transformations>
+</Tile>

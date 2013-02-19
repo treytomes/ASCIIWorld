@@ -1,0 +1,5 @@
+<MessageBox isModal="true" title="Welcome!">
+	<Message>
+		<TextResource name="introduction" />
+	</Message>
+</MessageBox>

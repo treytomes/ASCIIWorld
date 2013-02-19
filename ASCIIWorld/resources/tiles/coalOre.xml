@@ -1,0 +1,5 @@
+﻿<Tile>
+	<Frames framesPerSecond="1">
+		<Frame backgroundColor="Black" foregroundColor="FFB5B5B5" tileIndex="178" />
+	</Frames>
+</Tile>

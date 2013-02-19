@@ -1,0 +1,3 @@
+Press the F11 key, or the Execute button, to run the text as a script.
+
+Press the Clear button to clear out the text box.

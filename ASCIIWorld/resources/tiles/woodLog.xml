@@ -1,0 +1,9 @@
+﻿<Tile>
+	<Frames framesPerSecond="1">
+		<Frame backgroundColor="00000000" foregroundColor="FFA28756" tileIndex="6" />
+		<!--<Frame backgroundColor="00000000" foregroundColor="FFA28756" tileIndex="220" />-->
+	</Frames>
+	<Transformations>
+		<Transformation rotation="90" />
+	</Transformations>
+</Tile>
