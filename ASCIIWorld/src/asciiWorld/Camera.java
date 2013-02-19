@@ -68,7 +68,7 @@ public class Camera implements IHasPosition, IHasBounds {
 		Vector3f position = getPosition();
 		
 		g.scale(scale, scale);
-		g.translate((int)(_scaledCenter.x - position.x), (int)(_scaledCenter.y - position.y));
+		g.translate(_scaledCenter.x - position.x, _scaledCenter.y - position.y);
 	}
 	
 	public void reset(Graphics g) {
