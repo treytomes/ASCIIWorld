@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.chunks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,9 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.IHasPosition;
+import asciiWorld.RandomFactory;
+import asciiWorld.Vector3f;
 import asciiWorld.entities.Entity;
 import asciiWorld.tiles.TileSet;
 
@@ -15,6 +18,9 @@ public class Chunk {
 	public static final int LAYER_GROUND = 0;
 	public static final int LAYER_OBJECT = 1;
 	public static final int LAYER_SKY = 2;
+	
+	public static final int WIDTH = 128;
+	public static final int HEIGHT = 128;
 	
 	private List<Entity> _entities;
 	
@@ -38,10 +44,11 @@ public class Chunk {
 	}
 
 	public Entity getEntityAt(Vector2f chunkPoint, float layer) {
+		Vector2f searchPoint = new Vector2f((int)chunkPoint.x, (int)chunkPoint.y);
 		for (Entity entity : _entities) {
 			if (entity.getPosition().z == layer) {
 				Vector2f entityChunkPoint = entity.getOccupiedChunkPoint();
-				if ((entityChunkPoint.x == chunkPoint.x) && (entityChunkPoint.y == chunkPoint.y)) {
+				if ((entityChunkPoint.x == searchPoint.x) && (entityChunkPoint.y == searchPoint.y)) {
 					return entity;
 				}
 			}
@@ -68,6 +75,39 @@ public class Chunk {
 		if (containsEntity(entity)) {
 			_entities.remove(entity);
 			entity.setChunk(null);
+		}
+	}
+
+	public Boolean isSpaceOccupied(Vector2f chunkPoint)
+	{
+		return getEntityAt(chunkPoint, LAYER_OBJECT) != null;
+	}
+
+	public Vector2f findSpawnPoint() throws Exception
+	{
+		for (int y = 0; y < Chunk.WIDTH; y++)
+		{
+			for (int x = 0; x < Chunk.HEIGHT; x++)
+			{
+				Vector2f chunkPoint = new Vector2f(x, y);
+				if (!isSpaceOccupied(chunkPoint))
+				{
+					return chunkPoint;
+				}
+			}
+		}
+		throw new Exception("Unable to find a valid spawn point.");
+	}
+
+	public Vector2f findRandomSpawnPoint() throws Exception
+	{
+		while (true)
+		{
+			Vector2f chunkPoint = new Vector2f(RandomFactory.get().nextInt(0, WIDTH), RandomFactory.get().nextInt(0, HEIGHT));
+			if (!isSpaceOccupied(chunkPoint))
+			{
+				return chunkPoint;
+			}
 		}
 	}
 	

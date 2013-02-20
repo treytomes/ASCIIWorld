@@ -14,7 +14,7 @@ import org.jdom2.Element;
  */
 public class TextFactory {
 	
-	private static TextFactory _instance;
+	private static TextFactory _instance = null;
 	
 	private Map<String, String> _resourceCache;
 	

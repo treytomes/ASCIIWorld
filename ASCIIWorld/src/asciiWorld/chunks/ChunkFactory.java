@@ -1,7 +1,8 @@
-package asciiWorld;
+package asciiWorld.chunks;
 
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.RandomFactory;
 import asciiWorld.entities.CanBePickedUpComponent;
 import asciiWorld.entities.CanBePushedComponent;
 import asciiWorld.entities.CanSpeakComponent;
@@ -48,7 +49,32 @@ public class ChunkFactory {
 	public static Chunk generateCollisionTest(RootVisualPanel uiRoot) throws Exception {
 		Chunk chunk = generateGrassyPlain();
 		
-		Entity entity = new Entity();
+		Entity entity = null;
+		
+		chunk.removeEntity(chunk.getEntityAt(new Vector2f(5, 5), Chunk.LAYER_GROUND));
+		chunk.removeEntity(chunk.getEntityAt(new Vector2f(6, 5), Chunk.LAYER_OBJECT));
+		chunk.removeEntity(chunk.getEntityAt(new Vector2f(7, 5), Chunk.LAYER_OBJECT));
+		
+		entity = new Entity();
+		entity.setName("Water");
+		entity.setTile(TileFactory.get().getResource("water"));
+		entity.moveTo(new Vector2f(5, 5), Chunk.LAYER_GROUND);
+		chunk.addEntity(entity);
+		
+		entity = new Entity();
+		entity.setName("Wood Log");
+		entity.setTile(TileFactory.get().getResource("woodLog"));
+		entity.moveTo(new Vector2f(6, 5), Chunk.LAYER_OBJECT);
+		chunk.addEntity(entity);
+		
+		entity = new Entity();
+		entity.setName("Wooden Sword");
+		entity.setTile(TileFactory.get().getResource("woodenSword"));
+		entity.moveTo(new Vector2f(7, 5), Chunk.LAYER_OBJECT);
+		chunk.addEntity(entity);
+		
+		
+		entity = new Entity();
 		entity.setName("Tree");
 		entity.setTile(TileFactory.get().getResource("tree"));
 		entity.moveTo(new Vector2f(10, 10), Chunk.LAYER_OBJECT);
@@ -64,5 +90,11 @@ public class ChunkFactory {
 		chunk.addEntity(entity);
 		
 		return chunk;
+	}
+	
+	public static Chunk generateOverworld() throws Exception {
+		Chunk chunk = new Chunk();
+		long seed = RandomFactory.get().nextInt(0, Integer.MAX_VALUE);
+		return new PerlinOverworldChunkGenerator().generate(chunk, seed);
 	}
 }

@@ -4,7 +4,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.Chunk;
+import asciiWorld.chunks.Chunk;
 
 public class EntityComponent {
 	

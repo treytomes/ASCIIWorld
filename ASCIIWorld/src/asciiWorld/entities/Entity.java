@@ -7,11 +7,11 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.Chunk;
 import asciiWorld.Direction;
 import asciiWorld.IHasPosition;
 import asciiWorld.MathHelper;
 import asciiWorld.Vector3f;
+import asciiWorld.chunks.Chunk;
 import asciiWorld.tiles.Tile;
 import asciiWorld.tiles.TileSet;
 

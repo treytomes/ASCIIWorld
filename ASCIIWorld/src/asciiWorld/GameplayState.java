@@ -13,9 +13,10 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.chunks.Chunk;
+import asciiWorld.chunks.ChunkFactory;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.PlayerControlComponent;
-import asciiWorld.tiles.Tile;
 import asciiWorld.tiles.TileFactory;
 import asciiWorld.tiles.TileSet;
 import asciiWorld.ui.Button;
@@ -36,9 +37,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 	private TileSet _tiles = null;
 	private Chunk _chunk = null;
 	private Entity _player = null;
-	private Tile _waterTile = null;
-	private Tile _woodLogTile = null;
-	private Tile _woodenSwordTile = null;
 	private Rectangle _bounds;
 	private Camera _camera;
 	
@@ -96,21 +94,24 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		try {
 			//_chunk = ChunkFactory.generateGrassyPlain();
 			//_chunk = ChunkFactory.generateDesert();
-			_chunk = ChunkFactory.generateCollisionTest(_ui);
+			//_chunk = ChunkFactory.generateCollisionTest(_ui);
+			_chunk = ChunkFactory.generateOverworld();
 		} catch (Exception e) {
 			throw new SlickException("Unable to generate the chunk.");
 		}
 		
-		_player = new Entity();
-		_player.getComponents().add(new PlayerControlComponent(_player, _ui));
-		_player.moveTo(new Vector2f(0, 0), Chunk.LAYER_OBJECT);
+		try {
+			_player = new Entity();
+			_player.getComponents().add(new PlayerControlComponent(_player, _ui));
+			_player.moveTo(_chunk.findRandomSpawnPoint(), Chunk.LAYER_OBJECT);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Unable to create the player.");
+		}
 		_chunk.addEntity(_player);
 		
 		try {
 			_player.setTile(TileFactory.get().getResource("player"));
-			_woodLogTile = TileFactory.get().getResource("woodLog");
-			_waterTile = TileFactory.get().getResource("water");
-			_woodenSwordTile = TileFactory.get().getResource("woodenSword");
 		} catch (Exception e) {
 			throw new SlickException("Unable to load the tile resources.", e);
 		}
@@ -133,7 +134,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 			if (!isPaused()) {
 				_ui.update(container, delta);
 				if (!_ui.isModalWindowOpen()) {
-					_waterTile.update(delta);
 					_chunk.update(container, game, delta);
 				}
 			}
@@ -145,9 +145,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		_camera.apply(g);
 		
 		_chunk.render(_camera, _tiles);
-		_waterTile.render(_tiles, new Vector2f(32, 32));
-		_woodLogTile.render(_tiles, new Vector2f(40, 32));
-		_woodenSwordTile.render(_tiles, new Vector2f(48, 32));
 		
 		_camera.reset(g);
 		
