@@ -3,6 +3,7 @@ package asciiWorld.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jdom2.Element;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
@@ -13,6 +14,9 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.FontFactory;
+import asciiWorld.JavascriptContext;
+import asciiWorld.TextHelper;
+import asciiWorld.XmlHelper;
 
 public class Button extends ContentControl {
 	
@@ -27,6 +31,45 @@ public class Button extends ContentControl {
 	
 	private Boolean _buttonPressed;
 	private String _text;
+	
+	public static Button load(String path) throws Exception {
+		return fromXml(XmlHelper.load(path));
+	}
+	
+	public static Button fromXml(Element elem) throws Exception {
+		XmlHelper.assertName(elem, "Button");
+		String text = XmlHelper.getAttributeValueOrDefault(elem, "text", "");
+		int margin = Integer.parseInt(XmlHelper.getAttributeValueOrDefault(elem, "margin", "0"));
+		
+		final String scriptText = XmlHelper.getPropertyValueOrDefault(elem, "click", null);
+		//XmlHelper.getChildTextOrDefault(elem, "Button.click", null);
+		
+		
+		Button btn = new Button(text);
+		btn.getMargin().setValue(margin);
+		
+		if (!TextHelper.isNullOrWhiteSpace(scriptText)) {
+			btn.addClickListener(new ButtonClickedEvent() {
+				JavascriptContext _context;
+				
+				{
+					_context = new JavascriptContext();
+				}
+				
+				@Override
+				public void click(Button button) {
+					_context.addObjectToContext(button, "me");
+					try {
+						_context.executeScript(scriptText);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+		
+		return btn;
+	}
 	
 	public static Button createStateTransitionButton(String text, final StateBasedGame game, final int stateID) throws Exception {
 		return new Button(text) {{

@@ -1,0 +1,10 @@
+<Button text="Dialog Test" margin="10">
+	<Button.click>
+		try {
+			me.getRoot().showMessageBox(true, Packages.asciiWorld.TextFactory.get().getResource("longWinded"), "Warning!");
+		} catch (e) {
+			java.lang.System.err.println("Unable to open the dialog window.");
+			java.lang.System.err.println(e);
+		}
+	</Button.click>
+</Button>

@@ -13,7 +13,6 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.ui.Button;
-import asciiWorld.ui.ButtonClickedEvent;
 import asciiWorld.ui.Label;
 import asciiWorld.ui.MethodBinding;
 import asciiWorld.ui.Orientation;
@@ -22,18 +21,12 @@ import asciiWorld.ui.StackPanel;
 
 public class MainMenuState extends BasicGameState {
 	
-	enum MenuOption {
-		None,
-		NewGame,
-		Exit
-	}
+	private int _stateID = -1;
 	
-	int _stateID = -1;
+	private UnicodeFont _font = null;
+	private RootVisualPanel _ui = null;
 	
-	UnicodeFont _font = null;
-	RootVisualPanel _ui = null;
-	
-	MainMenuState(int stateID) {
+	public MainMenuState(int stateID) {
 		_stateID = stateID;
 	}
 
@@ -68,19 +61,22 @@ public class MainMenuState extends BasicGameState {
 			throws Exception {
 		Rectangle containerBounds = new Rectangle(0, 0, container.getWidth(), container.getHeight());
 		
+		int margin = 5;
+		int buttonWidth = 202;
+		int buttonHeight = 42;
 		int numberOfMenuOptions = 4;
-		StackPanel mainMenuButtonPanel = new StackPanel(new Rectangle(containerBounds.getWidth() - 202 - 5, 5, 202, 42 * numberOfMenuOptions), Orientation.Vertical);
+		StackPanel mainMenuButtonPanel = new StackPanel(new Rectangle(containerBounds.getWidth() - buttonWidth - margin, margin, buttonWidth, buttonHeight * numberOfMenuOptions), Orientation.Vertical);
 		mainMenuButtonPanel.addChild(Button.createStateTransitionButton("New Game! :-D", game, ASCIIWorldGame.STATE_GAMEPLAY));
 		mainMenuButtonPanel.addChild(Button.createStateTransitionButton("Script Console", game, ASCIIWorldGame.STATE_CONSOLE));
 		mainMenuButtonPanel.addChild(Button.createStateTransitionButton("Text Editor", game, ASCIIWorldGame.STATE_TEXTEDITOR));
 		mainMenuButtonPanel.addChild(Button.createActionButton("Exit :-(", new MethodBinding(container, "exit")));
 		
 		StackPanel optionButtonPanel = new StackPanel(new Rectangle(100, 100, 350, 500), Orientation.Vertical);
-		optionButtonPanel.addChild(createDialogTestButton());
-		optionButtonPanel.addChild(createOptionButton("Option 2"));
-		optionButtonPanel.addChild(createOptionButton("Option 3"));
-		optionButtonPanel.addChild(createOptionButton("Option 4"));
-		optionButtonPanel.addChild(createOptionButton("Option 5"));
+		optionButtonPanel.addChild(Button.load("resources/ui/dialogTextButton.xml"));
+		optionButtonPanel.addChild(Button.load("resources/ui/optionButton2.xml"));
+		optionButtonPanel.addChild(Button.load("resources/ui/optionButton3.xml"));
+		optionButtonPanel.addChild(Button.load("resources/ui/optionButton4.xml"));
+		optionButtonPanel.addChild(Button.load("resources/ui/optionButton5.xml"));
 		
 		RootVisualPanel root = new RootVisualPanel(container);
 		root.addChild(new Label(new Vector2f(10, 10), _font, "ASCII World", Color.red));
@@ -90,28 +86,5 @@ public class MainMenuState extends BasicGameState {
 		root.addChild(optionButtonPanel);
 		
 		return root;
-	}
-	
-	private Button createDialogTestButton()
-			throws Exception {
-		Button btn = createOptionButton("Dialog Test");
-		btn.addClickListener(new ButtonClickedEvent() {
-			@Override
-			public void click(Button button) {
-				try {
-					button.getRoot().showMessageBox(true, TextFactory.get().getResource("longWinded"), "Warning!");
-				} catch (Exception e) {
-					System.err.println("Unable to open the dialog window.");
-				}
-			}
-		});
-		return btn;
-	}
-	
-	private Button createOptionButton(String text)
-			throws Exception {
-		Button btn = new Button(text);
-		btn.getMargin().setValue(10);
-		return btn;
 	}
 }
