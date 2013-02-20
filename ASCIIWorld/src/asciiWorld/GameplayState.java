@@ -102,7 +102,7 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		}
 		
 		_player = new Entity();
-		_player.getComponents().add(new PlayerControlComponent(_player));
+		_player.getComponents().add(new PlayerControlComponent(_player, _ui));
 		_player.moveTo(new Vector2f(0, 0), Chunk.LAYER_OBJECT);
 		_chunk.addEntity(_player);
 		

@@ -5,6 +5,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Direction;
+import asciiWorld.ui.RootVisualPanel;
 
 public class PlayerControlComponent extends EntityComponent {
 	
@@ -13,9 +14,12 @@ public class PlayerControlComponent extends EntityComponent {
 	private static final int KEY_MOVE_WEST = Input.KEY_A;
 	private static final int KEY_MOVE_EAST = Input.KEY_D;
 	private static final int KEY_TOUCH = Input.KEY_SPACE;
+	
+	private RootVisualPanel _ui;
 
-	public PlayerControlComponent(Entity owner) {
+	public PlayerControlComponent(Entity owner, RootVisualPanel ui) {
 		super(owner);
+		_ui = ui;
 	}
 	
 	@Override
@@ -34,6 +38,14 @@ public class PlayerControlComponent extends EntityComponent {
 		
 		if (input.isKeyPressed(KEY_TOUCH)) {
 			getOwner().touch();
+		}
+		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+			StringBuilder sb = new StringBuilder();
+			InventoryContainer inventory = getOwner().getInventory();
+			for (int index = 0; index < inventory.getItemCount(); index++) {
+				sb.append(inventory.getItemAt(index).getName()).append("\n");
+			}
+			_ui.showMessageBox(true, sb.toString(), "Inventory");
 		}
 	}
 }

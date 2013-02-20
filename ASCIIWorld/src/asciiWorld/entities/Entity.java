@@ -30,7 +30,19 @@ public class Entity implements IHasPosition {
 	private Vector3f _moveToPosition;
 	private float _movementWeight;
 	
+	private String _name;
+	
 	private float _agility;
+	
+	/**
+	 * The container that contains this entity.
+	 */
+	private InventoryContainer _container;
+	
+	/**
+	 * The inventory contained by this entity.
+	 */
+	private InventoryContainer _inventory;
 	
 	private List<EntityComponent> _components;
 	
@@ -43,9 +55,26 @@ public class Entity implements IHasPosition {
 		_movementWeight = 0.0f;
 		_direction = Direction.South;
 		
+		setName("");
+		
 		setAgility(1);
+		
+		setContainer(null);
+		_inventory = new InventoryContainer(this);
 
 		setComponents(new ArrayList<EntityComponent>());
+	}
+	
+	public InventoryContainer getContainer() {
+		return _container;
+	}
+	
+	public void setContainer(InventoryContainer value) {
+		_container = value;
+	}
+	
+	public InventoryContainer getInventory() {
+		return _inventory;
 	}
 	
 	public List<EntityComponent> getComponents() {
@@ -117,6 +146,14 @@ public class Entity implements IHasPosition {
 		return _direction;
 	}
 	
+	public String getName() {
+		return _name;
+	}
+	
+	public void setName(String value) {
+		_name = value;
+	}
+	
 	public float getAgility() {
 		return _agility;
 	}
@@ -178,6 +215,12 @@ public class Entity implements IHasPosition {
 		}
 	}
 	
+	public void use(Vector2f targetChunkPoint) {
+		for (EntityComponent component : getComponents()) {
+			component.use(getContainer().getOwner(), targetChunkPoint);
+		}
+	}
+	
 	public void collidedWith(Entity collidedWithEntity) {
 		for (EntityComponent component : getComponents()) {
 			component.collided(collidedWithEntity);
@@ -207,13 +250,15 @@ public class Entity implements IHasPosition {
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
-		if (isMoving()) {
-			_position = MathHelper.smoothStep(_moveFromPosition, _moveToPosition, _movementWeight);
-			_movementWeight += (deltaTime / 20.0f) * getMovementSpeed();
-			if (_movementWeight > 1.0f) {
-				_position = _moveToPosition.clone();
-				_moveFromPosition = _moveToPosition.clone();
-				_movementWeight = 0.0f;
+		if (getContainer() == null) {
+			if (isMoving()) {
+				_position = MathHelper.smoothStep(_moveFromPosition, _moveToPosition, _movementWeight);
+				_movementWeight += (deltaTime / 20.0f) * getMovementSpeed();
+				if (_movementWeight > 1.0f) {
+					_position = _moveToPosition.clone();
+					_moveFromPosition = _moveToPosition.clone();
+					_movementWeight = 0.0f;
+				}
 			}
 		}
 		

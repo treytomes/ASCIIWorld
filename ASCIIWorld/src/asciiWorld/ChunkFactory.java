@@ -2,6 +2,7 @@ package asciiWorld;
 
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.entities.CanBePickedUpComponent;
 import asciiWorld.entities.CanBePushedComponent;
 import asciiWorld.entities.CanSpeakComponent;
 import asciiWorld.entities.Entity;
@@ -48,15 +49,18 @@ public class ChunkFactory {
 		Chunk chunk = generateGrassyPlain();
 		
 		Entity entity = new Entity();
+		entity.setName("Tree");
 		entity.setTile(TileFactory.get().getResource("tree"));
 		entity.moveTo(new Vector2f(10, 10), Chunk.LAYER_OBJECT);
 		entity.getComponents().add(new CanSpeakComponent(entity, uiRoot, "I've been touched!"));
 		chunk.addEntity(entity);
 		
 		entity = new Entity();
+		entity.setName("Boulder");
 		entity.setTile(TileFactory.get().getResource("boulder"));
 		entity.moveTo(new Vector2f(15, 15), Chunk.LAYER_OBJECT);
 		entity.getComponents().add(new CanBePushedComponent(entity));
+		entity.getComponents().add(new CanBePickedUpComponent(entity));
 		chunk.addEntity(entity);
 		
 		return chunk;

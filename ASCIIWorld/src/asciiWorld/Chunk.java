@@ -72,8 +72,8 @@ public class Chunk {
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
-		for (Entity entity : _entities) {
-			entity.update(container, game, deltaTime);
+		for (int index = 0; index < getEntities().size(); index++) {
+			getEntities().get(index).update(container, game, deltaTime);
 		}
 	}
 	
