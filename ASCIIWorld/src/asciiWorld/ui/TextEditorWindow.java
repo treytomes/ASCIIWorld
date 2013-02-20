@@ -90,13 +90,8 @@ public class TextEditorWindow extends Border implements KeyListener {
 	
 	protected StackPanel getButtons(RoundedRectangle dialogBounds) throws Exception {
 		float myWidth = dialogBounds.getWidth();
-		
-		Button clearButton = Button.createActionButton("Clear", new MethodBinding(this, "clearAllText"));
-		Button helpButton = Button.createActionButton("Help", new MethodBinding(this, "showHelp"));
-		
 		StackPanel buttonPanel = new StackPanel(new Rectangle(dialogBounds.getMinX() + (dialogBounds.getWidth() - myWidth) / 2, dialogBounds.getMaxY() - 42 - 5, myWidth, 42));
-		buttonPanel.addChild(clearButton);
-		buttonPanel.addChild(helpButton);
+		buttonPanel.addChild(Button.createActionButton("Clear", new MethodBinding(this, "clearAllText")));
 		return buttonPanel;
 	}
 	

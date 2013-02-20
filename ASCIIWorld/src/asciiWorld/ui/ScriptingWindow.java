@@ -48,6 +48,7 @@ public class ScriptingWindow extends TextEditorWindow {
 	protected StackPanel getButtons(RoundedRectangle dialogBounds) throws Exception {
 		StackPanel buttonPanel = super.getButtons(dialogBounds);
 		buttonPanel.addChild(Button.createActionButton("Execute", new MethodBinding(this, "executeScript")));
+		buttonPanel.addChild(Button.createActionButton("Help", new MethodBinding(this, "showHelp")));
 		return buttonPanel;
 	}
 	
