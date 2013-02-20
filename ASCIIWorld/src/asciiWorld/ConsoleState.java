@@ -1,5 +1,6 @@
 package asciiWorld;
 
+import org.mozilla.javascript.Undefined;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -52,11 +53,21 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 		}
 
 		_context = new JavascriptContext();
+		_context.addObjectToContext(this, "console");
+		try {
+			_context.executeScript("function clear() {console.clear();}");
+		} catch (Exception e) {
+			_ui.showMessageBox(true, e.getMessage(), "Error!");
+		}
 		
 		_allText = TEXT_PROMPT;
 		_currentLine = "";
 		_cursorIndex = 0;
 		_totalTime = 0;
+	}
+	
+	public void clear() {
+		_allText = "";
 	}
 	
 	@Override
@@ -68,7 +79,6 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 	@Override
 	public void leave(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		//_context.destroy();
 		container.getInput().disableKeyRepeat();
 	}
 
@@ -117,6 +127,7 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 				position.y += tileSize.y;
 			}
 			if (position.y > container.getHeight() - tileSize.y - textMarginTop) {
+				removeFirstLineOfText();
 				break;
 			}
 		}
@@ -133,6 +144,11 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 		_ui.render(g);
 	}
 	
+	private void removeFirstLineOfText() {
+		int index = _allText.indexOf('\n');
+		_allText = _allText.substring(index + 1, _allText.length());
+	}
+	
 	@Override
 	public void keyPressed(int key, char c) {
 		if ((' ' <= c) && (c <= '~')) {
@@ -141,8 +157,9 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 		} else {
 			switch (key) {
 			case Input.KEY_ENTER:
-				_currentLine = _currentLine.substring(0, _cursorIndex).concat("\n").concat((_cursorIndex == _currentLine.length()) ? "" : _currentLine.substring(_cursorIndex, _currentLine.length()));
-				_cursorIndex++;
+				//_currentLine = _currentLine.substring(0, _cursorIndex).concat("\n").concat((_cursorIndex == _currentLine.length()) ? "" : _currentLine.substring(_cursorIndex, _currentLine.length()));
+				//_cursorIndex++;
+				_currentLine = _currentLine.concat("\n");
 				executeScript();
 				break;
 			case Input.KEY_TAB:
@@ -197,15 +214,18 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 	}
 	
 	private void executeScript() {
-		StringBuilder sb = new StringBuilder(_allText);
-		sb.append(_currentLine);
+		_allText = _allText.concat(_currentLine);
+		StringBuilder sb = new StringBuilder();
 		try {
-			sb.append(JavascriptContext.toString(_context.executeScript(_currentLine)));
+			Object result = _context.executeScript(_currentLine);
+			if (result != Undefined.instance) {
+				sb.append(JavascriptContext.toString(result)).append("\n");
+			}
 		} catch (Exception e) {
-			sb.append(e.getMessage());
+			sb.append(e.getMessage()).append("\n");
 		}
-		sb.append("\n").append(TEXT_PROMPT);
-		_allText = sb.toString();
+		sb.append(TEXT_PROMPT);
+		_allText = _allText.concat(sb.toString());
 		_currentLine = "";
 		_cursorIndex = 0;
 	}

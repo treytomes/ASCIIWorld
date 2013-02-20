@@ -2,6 +2,7 @@ package asciiWorld;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 
 public class JavascriptContext {
 
@@ -16,12 +17,29 @@ public class JavascriptContext {
 		return Context.toString(scriptResult);
 	}
 	
+	public Context getContext() {
+		return _context;
+	}
+	
+	public Scriptable getScope() {
+		return _scope;
+	}
+	
 	public Object executeScript(String scriptText) throws Exception {
 		return  _context.evaluateString(_scope, scriptText, "<cmd>", 1, null);
 	}
 	
 	public void destroy() {
 		Context.exit();
+	}
+	
+	public Object getObject(String name) {
+		return _scope.get(name, _scope);
+	}
+	
+	public void addObjectToContext(Object obj, String name) {
+		Object jsObj = Context.javaToJS(obj, _scope);
+		ScriptableObject.putProperty(_scope, name, jsObj);
 	}
 	
 	@Override
