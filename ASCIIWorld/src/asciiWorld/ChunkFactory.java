@@ -2,6 +2,7 @@ package asciiWorld;
 
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.entities.CanBePushedComponent;
 import asciiWorld.entities.CanSpeakComponent;
 import asciiWorld.entities.Entity;
 import asciiWorld.tiles.TileFactory;
@@ -50,6 +51,12 @@ public class ChunkFactory {
 		entity.setTile(TileFactory.get().getResource("tree"));
 		entity.moveTo(new Vector2f(10, 10), Chunk.LAYER_OBJECT);
 		entity.getComponents().add(new CanSpeakComponent(entity, uiRoot, "I've been touched!"));
+		chunk.addEntity(entity);
+		
+		entity = new Entity();
+		entity.setTile(TileFactory.get().getResource("boulder"));
+		entity.moveTo(new Vector2f(15, 15), Chunk.LAYER_OBJECT);
+		entity.getComponents().add(new CanBePushedComponent(entity));
 		chunk.addEntity(entity);
 		
 		return chunk;

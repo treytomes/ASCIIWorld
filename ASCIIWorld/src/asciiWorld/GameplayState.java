@@ -1,6 +1,5 @@
 package asciiWorld;
 
-import java.awt.Font;
 import java.io.IOException;
 
 import org.jdom2.JDOMException;
@@ -75,7 +74,7 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		_bounds = new Rectangle(0, 0, container.getWidth(), container.getHeight());
 		
 		// Create the font.
-		_font = FontFactory.get().getResource("Courier New", Font.BOLD, 20);
+		_font = FontFactory.get().getDefaultFont();
 		
 		try {
 			_ui = generateUI(container, game);

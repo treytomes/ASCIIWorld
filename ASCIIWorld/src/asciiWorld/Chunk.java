@@ -40,7 +40,7 @@ public class Chunk {
 	public Entity getEntityAt(Vector2f chunkPoint, float layer) {
 		for (Entity entity : _entities) {
 			if (entity.getPosition().z == layer) {
-				Vector2f entityChunkPoint = entity.getChunkPoint();
+				Vector2f entityChunkPoint = entity.getOccupiedChunkPoint();
 				if ((entityChunkPoint.x == chunkPoint.x) && (entityChunkPoint.y == chunkPoint.y)) {
 					return entity;
 				}

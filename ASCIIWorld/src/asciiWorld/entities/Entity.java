@@ -105,8 +105,8 @@ public class Entity implements IHasPosition {
 		return _position;
 	}
 	
-	public Vector2f getChunkPoint() {
-		return translatePositionToPoint(getPosition());
+	public Vector2f getOccupiedChunkPoint() {
+		return translatePositionToPoint(_moveToPosition); // getPosition());
 	}
 	
 	public Boolean isMoving() {
@@ -135,7 +135,7 @@ public class Entity implements IHasPosition {
 		float myLayer = getPosition().z;
 		
 		if (myChunk != null) {
-			Vector2f chunkPoint = getChunkPoint();
+			Vector2f chunkPoint = getOccupiedChunkPoint();
 			Entity entity = myChunk.getEntityAt(chunkPoint, myLayer - 1);
 			if (entity != null) {
 				movementSpeed *= entity.getTile().getFriction();
@@ -189,7 +189,7 @@ public class Entity implements IHasPosition {
 			return;
 		}
 		
-		Vector2f chunkPoint = getChunkPoint();
+		Vector2f chunkPoint = getOccupiedChunkPoint();
 		Vector2f directionVector = getDirection().toVector2f();
 		chunkPoint.x += directionVector.x;
 		chunkPoint.y += directionVector.y;
@@ -204,8 +204,6 @@ public class Entity implements IHasPosition {
 		for (EntityComponent component : getComponents()) {
 			component.touched(touchedByEntity);
 		}
-		
-		System.out.println(String.format("%d has been touched.", getTile().getTileIndex()));
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
