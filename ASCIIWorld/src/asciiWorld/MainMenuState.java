@@ -18,6 +18,7 @@ import asciiWorld.ui.MethodBinding;
 import asciiWorld.ui.Orientation;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.StackPanel;
+import asciiWorld.ui.UIFactory;
 
 public class MainMenuState extends BasicGameState {
 	
@@ -71,19 +72,12 @@ public class MainMenuState extends BasicGameState {
 		mainMenuButtonPanel.addChild(Button.createStateTransitionButton("Text Editor", game, ASCIIWorldGame.STATE_TEXTEDITOR));
 		mainMenuButtonPanel.addChild(Button.createActionButton("Exit :-(", new MethodBinding(container, "exit")));
 		
-		StackPanel optionButtonPanel = new StackPanel(new Rectangle(100, 100, 350, 500), Orientation.Vertical);
-		optionButtonPanel.addChild(Button.load("resources/ui/dialogTextButton.xml"));
-		optionButtonPanel.addChild(Button.load("resources/ui/optionButton2.xml"));
-		optionButtonPanel.addChild(Button.load("resources/ui/optionButton3.xml"));
-		optionButtonPanel.addChild(Button.load("resources/ui/optionButton4.xml"));
-		optionButtonPanel.addChild(Button.load("resources/ui/optionButton5.xml"));
-		
 		RootVisualPanel root = new RootVisualPanel(container);
 		root.addChild(new Label(new Vector2f(10, 10), _font, "ASCII World", Color.red));
 		root.addChild(new Button("A", new Rectangle(50, 50, 50, 50)));
 		root.addChild(new Button("B", new Rectangle(75, 75, 50, 50)));
 		root.addChild(mainMenuButtonPanel);
-		root.addChild(optionButtonPanel);
+		root.addChild(UIFactory.get().getResource("optionButtonPanel"));
 		
 		return root;
 	}

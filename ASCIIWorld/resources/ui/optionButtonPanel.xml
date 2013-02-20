@@ -1,0 +1,19 @@
+<StackPanel x="100" y="100" width="350" height="500" orientation="Vertical">
+	<Children>
+		<Button text="Dialog Test" margin="10">
+			<Button.click>
+				try {
+					me.getRoot().showMessageBox(true, Packages.asciiWorld.TextFactory.get().getResource("longWinded"), "Warning!");
+				} catch (e) {
+					java.lang.System.err.println("Unable to open the dialog window.");
+					java.lang.System.err.println(e);
+				}
+			</Button.click>
+		</Button>
+		<Button text="Option 2" margin="10" click="me.getRoot().showMessageBox(true, 'Hello, world! :-D', 'It\'s me!')" />
+		<Button text="Option 3" margin="10" />
+		<Element source="dialogTestButton" />
+		<Button text="Option 4" margin="10" />
+		<Button text="Option 5" margin="10" />
+	</Children>
+</StackPanel>

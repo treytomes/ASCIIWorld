@@ -1,10 +1,38 @@
 package asciiWorld.ui;
 
+import org.jdom2.Element;
 import org.newdawn.slick.geom.Rectangle;
+
+import asciiWorld.XmlHelper;
 
 public class StackPanel extends Panel {
 	
 	private Orientation _orientation;
+	
+	public static StackPanel load(String path) throws Exception {
+		return fromXml(XmlHelper.load(path));
+	}
+	
+	public static StackPanel fromXml(Element elem) throws Exception {
+		XmlHelper.assertName(elem, "StackPanel");
+		
+		int x = Integer.parseInt(XmlHelper.getAttributeValueOrDefault(elem, "x", "0"));
+		int y = Integer.parseInt(XmlHelper.getAttributeValueOrDefault(elem, "y", "0"));
+		int width = Integer.parseInt(XmlHelper.getAttributeValueOrDefault(elem, "width", "0"));
+		int height = Integer.parseInt(XmlHelper.getAttributeValueOrDefault(elem, "height", "0"));
+		Orientation orientation = Orientation.valueOf(XmlHelper.getAttributeValueOrDefault(elem, "orientation", "Horizontal"));
+		
+		StackPanel sp = new StackPanel(new Rectangle(x, y, width, height), orientation);
+		
+		Element childrenElem = elem.getChild("Children");
+		if (childrenElem != null) {
+			for (Element childElem : childrenElem.getChildren()) {
+				sp.addChild(UIFactory.get().fromXml(childElem));
+			}
+		}
+		
+		return sp;
+	}
 
 	public StackPanel(Rectangle bounds, Orientation orientation) {
 		super(bounds);

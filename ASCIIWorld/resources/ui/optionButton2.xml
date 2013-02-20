@@ -1,1 +1,0 @@
-<Button text="Option 2" margin="10" click="me.getRoot().showMessageBox(true, 'Hello, world! :-D', 'It\'s me!')" />

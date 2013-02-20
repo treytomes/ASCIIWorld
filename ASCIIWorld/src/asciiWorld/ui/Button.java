@@ -42,8 +42,6 @@ public class Button extends ContentControl {
 		int margin = Integer.parseInt(XmlHelper.getAttributeValueOrDefault(elem, "margin", "0"));
 		
 		final String scriptText = XmlHelper.getPropertyValueOrDefault(elem, "click", null);
-		//XmlHelper.getChildTextOrDefault(elem, "Button.click", null);
-		
 		
 		Button btn = new Button(text);
 		btn.getMargin().setValue(margin);
