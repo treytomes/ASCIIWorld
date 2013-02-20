@@ -1,11 +1,6 @@
 package asciiWorld;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jdom2.Attribute;
@@ -43,7 +38,7 @@ public class TextFactory {
 	public String getResource(String name) throws Exception {
 		try {
 			if (!_resourceCache.containsKey(name)) {
-				_resourceCache.put(name, readAllText(getPathForResource(name)));
+				_resourceCache.put(name, FileHelper.readToEnd(getPathForResource(name)));
 			}
 		} catch (Exception e) {
 			throw new Exception(String.format("The text resource '%s' does not exist.", name), e);
@@ -64,14 +59,5 @@ public class TextFactory {
 	
 	private String getPathForResource(String name) {
 		return String.format("resources/text/%s.txt", name);
-	}
-	
-	private String readAllText(String path) throws IOException {
-		List<String> lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
-		StringBuilder sb = new StringBuilder();
-		for (String s : lines) {
-			sb.append(s).append("\n");
-		}
-		return sb.toString();
 	}
 }

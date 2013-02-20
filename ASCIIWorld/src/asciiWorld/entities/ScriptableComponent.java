@@ -1,11 +1,5 @@
 package asciiWorld.entities;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.newdawn.slick.GameContainer;
@@ -13,6 +7,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Chunk;
+import asciiWorld.FileHelper;
 import asciiWorld.JavascriptContext;
 
 public class ScriptableComponent extends EntityComponent {
@@ -82,15 +77,6 @@ public class ScriptableComponent extends EntityComponent {
 	}
 	
 	public void load(String path) throws Exception {
-		executeScript(readAllText(path));
-	}
-	
-	private String readAllText(String path) throws IOException {
-		List<String> lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
-		StringBuilder sb = new StringBuilder();
-		for (String s : lines) {
-			sb.append(s).append("\n");
-		}
-		return sb.toString();
+		executeScript(FileHelper.readToEnd(path));
 	}
 }
