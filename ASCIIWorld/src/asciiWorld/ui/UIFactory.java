@@ -33,10 +33,10 @@ public class UIFactory {
 		switch (elem.getName()) {
 		case "Button":
 			return Button.fromXml(elem);
-		case "StackPanel":
-			return StackPanel.fromXml(elem);
 		case "Element":
 			return getResource(elem.getAttributeValue("source"));
+		case "StackPanel":
+			return StackPanel.fromXml(elem);
 		default:
 			return null;
 		}

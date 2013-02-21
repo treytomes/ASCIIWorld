@@ -92,9 +92,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		super.enter(container, game);
 		
 		try {
-			//_chunk = ChunkFactory.generateGrassyPlain();
-			//_chunk = ChunkFactory.generateDesert();
-			//_chunk = ChunkFactory.generateCollisionTest(_ui);
 			_chunk = ChunkFactory.generateOverworld();
 		} catch (Exception e) {
 			throw new SlickException("Unable to generate the chunk.");
@@ -118,8 +115,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		
 		_camera = new Camera(this, _player, 4.0f);
 		
-		//_ui.showMessageBox(true, "Welcome to ASCII World!  This is but a simple demo, but it will become a full-fledged game world in the due course of events.", "Welcome!");
-		//_ui.showMessageBox(true, text, "Welcome!");
 		try {
 			_ui.loadMessageBox("resources/ui/welcomeMessageBox.xml");
 		} catch (Exception e) {

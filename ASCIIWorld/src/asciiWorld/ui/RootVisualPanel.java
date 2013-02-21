@@ -26,7 +26,7 @@ public class RootVisualPanel extends CanvasPanel {
 	
 	public MessageBox loadMessageBox(String path) throws Exception {
 		try {
-			MessageBox mb = MessageBox.load(this, path);
+			MessageBox mb = MessageBox.load(getBounds(), path);
 			mb.addClosedListener(new MessageBoxClosedEvent() {
 				@Override
 				public void closed(FrameworkElement sender, Boolean dialogResult) {
@@ -34,6 +34,7 @@ public class RootVisualPanel extends CanvasPanel {
 				}
 			});
 			modalWindowIsOpening();
+			addChild(mb.getUI());
 			return mb;
 		} catch (Exception e) {
 			System.err.println("Unable to show the message box.");
@@ -43,7 +44,7 @@ public class RootVisualPanel extends CanvasPanel {
 	
 	public MessageBox showMessageBox(Boolean modal, String message, String title) {
 		try {
-			MessageBox mb = MessageBox.show(this, modal, message, title);
+			MessageBox mb = MessageBox.create(getBounds(), modal, message, title);
 			mb.addClosedListener(new MessageBoxClosedEvent() {
 				@Override
 				public void closed(FrameworkElement sender, Boolean dialogResult) {
@@ -51,6 +52,7 @@ public class RootVisualPanel extends CanvasPanel {
 				}
 			});
 			modalWindowIsOpening();
+			addChild(mb.getUI());
 			return mb;
 		} catch (Exception e) {
 			System.err.println("Unable to show the message box.");

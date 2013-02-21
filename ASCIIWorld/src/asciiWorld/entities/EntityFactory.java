@@ -65,6 +65,7 @@ public class EntityFactory {
 		Entity entity = new Entity();
 		entity.setName("Tree");
 		entity.setTile(TileFactory.get().getResource("tree"));
+		entity.getComponents().add(new CanBePickedUpComponent(entity));
 		entity.moveTo(new Vector2f(x, y), Chunk.LAYER_OBJECT);
 		chunk.addEntity(entity);
 		return entity;
