@@ -22,6 +22,9 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 	private static final double AMPLITUDE = 10;
 	private static final int OCTAVES = 10;
 	
+	private static final int ATTEMPTS_FINDWATER = 1024;
+	private static final int ATTEMPTS_FINDCAVEENTRANCE = 1024;
+	
 	public Chunk generate(Chunk chunk, long seed) throws Exception {
 		RandomFactory.get().reseed(seed);
 		
@@ -35,6 +38,8 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 
     private Chunk generatePerlinNoise(Chunk chunk) throws Exception
 	{
+    	System.out.print("Generating perlin noise...");
+    	
 		// This will generate weird grainy landscapes with random seeds > 25000.  Don't know why.
 		ITerrainGenerator generator = new PerlinTerrainGenerator(PERSISTENCE, FREQUENCY, AMPLITUDE, OCTAVES, RandomFactory.get().nextInt(0, 25000));
 		double[][] terrain = generator.generate(Chunk.WIDTH, Chunk.HEIGHT);
@@ -56,22 +61,44 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 				}
 			}
 		}
+		
+		System.out.println(" done!");
 		return chunk;
 	}
     
     private Vector2f findWater(Chunk chunk) throws Exception {
+    	System.out.print("Locating water...");
+    	
     	Vector2f point = new Vector2f(
     			RandomFactory.get().nextInt(0, Chunk.WIDTH),
     			RandomFactory.get().nextInt(0, Chunk.HEIGHT));
+    	int attempt = 0;
     	while (chunk.getEntityAt(point, Chunk.LAYER_GROUND).getName() != "Water") {
         	point.x = RandomFactory.get().nextInt(0, Chunk.WIDTH);
         	point.y = RandomFactory.get().nextInt(0, Chunk.HEIGHT);
+        	
+        	System.out.print(".");
+        	
+        	attempt++;
+        	if (attempt >= ATTEMPTS_FINDWATER) {
+        		System.out.println(" failed to find water.");
+        		return null;
+        	}
     	}
+    	
+    	System.out.println(" done!");
     	return point;
     }
 
 	private Chunk generateRiver(Chunk chunk, Vector2f startingChunkPoint, Vector2f endingChunkPoint) throws Exception
 	{
+		System.out.print("Generating a river...");
+		
+		if ((startingChunkPoint == null) || (endingChunkPoint == null)) {
+			System.out.println(" failed to generate a river.");
+			return chunk;
+		}
+		
 		Vector2f chunkPoint = startingChunkPoint.copy();
 		while (!((chunkPoint.x == endingChunkPoint.x) && (chunkPoint.y == endingChunkPoint.y))) {
 			switch (RandomFactory.get().nextInt(0, 2)) {
@@ -101,12 +128,17 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 				chunk.removeEntity(objectEntity);
 			}
 			EntityFactory.createWaterEntity(chunk, (int)chunkPoint.x, (int)chunkPoint.y);
+			
+			System.out.print(".");
 		}
 		
+		System.out.println(" done!");
 		return chunk;
 	}
 
     private Chunk generateTrees(Chunk chunk) throws Exception {
+    	System.out.print("Generating trees...");
+    	
 		// Generate seed trees.
 		int seedTreeCount = RandomFactory.get().nextInt(SEEDTREE_MIN, SEEDTREE_MAX);
 		List<Vector2f> seedTrees = new ArrayList<Vector2f>();
@@ -120,6 +152,8 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 			seedTrees.add(treePoint);
 
 			EntityFactory.createTreeEntity(chunk, (int)treePoint.x, (int)treePoint.y);
+			
+			System.out.print(".");
 		}
 
 		// Generate forests.
@@ -128,8 +162,11 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 			// Pick a seed position.
 			Vector2f seedPoint = seedTrees.get(RandomFactory.get().nextInt(0, seedTreeCount));
 			generateTree(chunk, seedPoint);
+			
+			System.out.print(".");
 		}
 		
+		System.out.println(" done!");
 		return chunk;
     }
 
@@ -156,15 +193,27 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 	}
 	
 	private Chunk generateCaveEntrances(Chunk chunk) throws Exception {
+		System.out.print("Generating cave entrances...");
+		
 		for (int n = 0; n < CAVES_COUNT; n++) {
-			generateCaveEntrance(chunk);
+			if (generateCaveEntrance(chunk) == null) {
+				System.out.println(" failed to find a place to put a cave.");
+				return chunk;
+			}
+			System.out.print(".");
 		}
+		
+		System.out.println(" done!");
 		return chunk;
 	}
 	
 	private Entity generateCaveEntrance(Chunk chunk) throws Exception {
 		// Find a place to put the cave.
 		Vector2f chunkPoint = findPossibleCaveEntrance(chunk);
+		if (chunkPoint == null) {
+			// Unable to find a place to put the cave.
+			return null;
+		}
 
 		// Clear out some space for the entrance.
 		Entity objectEntity = chunk.getEntityAt(chunkPoint, Chunk.LAYER_OBJECT);
@@ -178,7 +227,13 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 
 	private Vector2f findPossibleCaveEntrance(Chunk chunk) throws Exception
 	{
+		int attempt = 0;
 		while (true) {
+			attempt++;
+			if (attempt >= ATTEMPTS_FINDCAVEENTRANCE) {
+				return null;
+			}
+
 			int x = RandomFactory.get().nextInt(0, Chunk.WIDTH);
 			int y = RandomFactory.get().nextInt(0, Chunk.HEIGHT);
 			
