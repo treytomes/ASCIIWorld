@@ -9,16 +9,21 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Direction;
 import asciiWorld.IHasPosition;
+import asciiWorld.IHasRangeOfVision;
 import asciiWorld.MathHelper;
 import asciiWorld.Vector3f;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.tiles.Tile;
 import asciiWorld.tiles.TileSet;
 
-public class Entity implements IHasPosition {
+public class Entity implements IHasPosition, IHasRangeOfVision {
+	
+	public static final float MOVEMENT_STEP = 8.0f;
+	
+	private static final int DEFAULT_AGILITY = 1;
+	private static final int DEFAULT_PERCEPTION = 10;
 	
 	private static final float MODIFIER_AGILITY = 15.0f;
-	public static final float MOVEMENT_STEP = 8.0f;
 	
 	private Chunk _chunk;
 	
@@ -32,7 +37,8 @@ public class Entity implements IHasPosition {
 	
 	private String _name;
 	
-	private float _agility;
+	private int _agility;
+	private int _perception;
 	
 	/**
 	 * The container that contains this entity.
@@ -57,7 +63,8 @@ public class Entity implements IHasPosition {
 		
 		setName("");
 		
-		setAgility(1);
+		setAgility(DEFAULT_AGILITY);
+		setPerception(DEFAULT_PERCEPTION);
 		
 		setContainer(null);
 		_inventory = new InventoryContainer(this);
@@ -154,16 +161,24 @@ public class Entity implements IHasPosition {
 		_name = value;
 	}
 	
-	public float getAgility() {
+	public int getAgility() {
 		return _agility;
 	}
 	
-	public void setAgility(float value) {
+	public void setAgility(int value) {
 		_agility = value;
 	}
 	
+	public int getPerception() {
+		return _perception;
+	}
+	
+	public void setPerception(int value) {
+		_perception = value;
+	}
+	
 	public float getBaseMovementSpeed() {
-		return _agility / MODIFIER_AGILITY;
+		return getAgility() / MODIFIER_AGILITY;
 	}
 	
 	public float getMovementSpeed() {
@@ -180,6 +195,14 @@ public class Entity implements IHasPosition {
 		}
 		
 		return movementSpeed;
+	}
+	
+	public float getBaseRangeOfVision() {
+		return getPerception();
+	}
+	
+	public float getRangeOfVision() {
+		return getBaseRangeOfVision();
 	}
 	
 	public void moveTo(Vector2f chunkPoint, float layer) {

@@ -4,7 +4,9 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
-public class Camera implements IHasPosition, IHasBounds {
+public class Camera implements IHasPosition, IHasBounds, IHasRangeOfVision {
+	
+	private static final float DEFAULT_RANGE_OF_VISION = 32;
 
 	private IHasBounds _viewport;
 	private IHasPosition _focus;
@@ -61,6 +63,14 @@ public class Camera implements IHasPosition, IHasBounds {
 	public Vector3f getPosition() {
 		Vector3f focusPosition = getFocus().getPosition();
 		return new Vector3f(focusPosition.x, focusPosition.y, focusPosition.z);
+	}
+	
+	public float getRangeOfVision() {
+		if (_focus instanceof IHasRangeOfVision) {
+			return ((IHasRangeOfVision)_focus).getRangeOfVision();
+		} else {
+			return DEFAULT_RANGE_OF_VISION;
+		}
 	}
 	
 	public void apply(Graphics g) {
