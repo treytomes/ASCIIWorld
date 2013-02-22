@@ -30,7 +30,11 @@ public class Button extends ContentControl {
 	private List<ButtonClickedEvent> _buttonClickedListeners;
 	
 	private Boolean _buttonPressed;
-	private String _text;
+	private Object _textBinding;
+	
+	private Border _fill;
+	private Border _border;
+	private Label _label;
 	
 	public static Button load(String path) throws Exception {
 		return fromXml(XmlHelper.load(path));
@@ -100,9 +104,9 @@ public class Button extends ContentControl {
 		return _defaultFont;
 	}
 	
- 	public Button(UnicodeFont font, String text, Rectangle bounds) throws Exception {
+ 	public Button(UnicodeFont font, Object textBinding, Rectangle bounds) throws Exception {
 		_buttonPressed = false;
-		_text = text;
+		_textBinding = textBinding;
 		
 		_buttonClickedListeners = new ArrayList<ButtonClickedEvent>();
 		
@@ -116,14 +120,14 @@ public class Button extends ContentControl {
 		//bounds.setWidth((bounds.getWidth() == 0) ? 1 : bounds.getWidth());
 		//bounds.setHeight((bounds.getHeight() == 0) ? 1 : bounds.getWidth());
 		
-		final Border fill = new Border(new RoundedRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), CORNER_RADIUS), new Color(COLOR_FILL), true) {
+		_fill = new Border(new RoundedRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), CORNER_RADIUS), new Color(COLOR_FILL), true) {
 			@Override
 			public void update(GameContainer container, int delta) {
 				//super.update(container);
 			}
 		};
 		
-		Border border = new Border(new RoundedRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 8), COLOR_BORDER, false) {
+		_border = new Border(new RoundedRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 8), COLOR_BORDER, false) {
 			@Override
 			public void update(GameContainer container, int delta) {
 				//super.update(container);
@@ -131,7 +135,7 @@ public class Button extends ContentControl {
 			}
 		};
 		
-		Label label = new Label(font, text, COLOR_LABEL) {
+		_label = new Label(font, textBinding, COLOR_LABEL) {
 			@Override
 			public void update(GameContainer container, int delta) {
 				//super.update(container);
@@ -142,20 +146,20 @@ public class Button extends ContentControl {
 		addMouseOverListener(new MousePositionEvent() {
 			@Override
 			public void mousePositionChanged(FrameworkElement sender, Vector2f mousePosition) {
-				fill.getColor().a = 0.5f;
+				_fill.getColor().a = 0.5f;
 			}
 		});
 		addMouseOutListener(new MousePositionEvent() {
 			@Override
 			public void mousePositionChanged(FrameworkElement sender, Vector2f mousePosition) {
-				fill.getColor().a = 0.25f;
+				_fill.getColor().a = 0.25f;
 			}
 		});
 		addMouseDownListener(new MouseButtonEvent() {
 			@Override
 			public void mouseButtonChanged(FrameworkElement sender, MouseButton button, Vector2f mousePosition) {
 				if (button == MouseButton.Left) {
-					fill.getColor().a = 0.75f;
+					_fill.getColor().a = 0.75f;
 					_buttonPressed = true;
 				}
 			}
@@ -164,27 +168,27 @@ public class Button extends ContentControl {
 			@Override
 			public void mouseButtonChanged(FrameworkElement sender, MouseButton button, Vector2f mousePosition) {
 				if ((button == MouseButton.Left) && _buttonPressed) {
-					fill.getColor().a = 0.5f;
+					_fill.getColor().a = 0.5f;
 					handleClick();
 				}
 			}
 		});
 		
-		border.setContent(label);
-		fill.setContent(border);
-		setContent(fill);
+		_border.setContent(_label);
+		_fill.setContent(_border);
+		setContent(_fill);
 	}
 	
-	public Button(UnicodeFont font, String text) throws Exception {
-		this(font, text, new Rectangle(0, 0, 0, 0));
+	public Button(UnicodeFont font, Object textBinding) throws Exception {
+		this(font, textBinding, new Rectangle(0, 0, 0, 0));
 	}
 	
-	public Button(String text) throws Exception {
-		this(getDefaultFont(), text, new Rectangle(0, 0, 0, 0));
+	public Button(Object textBinding) throws Exception {
+		this(getDefaultFont(), textBinding, new Rectangle(0, 0, 0, 0));
 	}
 	
-	public Button(String text, Rectangle bounds) throws Exception {
-		this(getDefaultFont(), text, bounds);
+	public Button(Object textBinding, Rectangle bounds) throws Exception {
+		this(getDefaultFont(), textBinding, bounds);
 	}
 	
 	public void addClickListener(ButtonClickedEvent listener) {
@@ -195,15 +199,43 @@ public class Button extends ContentControl {
 		_buttonClickedListeners.remove(listener);
 	}
 	
+	public Color getTextColor() {
+		return _label.getColor();
+	}
+	
+	public void setTextColor(Color value) {
+		_label.setColor(value);
+	}
+	
 	public String getText() {
-		return _text;
+		return _textBinding.toString();
 	}
 	
 	@Override
 	public Rectangle getBounds() {
-		return getContent().getBounds();
+		return _fill.getBounds();
 	}
 
+	public float getCornerRadius() {
+		Rectangle bounds = getBounds();
+		if (bounds instanceof RoundedRectangle) {
+			return ((RoundedRectangle)bounds).getCornerRadius();
+		} else {
+			return 0;
+		}
+	}
+	
+	public void setCornerRadius(float value) {
+		Rectangle oldBounds = getBounds();
+		if (value == 0) {
+			_border.setBounds(new Rectangle(oldBounds.getX(), oldBounds.getY(), oldBounds.getWidth(), oldBounds.getHeight()));
+			_fill.setBounds(new Rectangle(oldBounds.getX(), oldBounds.getY(), oldBounds.getWidth(), oldBounds.getHeight()));
+		} else {
+			_border.setBounds(new RoundedRectangle(oldBounds.getX(), oldBounds.getY(), oldBounds.getWidth(), oldBounds.getHeight(), value));
+			_fill.setBounds(new RoundedRectangle(oldBounds.getX(), oldBounds.getY(), oldBounds.getWidth(), oldBounds.getHeight(), value));
+		}
+	}
+	
 	@Override
 	public void moveTo(Vector2f position) {
 		getContent().moveTo(position);

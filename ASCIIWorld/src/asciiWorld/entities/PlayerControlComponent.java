@@ -16,11 +16,10 @@ import asciiWorld.ui.Button;
 import asciiWorld.ui.ButtonClickedEvent;
 import asciiWorld.ui.CanvasPanel;
 import asciiWorld.ui.FrameworkElement;
-import asciiWorld.ui.HorizontalAlignment;
 import asciiWorld.ui.Label;
+import asciiWorld.ui.Orientation;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.StackPanel;
-import asciiWorld.ui.VerticalAlignment;
 
 public class PlayerControlComponent extends EntityComponent {
 	
@@ -36,6 +35,7 @@ public class PlayerControlComponent extends EntityComponent {
 	public PlayerControlComponent(Entity owner, RootVisualPanel ui) {
 		super(owner);
 		_ui = ui;
+		_inventoryUI = null;
 	}
 	
 	@Override
@@ -56,45 +56,81 @@ public class PlayerControlComponent extends EntityComponent {
 			getOwner().touch();
 		}
 		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-			openInventoryInterface();
+			if (!isInventoryUIOpen()) {
+				openInventoryInterface();
+			}
 		}
 	}
 	
+	private Boolean isInventoryUIOpen() {
+		return _inventoryUI != null;
+	}
+	
 	private void openInventoryInterface() {
-		StringBuilder sb = new StringBuilder();
 		InventoryContainer inventory = getOwner().getInventory();
+		/*StringBuilder sb = new StringBuilder();
 		for (int index = 0; index < inventory.getItemCount(); index++) {
 			sb.append(inventory.getItemAt(index).getName()).append("\n");
-		}
+		}*/
 		
 		try {
-			createInventoryWindow(sb.toString());
+			//createInventoryWindow(sb.toString());
+			createInventoryWindow(inventory);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to open the inventory interface.");
 		}
 	}
 	
-	private void createInventoryWindow(String text) throws Exception {
-		_inventoryUI = makeUIModal(generateUI(text));
+	private void createInventoryWindow(InventoryContainer inventory) throws Exception {
+		_inventoryUI = makeUIModal(generateUI(inventory));
 		_ui.addChild(_inventoryUI);
 	}
 	
 	private static final Color COLOR_MODAL_BACKGROUND = new Color(0, 0, 0, 0.5f);
 	private static final Color COLOR_BORDER_WINDOW = new Color(0.5f, 0.5f, 1.0f);
-	private static final Color COLOR_BORDER_MESSAGE = new Color(0.0f, 0.75f, 0.5f);
+	private static final Color COLOR_CONTENT_BORDER = new Color(0.0f, 0.75f, 0.5f);
 	private static final Color COLOR_TEXT_TITLE = Color.white;
-	private static final Color COLOR_TEXT_MESSAGE = Color.yellow;
+	private static final Color COLOR_ROW_TEXT = Color.yellow;
 
 	private CanvasPanel makeUIModal(FrameworkElement ui) throws Exception {
-		Rectangle containerBounds = ui.getBounds();
+		Rectangle containerBounds = _ui.getRoot().getBounds();
 		CanvasPanel panel = new CanvasPanel(new Rectangle(0, 0, containerBounds.getWidth(), containerBounds.getHeight()));
 		panel.addChild(new Border(new Rectangle(0, 0, containerBounds.getWidth(), containerBounds.getHeight()), COLOR_MODAL_BACKGROUND, true));
 		panel.addChild(ui);
+		_ui.modalWindowIsOpening();
 		return panel;
 	}
 	
-	private Border generateUI(String text) throws Exception {
+	/**
+	 * ListView's are always vertical, and don't change the height of their child elements.
+	 * 
+	 * @author ttomes
+	 *
+	 */
+	private class ListView extends StackPanel {
+
+		public ListView() {
+			super(Orientation.Vertical);
+		}
+		
+		@Override
+		protected void setVerticalOrientationBounds() {
+			float myWidth = getBounds().getWidth();
+			
+			float x = getBounds().getX();
+			float y = getBounds().getY();
+			for (FrameworkElement child : getChildren()) {
+				child.getBounds().setX(x + child.getMargin().getLeftMargin());
+				child.getBounds().setY(y + child.getMargin().getTopMargin());
+				child.getBounds().setWidth(myWidth - child.getMargin().getLeftMargin() - child.getMargin().getRightMargin());
+				
+				y += child.getBounds().getHeight();
+			}
+		}
+	}
+	
+	private Border generateUI(InventoryContainer inventory) throws Exception {
 		Rectangle containerBounds = _ui.getBounds();
 		float width = containerBounds.getWidth() / 3;
 		float height = containerBounds.getWidth() / 3;
@@ -103,24 +139,32 @@ public class PlayerControlComponent extends EntityComponent {
 		Color windowFillColor = new Color(COLOR_BORDER_WINDOW);
 		windowFillColor.a = 0.25f;
 		
-		Label messageLabel = new Label(new Vector2f(0, 0), font, text, COLOR_TEXT_MESSAGE);
-		messageLabel.getMargin().setValue(5);
-		messageLabel.setHorizontalContentAlignment(HorizontalAlignment.Left);
-		messageLabel.setVerticalContentAlignment(VerticalAlignment.Top);
+		//Label messageLabel = new Label(new Vector2f(0, 0), font, text, COLOR_TEXT_MESSAGE);
+		//messageLabel.getMargin().setValue(5);
+		//messageLabel.setHorizontalContentAlignment(HorizontalAlignment.Left);
+		//messageLabel.setVerticalContentAlignment(VerticalAlignment.Top);
 		
-		Border messageBackground = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - 42), COLOR_BORDER_MESSAGE, false);
-		messageBackground.setContent(messageLabel);
+		StackPanel itemsList = new ListView();
+		for (int index = 0; index < inventory.getItemCount(); index++) {
+			Button itemButton = new Button(inventory.getItemAt(index), new Rectangle(0, 0, 0, 30));
+			itemButton.setCornerRadius(0);
+			itemButton.setTextColor(COLOR_ROW_TEXT);
+			itemsList.addChild(itemButton);
+		}
 		
-		Color messageFillColor = new Color(COLOR_BORDER_MESSAGE);
-		messageFillColor.a = 0.25f;
+		Border contentBackground = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - 42), COLOR_CONTENT_BORDER, false);
+		contentBackground.setContent(itemsList);
+		
+		Color contentFillColor = new Color(COLOR_CONTENT_BORDER);
+		contentFillColor.a = 0.25f;
 
-		Border messageBorder = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - 42), messageFillColor, true);
-		messageBorder.setContent(messageBackground);
+		Border contentBorder = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - 42), contentFillColor, true);
+		contentBorder.setContent(contentBackground);
 		
 		CanvasPanel windowCanvas = new CanvasPanel();
 		String titleText = "Inventory";
 		windowCanvas.addChild(new Label(new Vector2f(_bounds.getMinX() + (_bounds.getWidth() - font.getWidth(titleText)) / 2, _bounds.getMinY() + 10), font, titleText, COLOR_TEXT_TITLE));
-		windowCanvas.addChild(messageBorder);
+		windowCanvas.addChild(contentBorder);
 		windowCanvas.addChild(getButtons(_bounds));
 		
 		Border windowBackground = new Border(_bounds, COLOR_BORDER_WINDOW, false);
@@ -145,6 +189,8 @@ public class PlayerControlComponent extends EntityComponent {
 			public void click(Button button) {
 				try {
 					_inventoryUI.setParent(null);
+					_inventoryUI = null;
+					_ui.modalWindowIsClosing();
 				} catch (Exception e) {
 					System.err.println("Error while attempting to close the inventory interface window.");
 				}

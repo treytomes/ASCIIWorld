@@ -43,6 +43,10 @@ public class StackPanel extends Panel {
 	public StackPanel(Rectangle bounds) {
 		this(bounds, Orientation.Horizontal);
 	}
+
+	public StackPanel(Orientation orientation) {
+		this(new Rectangle(0, 0, 0, 0), orientation);
+	}
 	
 	public Orientation getOrientation() {
 		return _orientation;
@@ -88,7 +92,7 @@ public class StackPanel extends Panel {
 		}
 	}
 	
-	private void setVerticalOrientationBounds() {
+	protected void setVerticalOrientationBounds() {
 		int numberOfChildren = getChildren().size();
 		float myWidth = getBounds().getWidth();
 		float myHeight = getBounds().getHeight();

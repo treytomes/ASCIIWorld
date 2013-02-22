@@ -45,8 +45,12 @@ public class Label extends FrameworkElement {
 		this(position, font, new StaticText(text), color);
 	}
 	
+	public Label(UnicodeFont font, Object textBinding, Color color) {
+		this(new Vector2f(0, 0), font, textBinding, color);
+	}
+	
 	public Label(UnicodeFont font, String text, Color color) {
-		this(new Vector2f(0, 0), font, new StaticText(text), color);
+		this(font, new StaticText(text), color);
 	}
 	
 	public Label(Vector2f position, String text, Color color) throws SlickException {
@@ -112,6 +116,8 @@ public class Label extends FrameworkElement {
 	
 	@Override
 	public void render(Graphics g) {
+		Rectangle previousWorldClip = setTransform(g);
+		
 		if (_lastFrameText != getText()) {
 			resetTextBounds();
 		}
@@ -185,10 +191,12 @@ public class Label extends FrameworkElement {
 			textPosition.y += _font.getHeight(thisLine);
 			
 			// Ensure that we don't draw outside the lines:
-			if ((textPosition.y + _font.getHeight(remainingText)) >= getBounds().getMaxY()) {
+			if ((textPosition.y + _font.getHeight(remainingText)) >= getBounds().getHeight()) {
 				break;
 			}
 		}
+		
+		clearTransform(g, previousWorldClip);
 	}
 
 	@Override
@@ -213,25 +221,25 @@ public class Label extends FrameworkElement {
 
 		switch (getHorizontalContentAlignment()) {
 		case Left:
-			x = getBounds().getX();
+			x = getBounds().getMinX();
 			break;
 		case Center:
-			x = getBounds().getX() + (getBounds().getWidth() - _font.getWidth(getText())) / 2.0f;
+			x = getBounds().getMinX() + (getBounds().getWidth() - _font.getWidth(getText())) / 2.0f;
 			break;
 		case Right:
-			x = getBounds().getX() + getBounds().getWidth() - _font.getWidth(getText());
+			x = getBounds().getMinX() + getBounds().getWidth() - _font.getWidth(getText());
 			break;
 		}
 		
 		switch (getVerticalContentAlignment()) {
 		case Top:
-			y = getBounds().getY();
+			y = getBounds().getMinY();
 			break;
 		case Center:
-			y = getBounds().getY() + (getBounds().getHeight() - _font.getHeight(getText())) / 2.0f;
+			y = getBounds().getMinY() + (getBounds().getHeight() - _font.getHeight(getText())) / 2.0f;
 			break;
 		case Bottom:
-			y = getBounds().getY() + getBounds().getHeight() - _font.getHeight(getText());
+			y = getBounds().getMinY() + getBounds().getHeight() - _font.getHeight(getText());
 			break;
 		}
 		

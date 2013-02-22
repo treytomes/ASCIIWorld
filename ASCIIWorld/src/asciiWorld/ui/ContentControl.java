@@ -2,6 +2,7 @@ package asciiWorld.ui;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 public abstract class ContentControl extends FrameworkElement {
@@ -48,10 +49,14 @@ public abstract class ContentControl extends FrameworkElement {
 	
 	@Override
 	public void render(Graphics g) {
+		Rectangle previousWorldClip = setTransform(g);
+		
 		if (getContent() != null) {
 			//setContentBounds();
 			getContent().render(g);
 		}
+		
+		clearTransform(g, previousWorldClip);
 	}
 	
 	@Override

@@ -44,7 +44,7 @@ public class TextEditorWindow extends Border implements KeyListener {
 
 		_textFont = FontFactory.get().getResource(TEXT_SIZE);
 
-		_text = "";
+		_text = "abcdefg";
 		_cursorIndex = 0;
 		_totalTime = 0;
 		_controlIsPressed = false;

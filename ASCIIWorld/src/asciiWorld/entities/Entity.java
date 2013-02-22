@@ -72,6 +72,11 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		setComponents(new ArrayList<EntityComponent>());
 	}
 	
+	@Override
+	public String toString() {
+		return getName();
+	}
+	
 	public InventoryContainer getContainer() {
 		return _container;
 	}

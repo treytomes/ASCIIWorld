@@ -157,6 +157,37 @@ public abstract class FrameworkElement {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param g
+	 * @return The previous world clip, to be restored as input to clearTransform.
+	 */
+	protected Rectangle setTransform(Graphics g) {
+		//Rectangle previousWorldClip = g.getWorldClip();
+		Rectangle previousWorldClip = g.getClip();
+		//g.pushTransform();
+		
+		Rectangle bounds = getBounds();
+		//g.translate(bounds.getX(), bounds.getY());
+		
+		//g.setWorldClip(getBounds());
+		Rectangle newClip = new Rectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+		newClip.grow(2, 2);
+		g.setClip(newClip);
+		
+		if (previousWorldClip == null) {
+			return null;
+		} else {
+			return new Rectangle(previousWorldClip.getX(), previousWorldClip.getY(), previousWorldClip.getWidth(), previousWorldClip.getHeight());
+		}
+	}
+	
+	protected void clearTransform(Graphics g, Rectangle previousWorldClip) {
+		//g.popTransform();
+		//g.setWorldClip(previousWorldClip);
+		g.setClip(previousWorldClip);
+	}
+	
 	public abstract void render(Graphics g);
 	
 	public void update(GameContainer container, int delta) {

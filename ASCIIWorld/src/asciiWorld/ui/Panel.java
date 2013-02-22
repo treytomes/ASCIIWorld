@@ -61,10 +61,14 @@ public abstract class Panel extends FrameworkElement {
 	
 	@Override
 	public void render(Graphics g) {
+		Rectangle previousWorldClip = setTransform(g);
+		
 		for (FrameworkElement child : _children) {
 			//setChildBounds(child);
 			child.render(g);
 		}
+		
+		clearTransform(g, previousWorldClip);
 	}
 	
 	@Override
