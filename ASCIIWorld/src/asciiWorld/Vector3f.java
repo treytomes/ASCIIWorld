@@ -97,7 +97,7 @@ public class Vector3f {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (Vector3f.class.isInstance(obj)) {
+		if (obj instanceof Vector3f) {
 			Vector3f otherVector = Vector3f.class.cast(obj);
 			return
 					(otherVector.x == x) &&

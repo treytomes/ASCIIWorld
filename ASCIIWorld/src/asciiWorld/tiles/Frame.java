@@ -101,7 +101,7 @@ public class Frame implements ITile {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (Frame.class.isInstance(obj)) {
+		if (obj instanceof Frame) {
 			Frame otherFrame = Frame.class.cast(obj);
 			return
 					(otherFrame.getBackgroundColor() == getBackgroundColor()) &&

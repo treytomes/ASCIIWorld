@@ -38,7 +38,7 @@ public class MethodBinding {
 		try {
 			Object source = getSource();
 			
-			if (MethodBinding.class.isInstance(source)) {
+			if (source instanceof MethodBinding) {
 				source = ((MethodBinding)_source).getValue();
 			}
 			

@@ -118,9 +118,9 @@ public abstract class FrameworkElement {
 		}
 
 		if ((getParent() == null) && (parent != null)) {
-			if (ContentControl.class.isInstance(parent)) {
+			if (parent instanceof ContentControl) {
 				setNewParent((ContentControl)parent);
-			} else if (Panel.class.isInstance(parent)) {
+			} else if (parent instanceof Panel) {
 				setNewParent((Panel)parent);
 			} else {
 				throw new Exception(String.format("Unable to set the input element type '%s' as a parent.", parent.getClass().getName()));
@@ -129,12 +129,12 @@ public abstract class FrameworkElement {
 	}
 	
 	private void removeOldParent() throws Exception {
-		if (ContentControl.class.isInstance(getParent())) {
+		if (getParent() instanceof ContentControl) {
 			ContentControl contentParent = (ContentControl)getParent();
 			if (contentParent.getContent() == this) {
 				contentParent.setContent(null);
 			}
-		} else if (Panel.class.isInstance(getParent())) {
+		} else if (getParent() instanceof Panel) {
 			Panel panelParent = (Panel)getParent();
 			if (panelParent.containsChild(this)) {
 				panelParent.removeChild(this);
