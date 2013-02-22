@@ -1,5 +1,5 @@
 package asciiWorld.ui;
 
 public interface MessageBoxClosedEvent {
-	void closed(FrameworkElement sender, Boolean dialogResult);
+	void closed(MessageBox sender, Boolean dialogResult);
 }

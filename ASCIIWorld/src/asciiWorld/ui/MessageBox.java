@@ -12,11 +12,12 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.CreateColor;
 import asciiWorld.FontFactory;
 import asciiWorld.TextFactory;
 import asciiWorld.TextHelper;
 
-public class MessageBox {
+public class MessageBox extends Border {
 
 	private static final Color COLOR_BORDER_WINDOW = new Color(0.5f, 0.5f, 1.0f);
 	private static final Color COLOR_BORDER_MESSAGE = new Color(0.0f, 0.75f, 0.5f);
@@ -34,15 +35,11 @@ public class MessageBox {
 	private String _title;
 	private String _acceptButtonText;
 	private String _cancelButtonText;
-	private float _width;
-	private float _height;
-	private RoundedRectangle _bounds;
-	private FrameworkElement _ui;
 	
 	private Boolean _result;
 	
 	private MessageBox(RootVisualPanel rootUI, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
-		Rectangle containerBounds = rootUI.getBounds();
+		super(createBounds(rootUI), CreateColor.from(COLOR_BORDER_WINDOW).changeAlphaTo(0.25f).getColor(), true);
 		
 		_closedListeners = new ArrayList<MessageBoxClosedEvent>();
 		
@@ -51,20 +48,20 @@ public class MessageBox {
 		_acceptButtonText = acceptButtonText;
 		_cancelButtonText = cancelButtonText;
 		_message = message;
-		_width = containerBounds.getWidth() / 3;
-		_height = containerBounds.getWidth() / 3;
-		_bounds = new RoundedRectangle((containerBounds.getWidth() - _width) / 2, (containerBounds.getHeight() - _height) / 2, _width, _height, 8);
 		_result = false;
 		
-		generateUI();
+		setContent(generateContent());
+	}
+	
+	private static RoundedRectangle createBounds(RootVisualPanel rootUI) {
+		Rectangle containerBounds = rootUI.getBounds();
+		float width = containerBounds.getWidth() / 3;
+		float height = containerBounds.getWidth() / 3;
+		return new RoundedRectangle((containerBounds.getWidth() - width) / 2, (containerBounds.getHeight() - height) / 2, width, height, 8);
 	}
 	
 	public Boolean isModal() {
 		return _isModal;
-	}
-	
-	public FrameworkElement getUI() {
-		return _ui;
 	}
 	
 	public void addClosedListener(MessageBoxClosedEvent listener) {
@@ -76,7 +73,7 @@ public class MessageBox {
 	}
 	
 	public Boolean isOpen() {
-		return _ui.getParent() != null;
+		return getParent() != null;
 	}
 	
 	public Boolean getResult() {
@@ -129,40 +126,36 @@ public class MessageBox {
 		}
 	}
 	
-	private void generateUI() throws Exception {
+	private Border generateContent() throws Exception {
+		Rectangle bounds = getBounds();
 		UnicodeFont font = FontFactory.get().getDefaultFont();
-		Color windowFillColor = new Color(COLOR_BORDER_WINDOW);
-		windowFillColor.a = 0.25f;
+		int buttonHeight = 42;
 		
 		Label messageLabel = new Label(new Vector2f(0, 0), font, _message, COLOR_TEXT_MESSAGE);
 		messageLabel.getMargin().setValue(5);
 		messageLabel.setHorizontalContentAlignment(HorizontalAlignment.Left);
 		messageLabel.setVerticalContentAlignment(VerticalAlignment.Top);
 		
-		Border messageBackground = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - 42), COLOR_BORDER_MESSAGE, false);
+		Border messageBackground = new Border(new Rectangle(bounds.getMinX() + 10, bounds.getMinY() + 40, bounds.getWidth() - 20, bounds.getHeight() - 50 - buttonHeight), COLOR_BORDER_MESSAGE, false);
 		messageBackground.setContent(messageLabel);
 		
-		Color messageFillColor = new Color(COLOR_BORDER_MESSAGE);
-		messageFillColor.a = 0.25f;
+		Color messageFillColor = CreateColor.from(COLOR_BORDER_MESSAGE).changeAlphaTo(0.25f).getColor();
 
-		Border messageBorder = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - 42), messageFillColor, true);
+		Border messageBorder = new Border(new Rectangle(bounds.getMinX() + 10, bounds.getMinY() + 40, bounds.getWidth() - 20, bounds.getHeight() - 50 - buttonHeight), messageFillColor, true);
 		messageBorder.setContent(messageBackground);
 		
 		CanvasPanel windowCanvas = new CanvasPanel();
-		windowCanvas.addChild(new Label(new Vector2f(_bounds.getMinX() + (_bounds.getWidth() - font.getWidth(_title)) / 2, _bounds.getMinY() + 10), font, _title, COLOR_TEXT_TITLE));
+		windowCanvas.addChild(new Label(new Vector2f(bounds.getMinX() + (bounds.getWidth() - font.getWidth(_title)) / 2, bounds.getMinY() + 10), font, _title, COLOR_TEXT_TITLE));
 		windowCanvas.addChild(messageBorder);
-		windowCanvas.addChild(getButtons(_bounds, _acceptButtonText, _cancelButtonText));
+		windowCanvas.addChild(getButtons(bounds, _acceptButtonText, _cancelButtonText));
 		
-		final Border windowBackground = new Border(_bounds, COLOR_BORDER_WINDOW, false);
+		Border windowBackground = new Border(bounds, COLOR_BORDER_WINDOW, false);
 		windowBackground.setContent(windowCanvas);
 		
-		Border windowBorder = new Border(_bounds, windowFillColor, true);
-		windowBorder.setContent(windowBackground);
-		
-		_ui = windowBorder;
+		return windowBackground;
 	}
 	
-	private StackPanel getButtons(RoundedRectangle dialogBounds, final String firstButtonText, final String secondButtonText) throws Exception {
+	private StackPanel getButtons(Rectangle dialogBounds, final String firstButtonText, final String secondButtonText) throws Exception {
 		int numberOfButtons = TextHelper.isNullOrWhiteSpace(secondButtonText) ? 1 : 2;
 		int buttonWidth = 106;
 		int myWidth = buttonWidth * numberOfButtons;
@@ -199,9 +192,9 @@ public class MessageBox {
 	private void closeWindow() {
 		try {
 			for (MessageBoxClosedEvent l : _closedListeners) {
-				l.closed(_ui, _result);
+				l.closed(this, _result);
 			}		
-			_ui.setParent(null);
+			this.setParent(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Error while attempting to close the dialog window.");

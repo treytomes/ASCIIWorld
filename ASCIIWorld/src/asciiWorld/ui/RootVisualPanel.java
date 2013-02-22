@@ -29,11 +29,11 @@ public class RootVisualPanel extends CanvasPanel {
 	
 	public MessageBox loadMessageBox(String path) throws Exception {
 		try {
-			final MessageBox mb = MessageBox.load(this, path);
+			MessageBox mb = MessageBox.load(this, path);
 			mb.addClosedListener(new MessageBoxClosedEvent() {
 				@Override
-				public void closed(FrameworkElement sender, Boolean dialogResult) {
-					if (mb.isModal()) {
+				public void closed(MessageBox sender, Boolean dialogResult) {
+					if (sender.isModal()) {
 						try {
 							sender.getRoot().modalWindowIsClosing();
 							sender.getParent().setParent(null);
@@ -46,25 +46,26 @@ public class RootVisualPanel extends CanvasPanel {
 			});
 			
 			if (mb.isModal()) {
-				makeModal(mb.getUI());
+				makeModal(mb);
 				modalWindowIsOpening();
 			} else {
-				addChild(mb.getUI());
+				addChild(mb);
 			}
 			return mb;
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Unable to show the message box.");
 			return null;
 		}
 	}
 	
-	public MessageBox showMessageBox(final Boolean modal, String message, String title) {
+	public MessageBox showMessageBox(Boolean modal, String message, String title) {
 		try {
 			MessageBox mb = MessageBox.create(this, modal, message, title);
 			mb.addClosedListener(new MessageBoxClosedEvent() {
 				@Override
-				public void closed(FrameworkElement sender, Boolean dialogResult) {
-					if (modal) {
+				public void closed(MessageBox sender, Boolean dialogResult) {
+					if (sender.isModal()) {
 						try {
 							sender.getRoot().modalWindowIsClosing();
 							sender.getParent().setParent(null);
@@ -77,13 +78,14 @@ public class RootVisualPanel extends CanvasPanel {
 			});
 			
 			if (mb.isModal()) {
-				makeModal(mb.getUI());
+				makeModal(mb);
 				modalWindowIsOpening();
 			} else {
-				addChild(mb.getUI());
+				addChild(mb);
 			}
 			return mb;
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Unable to show the message box.");
 			return null;
 		}
