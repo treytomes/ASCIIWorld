@@ -125,6 +125,12 @@ public class Label extends FrameworkElement {
 			resetTextBounds();
 		}
 		
+		float contentWidth = getBounds().getWidth() - getMargin().getLeftMargin() - getMargin().getRightMargin();
+		
+		if (getText().length() > 20) {
+			int a = 1;
+		}
+		
 		Vector2f textPosition = getTextPosition();
 		
 		String remainingText = getText();
@@ -152,7 +158,7 @@ public class Label extends FrameworkElement {
 				if (substring.endsWith("\n")) { // System.lineSeparator();
 					break;
 				}
-				if (_font.getWidth(substring) < getBounds().getWidth()) {
+				if (_font.getWidth(substring) < contentWidth) {
 					lengthToChop++;
 				} else {
 					break;
@@ -194,7 +200,7 @@ public class Label extends FrameworkElement {
 			textPosition.y += _font.getHeight(thisLine);
 			
 			// Ensure that we don't draw outside the lines:
-			if ((textPosition.y + _font.getHeight(remainingText)) >= getBounds().getHeight()) {
+			if ((textPosition.y + _font.getHeight(remainingText)) >= getBounds().getMaxY()) {
 				break;
 			}
 		}

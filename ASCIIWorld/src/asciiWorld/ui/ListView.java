@@ -57,10 +57,10 @@ public class ListView extends StackPanel {
 	
 	@Override
 	protected void setVerticalOrientationBounds() {
-		float myWidth = getBounds().getWidth();
+		float myWidth = getBounds().getWidth() - 2;
 		
-		float x = getBounds().getX();
-		float y = getBounds().getY();
+		float x = getBounds().getX() + 1;
+		float y = getBounds().getY() + 1;
 		for (FrameworkElement child : getChildren()) {
 			child.getBounds().setX(x + child.getMargin().getLeftMargin());
 			child.getBounds().setY(y + child.getMargin().getTopMargin());

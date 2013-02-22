@@ -10,17 +10,20 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.CreateColor;
+import asciiWorld.CreateRectangle;
 import asciiWorld.Direction;
 import asciiWorld.FontFactory;
 import asciiWorld.ui.Border;
 import asciiWorld.ui.Button;
 import asciiWorld.ui.CanvasPanel;
+import asciiWorld.ui.FrameworkElement;
 import asciiWorld.ui.Label;
 import asciiWorld.ui.ListView;
 import asciiWorld.ui.ListViewItemSelectedEvent;
 import asciiWorld.ui.MethodBinding;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.StackPanel;
+import asciiWorld.ui.WindowPanel;
 
 public class PlayerControlComponent extends KeyboardAwareComponent {
 	
@@ -32,7 +35,7 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 	private static final int KEY_INVENTORY = Input.KEY_ESCAPE;
 	
 	private RootVisualPanel _ui;
-	private Border _inventoryUI;
+	private WindowPanel _inventoryUI;
 	private Direction _movingDirection;
 
 	public PlayerControlComponent(Entity owner, RootVisualPanel ui) {
@@ -93,7 +96,7 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 	}
 	
 	private Boolean isInventoryUIOpen() {
-		return _inventoryUI != null;
+		return (_inventoryUI != null) && !_inventoryUI.isClosed();
 	}
 	
 	private void openInventoryInterface() {
@@ -111,19 +114,23 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 		_ui.addModalChild(_inventoryUI);
 	}
 	
-	private static final Color COLOR_BORDER_WINDOW = new Color(0.5f, 0.5f, 1.0f);
-	private static final Color COLOR_CONTENT_BORDER = new Color(0.0f, 0.75f, 0.5f);
-	private static final Color COLOR_TEXT_TITLE = Color.white;
 	
-	private Border generateUI(InventoryContainer inventory) throws Exception {
-		Rectangle containerBounds = _ui.getBounds();
-		float width = containerBounds.getWidth() / 3;
-		float height = containerBounds.getWidth() / 3;
-		RoundedRectangle _bounds = new RoundedRectangle((containerBounds.getWidth() - width) / 2, (containerBounds.getHeight() - height) / 2, width, height, 8);
-		UnicodeFont font = FontFactory.get().getDefaultFont();
-		Color windowFillColor = CreateColor.from(COLOR_BORDER_WINDOW).changeAlphaTo(0.25f).getColor();
-		int buttonHeight = 42;
+	private WindowPanel generateUI(InventoryContainer inventory) throws Exception {
+		Rectangle bounds = CreateRectangle
+				.from(_ui.getBounds())
+				.scale(2.0f / 3.0f)
+				.centerOn(_ui.getBounds())
+				.getRectangle();
 		
+		ListView itemsList = createItemList(inventory);
+		
+		WindowPanel window = new WindowPanel(bounds, "Inventory");
+		window.setWindowContent(itemsList);
+		
+		return window;
+	}
+	
+	private ListView createItemList(InventoryContainer inventory) {
 		ListView itemsList = new ListView();
 		itemsList.setItemsSource(inventory);
 		itemsList.addItemSelectedListener(new ListViewItemSelectedEvent() {
@@ -132,58 +139,6 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 				_ui.showMessageBox(true, String.format("Selected an item: %s", selectedItem.toString()), "You selected an item!");
 			}
 		});
-		
-		Border contentBackground = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - buttonHeight), COLOR_CONTENT_BORDER, false);
-		contentBackground.setContent(itemsList);
-		
-		Color contentFillColor = CreateColor.from(COLOR_CONTENT_BORDER).changeAlphaTo(0.25f).getColor();
-
-		Border contentBorder = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - buttonHeight), contentFillColor, true);
-		contentBorder.setContent(contentBackground);
-		
-		CanvasPanel windowCanvas = new CanvasPanel();
-		String titleText = "Inventory";
-		windowCanvas.addChild(new Label(new Vector2f(_bounds.getMinX() + (_bounds.getWidth() - font.getWidth(titleText)) / 2, _bounds.getMinY() + 10), font, titleText, COLOR_TEXT_TITLE));
-		windowCanvas.addChild(contentBorder);
-		windowCanvas.addChild(getButtons(_bounds));
-		
-		Border windowBackground = new Border(_bounds, COLOR_BORDER_WINDOW, false);
-		windowBackground.setContent(windowCanvas);
-		
-		Border windowBorder = new Border(_bounds, windowFillColor, true);
-		windowBorder.setContent(windowBackground);
-		
-		return windowBorder;
-	}
-	
-	private StackPanel getButtons(RoundedRectangle dialogBounds) throws Exception {
-		int numberOfButtons = 1;
-		int margin = 5;
-		int buttonWidth = 106;
-		int buttonHeight = 42;
-		int myWidth = buttonWidth * numberOfButtons;
-		
-		StackPanel buttonPanel = new StackPanel(
-				new Rectangle(
-						dialogBounds.getMinX() + (dialogBounds.getWidth() - myWidth) / 2,
-						dialogBounds.getMaxY() - buttonHeight - margin,
-						myWidth,
-						buttonHeight));
-		
-		buttonPanel.addChild(Button.createActionButton("Close", new MethodBinding(this, "closeInventoryUI")));
-
-		return buttonPanel;
-	}
-	
-	public void closeInventoryUI() {
-		try {
-			_inventoryUI.getParent().setParent(null); // close the  modal panel
-			_inventoryUI.setParent(null); // close the inventory window
-			_inventoryUI = null;
-			_ui.modalWindowIsClosing();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Error while attempting to close the inventory interface window.");
-		}
+		return itemsList;
 	}
 }

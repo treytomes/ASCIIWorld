@@ -7,21 +7,14 @@ import java.util.List;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.geom.Vector2f;
 
-import asciiWorld.CreateColor;
-import asciiWorld.FontFactory;
+import asciiWorld.CreateRectangle;
 import asciiWorld.TextFactory;
-import asciiWorld.TextHelper;
 
-public class MessageBox extends Border {
+public class MessageBox extends WindowPanel {
 
-	private static final Color COLOR_BORDER_WINDOW = new Color(0.5f, 0.5f, 1.0f);
-	private static final Color COLOR_BORDER_MESSAGE = new Color(0.0f, 0.75f, 0.5f);
-	private static final Color COLOR_TEXT_TITLE = Color.white;
 	private static final Color COLOR_TEXT_MESSAGE = Color.yellow;
 	
 	private static final String DEFAULT_TITLE = "Message Box";
@@ -32,32 +25,37 @@ public class MessageBox extends Border {
 
 	private Boolean _isModal;
 	private String _message;
-	private String _title;
-	private String _acceptButtonText;
-	private String _cancelButtonText;
+	//private String _acceptButtonText;
+	//private String _cancelButtonText;
 	
 	private Boolean _result;
 	
 	private MessageBox(RootVisualPanel rootUI, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
-		super(createBounds(rootUI), CreateColor.from(COLOR_BORDER_WINDOW).changeAlphaTo(0.25f).getColor(), true);
+		super(createBounds(rootUI), title);
 		
 		_closedListeners = new ArrayList<MessageBoxClosedEvent>();
 		
 		_isModal = isModal;
-		_title = title;
-		_acceptButtonText = acceptButtonText;
-		_cancelButtonText = cancelButtonText;
+		//_acceptButtonText = acceptButtonText;
+		//_cancelButtonText = cancelButtonText;
 		_message = message;
 		_result = false;
 		
-		setContent(generateContent());
+		Label messageLabel = new Label(new Vector2f(0, 0), _message, COLOR_TEXT_MESSAGE);
+		messageLabel.getMargin().setValue(5);
+		messageLabel.setHorizontalContentAlignment(HorizontalAlignment.Left);
+		messageLabel.setVerticalContentAlignment(VerticalAlignment.Top);
+		
+		setWindowContent(messageLabel);
 	}
 	
 	private static RoundedRectangle createBounds(RootVisualPanel rootUI) {
-		Rectangle containerBounds = rootUI.getBounds();
-		float width = containerBounds.getWidth() / 3;
-		float height = containerBounds.getWidth() / 3;
-		return new RoundedRectangle((containerBounds.getWidth() - width) / 2, (containerBounds.getHeight() - height) / 2, width, height, 8);
+		return CreateRectangle
+				.from(rootUI.getBounds())
+				.scale(1.0f / 3.0f, 2.0f / 3.0f)
+				.centerOn(rootUI.getBounds())
+				.setCornerRadius(8)
+				.getRectangle();
 	}
 	
 	public Boolean isModal() {
@@ -126,36 +124,7 @@ public class MessageBox extends Border {
 		}
 	}
 	
-	private Border generateContent() throws Exception {
-		Rectangle bounds = getBounds();
-		UnicodeFont font = FontFactory.get().getDefaultFont();
-		int buttonHeight = 42;
-		
-		Label messageLabel = new Label(new Vector2f(0, 0), font, _message, COLOR_TEXT_MESSAGE);
-		messageLabel.getMargin().setValue(5);
-		messageLabel.setHorizontalContentAlignment(HorizontalAlignment.Left);
-		messageLabel.setVerticalContentAlignment(VerticalAlignment.Top);
-		
-		Border messageBackground = new Border(new Rectangle(bounds.getMinX() + 10, bounds.getMinY() + 40, bounds.getWidth() - 20, bounds.getHeight() - 50 - buttonHeight), COLOR_BORDER_MESSAGE, false);
-		messageBackground.setContent(messageLabel);
-		
-		Color messageFillColor = CreateColor.from(COLOR_BORDER_MESSAGE).changeAlphaTo(0.25f).getColor();
-
-		Border messageBorder = new Border(new Rectangle(bounds.getMinX() + 10, bounds.getMinY() + 40, bounds.getWidth() - 20, bounds.getHeight() - 50 - buttonHeight), messageFillColor, true);
-		messageBorder.setContent(messageBackground);
-		
-		CanvasPanel windowCanvas = new CanvasPanel();
-		windowCanvas.addChild(new Label(new Vector2f(bounds.getMinX() + (bounds.getWidth() - font.getWidth(_title)) / 2, bounds.getMinY() + 10), font, _title, COLOR_TEXT_TITLE));
-		windowCanvas.addChild(messageBorder);
-		windowCanvas.addChild(getButtons(bounds, _acceptButtonText, _cancelButtonText));
-		
-		Border windowBackground = new Border(bounds, COLOR_BORDER_WINDOW, false);
-		windowBackground.setContent(windowCanvas);
-		
-		return windowBackground;
-	}
-	
-	private StackPanel getButtons(Rectangle dialogBounds, final String firstButtonText, final String secondButtonText) throws Exception {
+	/*private StackPanel getButtons(Rectangle dialogBounds, final String firstButtonText, final String secondButtonText) throws Exception {
 		int numberOfButtons = TextHelper.isNullOrWhiteSpace(secondButtonText) ? 1 : 2;
 		int buttonWidth = 106;
 		int myWidth = buttonWidth * numberOfButtons;
@@ -168,7 +137,7 @@ public class MessageBox extends Border {
 			@Override
 			public void click(Button button) {
 				_result = true;
-				closeWindow();
+				closeMessageWindow();
 			}
 		});
 		buttonPanel.addChild(acceptButton);
@@ -180,7 +149,7 @@ public class MessageBox extends Border {
 				@Override
 				public void click(Button button) {
 					_result = false;
-					closeWindow();
+					closeMessageWindow();
 				}
 			});
 			buttonPanel.addChild(cancelButton);
@@ -189,7 +158,7 @@ public class MessageBox extends Border {
 		return buttonPanel;
 	}
 	
-	private void closeWindow() {
+	private void closeMessageWindow() {
 		try {
 			for (MessageBoxClosedEvent l : _closedListeners) {
 				l.closed(this, _result);
@@ -199,5 +168,5 @@ public class MessageBox extends Border {
 			e.printStackTrace();
 			System.err.println("Error while attempting to close the dialog window.");
 		}
-	}
+	}*/
 }
