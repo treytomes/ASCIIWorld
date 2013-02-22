@@ -13,6 +13,8 @@ import org.newdawn.slick.geom.Vector2f;
 
 public abstract class FrameworkElement {
 
+	private static final int DEFAULT_MARGIN = 0;
+	
 	private List<MousePositionEvent> _mouseOverListeners;
 	private List<MousePositionEvent> _mouseOutListeners;
 	private List<MouseButtonEvent> _mouseDownListeners;
@@ -38,7 +40,7 @@ public abstract class FrameworkElement {
 		_mouseButtonDown.put(MouseButton.Middle, false);
 		_mouseButtonDown.put(MouseButton.Right, false);
 		
-		_margin = new Margin(0);
+		_margin = new Margin(DEFAULT_MARGIN);
 		setInputHandled(false);
 	}
 	

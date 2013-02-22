@@ -1,9 +1,10 @@
 package asciiWorld.entities;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class InventoryContainer {
+public class InventoryContainer implements Iterable<Entity> {
 	
 	private Entity _owner;
 	private List<Entity> _items;
@@ -53,5 +54,9 @@ public class InventoryContainer {
 			_items.add(item);
 			item.setContainer(this);
 		}
+	}
+	@Override
+	public Iterator<Entity> iterator() {
+		return _items.iterator();
 	}
 }

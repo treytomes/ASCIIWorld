@@ -12,6 +12,8 @@ import asciiWorld.tiles.StaticText;
 
 public class Label extends FrameworkElement {
 
+	private static final int DEFAULT_MARGIN = 5;
+	
 	private static UnicodeFont _defaultFont = null;
 	
 	private Rectangle _bounds;
@@ -39,6 +41,7 @@ public class Label extends FrameworkElement {
 		setHorizontalContentAlignment(HorizontalAlignment.Center);
 		setVerticalContentAlignment(VerticalAlignment.Center);
 		setTextBinding(textBinding);
+		getMargin().setValue(DEFAULT_MARGIN);
 	}
 	
 	public Label(Vector2f position, UnicodeFont font, String text, Color color) {
@@ -216,30 +219,30 @@ public class Label extends FrameworkElement {
 	}
 	
 	private Vector2f getTextPosition() {
-		float x = 0;
-		float y = 0;
+		float x = getBounds().getMinX();
+		float y = getBounds().getMinY();
 
 		switch (getHorizontalContentAlignment()) {
 		case Left:
-			x = getBounds().getMinX();
+			x = x + getMargin().getLeftMargin();
 			break;
 		case Center:
-			x = getBounds().getMinX() + (getBounds().getWidth() - _font.getWidth(getText())) / 2.0f;
+			x = x + (getBounds().getWidth() - _font.getWidth(getText())) / 2.0f;
 			break;
 		case Right:
-			x = getBounds().getMinX() + getBounds().getWidth() - _font.getWidth(getText());
+			x = x + getBounds().getWidth() - getMargin().getRightMargin() - _font.getWidth(getText());
 			break;
 		}
 		
 		switch (getVerticalContentAlignment()) {
 		case Top:
-			y = getBounds().getMinY();
+			y = y + getMargin().getTopMargin();
 			break;
 		case Center:
-			y = getBounds().getMinY() + (getBounds().getHeight() - _font.getHeight(getText())) / 2.0f;
+			y = y + (getBounds().getHeight() - _font.getHeight(getText())) / 2.0f;
 			break;
 		case Bottom:
-			y = getBounds().getMinY() + getBounds().getHeight() - _font.getHeight(getText());
+			y = y + getBounds().getHeight() - getMargin().getBottomMargin() - _font.getHeight(getText());
 			break;
 		}
 		

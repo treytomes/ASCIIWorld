@@ -13,6 +13,7 @@ import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.CreateColor;
 import asciiWorld.FontFactory;
 import asciiWorld.JavascriptContext;
 import asciiWorld.TextHelper;
@@ -21,7 +22,6 @@ import asciiWorld.XmlHelper;
 public class Button extends ContentControl {
 	
 	private static final Color COLOR_LABEL = Color.white;
-	private static final Color COLOR_FILL = new Color(0.25f, 0.25f, 0.25f, 0.25f);
 	private static final Color COLOR_BORDER = Color.gray;
 	private static final float CORNER_RADIUS = 8;
 
@@ -112,15 +112,13 @@ public class Button extends ContentControl {
 		
 		if (bounds.getWidth() == 0) {
 			bounds.setWidth(CORNER_RADIUS * 4);
-			//bounds.grow(1, 1);
 		}
 		if (bounds.getHeight() == 0) {
 			bounds.setHeight(CORNER_RADIUS * 4);
 		}
-		//bounds.setWidth((bounds.getWidth() == 0) ? 1 : bounds.getWidth());
-		//bounds.setHeight((bounds.getHeight() == 0) ? 1 : bounds.getWidth());
 		
-		_fill = new Border(new RoundedRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), CORNER_RADIUS), new Color(COLOR_FILL), true) {
+		Color fillColor = CreateColor.from(COLOR_BORDER).changeAlphaTo(0.25f).getColor();
+		_fill = new Border(new RoundedRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), CORNER_RADIUS), fillColor, true) {
 			@Override
 			public void update(GameContainer container, int delta) {
 				//super.update(container);
@@ -131,7 +129,6 @@ public class Button extends ContentControl {
 			@Override
 			public void update(GameContainer container, int delta) {
 				//super.update(container);
-				//setInputHandled(false);
 			}
 		};
 		
@@ -139,7 +136,6 @@ public class Button extends ContentControl {
 			@Override
 			public void update(GameContainer container, int delta) {
 				//super.update(container);
-				//setInputHandled(false);
 			}
 		};
 		
@@ -199,12 +195,29 @@ public class Button extends ContentControl {
 		_buttonClickedListeners.remove(listener);
 	}
 	
-	public Color getTextColor() {
+	public Color getForegroundColor() {
 		return _label.getColor();
 	}
 	
-	public void setTextColor(Color value) {
+	public void setForegroundColor(Color value) {
 		_label.setColor(value);
+	}
+	
+	public Color getBackgroundColor() {
+		return _border.getColor();
+	}
+	
+	public void setBackgroundColor(Color value) {
+		_border.setColor(value);
+		_fill.setColor(CreateColor.from(value).changeAlphaTo(0.25f).getColor());
+	}
+	
+	@Override
+	public void setHorizontalContentAlignment(HorizontalAlignment value) {
+		super.setHorizontalContentAlignment(value);
+		if (_label != null) {
+			_label.setHorizontalContentAlignment(value);
+		}
 	}
 	
 	public String getText() {

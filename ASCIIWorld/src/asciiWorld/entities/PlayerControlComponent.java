@@ -14,11 +14,11 @@ import asciiWorld.Direction;
 import asciiWorld.FontFactory;
 import asciiWorld.ui.Border;
 import asciiWorld.ui.Button;
-import asciiWorld.ui.ButtonClickedEvent;
 import asciiWorld.ui.CanvasPanel;
-import asciiWorld.ui.FrameworkElement;
 import asciiWorld.ui.Label;
-import asciiWorld.ui.Orientation;
+import asciiWorld.ui.ListView;
+import asciiWorld.ui.ListViewItemSelectedEvent;
+import asciiWorld.ui.MethodBinding;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.StackPanel;
 
@@ -111,48 +111,9 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 		_ui.addModalChild(_inventoryUI);
 	}
 	
-	private static final Color COLOR_MODAL_BACKGROUND = new Color(0, 0, 0, 0.5f);
 	private static final Color COLOR_BORDER_WINDOW = new Color(0.5f, 0.5f, 1.0f);
 	private static final Color COLOR_CONTENT_BORDER = new Color(0.0f, 0.75f, 0.5f);
 	private static final Color COLOR_TEXT_TITLE = Color.white;
-	private static final Color COLOR_ROW_TEXT = Color.yellow;
-
-	/*private CanvasPanel makeUIModal(FrameworkElement ui) throws Exception {
-		Rectangle containerBounds = _ui.getRoot().getBounds();
-		CanvasPanel panel = new CanvasPanel(new Rectangle(0, 0, containerBounds.getWidth(), containerBounds.getHeight()));
-		panel.addChild(new Border(new Rectangle(0, 0, containerBounds.getWidth(), containerBounds.getHeight()), COLOR_MODAL_BACKGROUND, true));
-		panel.addChild(ui);
-		_ui.modalWindowIsOpening();
-		return panel;
-	}*/
-	
-	/**
-	 * ListView's are always vertical, and don't change the height of their child elements.
-	 * 
-	 * @author ttomes
-	 *
-	 */
-	private class ListView extends StackPanel {
-
-		public ListView() {
-			super(Orientation.Vertical);
-		}
-		
-		@Override
-		protected void setVerticalOrientationBounds() {
-			float myWidth = getBounds().getWidth();
-			
-			float x = getBounds().getX();
-			float y = getBounds().getY();
-			for (FrameworkElement child : getChildren()) {
-				child.getBounds().setX(x + child.getMargin().getLeftMargin());
-				child.getBounds().setY(y + child.getMargin().getTopMargin());
-				child.getBounds().setWidth(myWidth - child.getMargin().getLeftMargin() - child.getMargin().getRightMargin());
-				
-				y += child.getBounds().getHeight();
-			}
-		}
-	}
 	
 	private Border generateUI(InventoryContainer inventory) throws Exception {
 		Rectangle containerBounds = _ui.getBounds();
@@ -163,13 +124,14 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 		Color windowFillColor = CreateColor.from(COLOR_BORDER_WINDOW).changeAlphaTo(0.25f).getColor();
 		int buttonHeight = 42;
 		
-		StackPanel itemsList = new ListView();
-		for (int index = 0; index < inventory.getItemCount(); index++) {
-			Button itemButton = new Button(inventory.getItemAt(index), new Rectangle(0, 0, 0, 30));
-			itemButton.setCornerRadius(0);
-			itemButton.setTextColor(COLOR_ROW_TEXT);
-			itemsList.addChild(itemButton);
-		}
+		ListView itemsList = new ListView();
+		itemsList.setItemsSource(inventory);
+		itemsList.addItemSelectedListener(new ListViewItemSelectedEvent() {
+			@Override
+			public void itemSelected(ListView listView, Object selectedItem) {
+				_ui.showMessageBox(true, String.format("Selected an item: %s", selectedItem.toString()), "You selected an item!");
+			}
+		});
 		
 		Border contentBackground = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - buttonHeight), COLOR_CONTENT_BORDER, false);
 		contentBackground.setContent(itemsList);
@@ -201,29 +163,27 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 		int buttonHeight = 42;
 		int myWidth = buttonWidth * numberOfButtons;
 		
-		StackPanel buttonPanel = new StackPanel(new Rectangle(dialogBounds.getMinX() + (dialogBounds.getWidth() - myWidth) / 2, dialogBounds.getMaxY() - buttonHeight - margin, myWidth, buttonHeight));
+		StackPanel buttonPanel = new StackPanel(
+				new Rectangle(
+						dialogBounds.getMinX() + (dialogBounds.getWidth() - myWidth) / 2,
+						dialogBounds.getMaxY() - buttonHeight - margin,
+						myWidth,
+						buttonHeight));
 		
-		Button closeButton = new Button("Close");
-		closeButton.getMargin().setValue(5);
-		closeButton.addClickListener(new ButtonClickedEvent() {
-			@Override
-			public void click(Button button) {
-				try {
-					// Get the modal panel:
-					FrameworkElement modalPanel = _inventoryUI.getParent();
-					modalPanel.setParent(null);
-					
-					_inventoryUI.setParent(null);
-					_inventoryUI = null;
-					_ui.modalWindowIsClosing();
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.err.println("Error while attempting to close the inventory interface window.");
-				}
-			}
-		});
-		buttonPanel.addChild(closeButton);
+		buttonPanel.addChild(Button.createActionButton("Close", new MethodBinding(this, "closeInventoryUI")));
 
 		return buttonPanel;
+	}
+	
+	public void closeInventoryUI() {
+		try {
+			_inventoryUI.getParent().setParent(null); // close the  modal panel
+			_inventoryUI.setParent(null); // close the inventory window
+			_inventoryUI = null;
+			_ui.modalWindowIsClosing();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Error while attempting to close the inventory interface window.");
+		}
 	}
 }

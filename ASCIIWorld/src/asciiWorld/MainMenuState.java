@@ -38,6 +38,7 @@ public class MainMenuState extends BasicGameState {
 		try {
 			_ui = generateUI(container, game);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Unable to generate the user interface.");
 		}
 	}
