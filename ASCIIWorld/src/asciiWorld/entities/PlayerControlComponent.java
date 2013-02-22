@@ -21,44 +21,73 @@ import asciiWorld.ui.Orientation;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.StackPanel;
 
-public class PlayerControlComponent extends EntityComponent {
+public class PlayerControlComponent extends KeyboardAwareComponent {
 	
 	private static final int KEY_MOVE_NORTH = Input.KEY_W;
 	private static final int KEY_MOVE_SOUTH = Input.KEY_S;
 	private static final int KEY_MOVE_WEST = Input.KEY_A;
 	private static final int KEY_MOVE_EAST = Input.KEY_D;
 	private static final int KEY_TOUCH = Input.KEY_SPACE;
+	private static final int KEY_INVENTORY = Input.KEY_ESCAPE;
 	
 	private RootVisualPanel _ui;
 	private FrameworkElement _inventoryUI;
+	private Direction _movingDirection;
 
 	public PlayerControlComponent(Entity owner, RootVisualPanel ui) {
 		super(owner);
 		_ui = ui;
 		_inventoryUI = null;
+		_movingDirection = null;
 	}
 	
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
-		Input input = container.getInput();
+		super.update(container, game, deltaTime);
 		
-		if (input.isKeyDown(KEY_MOVE_NORTH)) {
-			getOwner().move(Direction.North);
-		} else if (input.isKeyDown(KEY_MOVE_SOUTH)) {
-			getOwner().move(Direction.South);
-		} else if (input.isKeyDown(KEY_MOVE_WEST)) {
-			getOwner().move(Direction.West);
-		} else if (input.isKeyDown(KEY_MOVE_EAST)) {
-			getOwner().move(Direction.East);
+		if (_movingDirection != null) {
+			getOwner().move(_movingDirection);
 		}
-		
-		if (input.isKeyPressed(KEY_TOUCH)) {
+	}
+	
+	@Override
+	public boolean isAcceptingInput() {
+		return !isInventoryUIOpen();
+	}
+	
+	@Override
+	public void keyPressed(int key, char c) {
+		switch (key) {
+		case KEY_MOVE_NORTH:
+			_movingDirection = Direction.North;
+			break;
+		case KEY_MOVE_SOUTH:
+			_movingDirection = Direction.South;
+			break;
+		case KEY_MOVE_EAST:
+			_movingDirection = Direction.East;
+			break;
+		case KEY_MOVE_WEST:
+			_movingDirection = Direction.West;
+			break;
+		case KEY_TOUCH:
 			getOwner().touch();
+			break;
+		case KEY_INVENTORY:
+			openInventoryInterface();
+			break;
 		}
-		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-			if (!isInventoryUIOpen()) {
-				openInventoryInterface();
-			}
+	}
+	
+	@Override
+	public void keyReleased(int key, char c) {
+		switch (key) {
+		case KEY_MOVE_NORTH:
+		case KEY_MOVE_SOUTH:
+		case KEY_MOVE_EAST:
+		case KEY_MOVE_WEST:
+			_movingDirection = null;
+			break;
 		}
 	}
 	
@@ -67,14 +96,8 @@ public class PlayerControlComponent extends EntityComponent {
 	}
 	
 	private void openInventoryInterface() {
-		InventoryContainer inventory = getOwner().getInventory();
-		/*StringBuilder sb = new StringBuilder();
-		for (int index = 0; index < inventory.getItemCount(); index++) {
-			sb.append(inventory.getItemAt(index).getName()).append("\n");
-		}*/
-		
 		try {
-			//createInventoryWindow(sb.toString());
+			InventoryContainer inventory = getOwner().getInventory();
 			createInventoryWindow(inventory);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -139,11 +162,6 @@ public class PlayerControlComponent extends EntityComponent {
 		Color windowFillColor = new Color(COLOR_BORDER_WINDOW);
 		windowFillColor.a = 0.25f;
 		
-		//Label messageLabel = new Label(new Vector2f(0, 0), font, text, COLOR_TEXT_MESSAGE);
-		//messageLabel.getMargin().setValue(5);
-		//messageLabel.setHorizontalContentAlignment(HorizontalAlignment.Left);
-		//messageLabel.setVerticalContentAlignment(VerticalAlignment.Top);
-		
 		StackPanel itemsList = new ListView();
 		for (int index = 0; index < inventory.getItemCount(); index++) {
 			Button itemButton = new Button(inventory.getItemAt(index), new Rectangle(0, 0, 0, 30));
@@ -178,9 +196,12 @@ public class PlayerControlComponent extends EntityComponent {
 	
 	private StackPanel getButtons(RoundedRectangle dialogBounds) throws Exception {
 		int numberOfButtons = 1;
-		int myWidth = 106 * numberOfButtons;
+		int margin = 5;
+		int buttonWidth = 106;
+		int buttonHeight = 42;
+		int myWidth = buttonWidth * numberOfButtons;
 		
-		StackPanel buttonPanel = new StackPanel(new Rectangle(dialogBounds.getMinX() + (dialogBounds.getWidth() - myWidth) / 2, dialogBounds.getMaxY() - 42 - 5, myWidth, 42));
+		StackPanel buttonPanel = new StackPanel(new Rectangle(dialogBounds.getMinX() + (dialogBounds.getWidth() - myWidth) / 2, dialogBounds.getMaxY() - buttonHeight - margin, myWidth, buttonHeight));
 		
 		Button closeButton = new Button("Close");
 		closeButton.getMargin().setValue(5);
