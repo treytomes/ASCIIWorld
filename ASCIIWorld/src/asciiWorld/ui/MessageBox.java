@@ -18,7 +18,6 @@ import asciiWorld.TextHelper;
 
 public class MessageBox {
 
-	private static final Color COLOR_MODAL_BACKGROUND = new Color(0, 0, 0, 0.5f);
 	private static final Color COLOR_BORDER_WINDOW = new Color(0.5f, 0.5f, 1.0f);
 	private static final Color COLOR_BORDER_MESSAGE = new Color(0.0f, 0.75f, 0.5f);
 	private static final Color COLOR_TEXT_TITLE = Color.white;
@@ -42,7 +41,9 @@ public class MessageBox {
 	
 	private Boolean _result;
 	
-	private MessageBox(Rectangle containerBounds, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
+	private MessageBox(RootVisualPanel rootUI, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
+		Rectangle containerBounds = rootUI.getBounds();
+		
 		_closedListeners = new ArrayList<MessageBoxClosedEvent>();
 		
 		_isModal = isModal;
@@ -56,9 +57,10 @@ public class MessageBox {
 		_result = false;
 		
 		generateUI();
-		if (_isModal) {
-			makeUIModal(containerBounds);
-		}
+	}
+	
+	public Boolean isModal() {
+		return _isModal;
 	}
 	
 	public FrameworkElement getUI() {
@@ -81,33 +83,33 @@ public class MessageBox {
 		return _result;
 	}
 	
-	public static MessageBox create(Rectangle containerBounds, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
-		return new MessageBox(containerBounds, isModal, message, title, acceptButtonText, cancelButtonText);
+	public static MessageBox create(RootVisualPanel rootUI, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
+		return new MessageBox(rootUI, isModal, message, title, acceptButtonText, cancelButtonText);
 	}
 	
-	public static MessageBox create(Rectangle containerBounds, Boolean isModal, String message, String title, String acceptButtonText) throws Exception {
-		return create(containerBounds, isModal, message, title, acceptButtonText, DEFAULT_MESSAGE_CANCEL);
+	public static MessageBox create(RootVisualPanel rootUI, Boolean isModal, String message, String title, String acceptButtonText) throws Exception {
+		return create(rootUI, isModal, message, title, acceptButtonText, DEFAULT_MESSAGE_CANCEL);
 	}
 	
-	public static MessageBox create(Rectangle containerBounds, Boolean isModal, String message, String title) throws Exception {
-		return create(containerBounds, isModal, message, title, DEFAULT_MESSAGE_ACCEPT);
+	public static MessageBox create(RootVisualPanel rootUI, Boolean isModal, String message, String title) throws Exception {
+		return create(rootUI, isModal, message, title, DEFAULT_MESSAGE_ACCEPT);
 	}
 	
-	public static MessageBox create(Rectangle containerBounds, Boolean isModal, String message) throws Exception {
-		return create(containerBounds, isModal, message, DEFAULT_TITLE);
+	public static MessageBox create(RootVisualPanel rootUI, Boolean isModal, String message) throws Exception {
+		return create(rootUI, isModal, message, DEFAULT_TITLE);
 	}
 	
-	public static MessageBox load(Rectangle containerBounds, String path) throws Exception {
-		return fromXml(containerBounds, (Element)new SAXBuilder().build(new File(path)).getRootElement());
+	public static MessageBox load(RootVisualPanel rootUI, String path) throws Exception {
+		return fromXml(rootUI, (Element)new SAXBuilder().build(new File(path)).getRootElement());
 	}
 	
-	public static MessageBox fromXml(Rectangle containerBounds, Element elem) throws Exception {
+	public static MessageBox fromXml(RootVisualPanel rootUI, Element elem) throws Exception {
 		org.jdom2.Attribute isModalAttribute = elem.getAttribute("isModal");
 		
 		Boolean isModal = (isModalAttribute == null) ? false : elem.getAttribute("isModal").getBooleanValue();
 		String title = elem.getAttributeValue("title");
 		String message = parseMessage(elem.getChild("Message"));
-		return create(containerBounds, isModal, message, title);
+		return create(rootUI, isModal, message, title);
 	}
 	
 	private static String parseMessage(Element messageElement) throws Exception {
@@ -125,13 +127,6 @@ public class MessageBox {
 				throw new Exception("Invalid message source type.");
 			}
 		}
-	}
-	
-	private void makeUIModal(Rectangle containerBounds) throws Exception {
-		CanvasPanel panel = new CanvasPanel(new Rectangle(0, 0, containerBounds.getWidth(), containerBounds.getHeight()));
-		panel.addChild(new Border(new Rectangle(0, 0, containerBounds.getWidth(), containerBounds.getHeight()), COLOR_MODAL_BACKGROUND, true));
-		panel.addChild(_ui);
-		_ui = panel;
 	}
 	
 	private void generateUI() throws Exception {
@@ -169,7 +164,8 @@ public class MessageBox {
 	
 	private StackPanel getButtons(RoundedRectangle dialogBounds, final String firstButtonText, final String secondButtonText) throws Exception {
 		int numberOfButtons = TextHelper.isNullOrWhiteSpace(secondButtonText) ? 1 : 2;
-		int myWidth = 106 * numberOfButtons;
+		int buttonWidth = 106;
+		int myWidth = buttonWidth * numberOfButtons;
 		
 		StackPanel buttonPanel = new StackPanel(new Rectangle(dialogBounds.getMinX() + (dialogBounds.getWidth() - myWidth) / 2, dialogBounds.getMaxY() - 42 - 5, myWidth, 42));
 		
@@ -207,6 +203,7 @@ public class MessageBox {
 			}		
 			_ui.setParent(null);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Error while attempting to close the dialog window.");
 		}
 	}
