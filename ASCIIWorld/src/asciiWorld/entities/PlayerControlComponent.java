@@ -9,6 +9,7 @@ import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.CreateColor;
 import asciiWorld.Direction;
 import asciiWorld.FontFactory;
 import asciiWorld.ui.Border;
@@ -31,7 +32,7 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 	private static final int KEY_INVENTORY = Input.KEY_ESCAPE;
 	
 	private RootVisualPanel _ui;
-	private FrameworkElement _inventoryUI;
+	private Border _inventoryUI;
 	private Direction _movingDirection;
 
 	public PlayerControlComponent(Entity owner, RootVisualPanel ui) {
@@ -106,8 +107,8 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 	}
 	
 	private void createInventoryWindow(InventoryContainer inventory) throws Exception {
-		_inventoryUI = makeUIModal(generateUI(inventory));
-		_ui.addChild(_inventoryUI);
+		_inventoryUI = generateUI(inventory);
+		_ui.addModalChild(_inventoryUI);
 	}
 	
 	private static final Color COLOR_MODAL_BACKGROUND = new Color(0, 0, 0, 0.5f);
@@ -116,14 +117,14 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 	private static final Color COLOR_TEXT_TITLE = Color.white;
 	private static final Color COLOR_ROW_TEXT = Color.yellow;
 
-	private CanvasPanel makeUIModal(FrameworkElement ui) throws Exception {
+	/*private CanvasPanel makeUIModal(FrameworkElement ui) throws Exception {
 		Rectangle containerBounds = _ui.getRoot().getBounds();
 		CanvasPanel panel = new CanvasPanel(new Rectangle(0, 0, containerBounds.getWidth(), containerBounds.getHeight()));
 		panel.addChild(new Border(new Rectangle(0, 0, containerBounds.getWidth(), containerBounds.getHeight()), COLOR_MODAL_BACKGROUND, true));
 		panel.addChild(ui);
 		_ui.modalWindowIsOpening();
 		return panel;
-	}
+	}*/
 	
 	/**
 	 * ListView's are always vertical, and don't change the height of their child elements.
@@ -159,8 +160,8 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 		float height = containerBounds.getWidth() / 3;
 		RoundedRectangle _bounds = new RoundedRectangle((containerBounds.getWidth() - width) / 2, (containerBounds.getHeight() - height) / 2, width, height, 8);
 		UnicodeFont font = FontFactory.get().getDefaultFont();
-		Color windowFillColor = new Color(COLOR_BORDER_WINDOW);
-		windowFillColor.a = 0.25f;
+		Color windowFillColor = CreateColor.from(COLOR_BORDER_WINDOW).changeAlphaTo(0.25f).getColor();
+		int buttonHeight = 42;
 		
 		StackPanel itemsList = new ListView();
 		for (int index = 0; index < inventory.getItemCount(); index++) {
@@ -170,13 +171,12 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 			itemsList.addChild(itemButton);
 		}
 		
-		Border contentBackground = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - 42), COLOR_CONTENT_BORDER, false);
+		Border contentBackground = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - buttonHeight), COLOR_CONTENT_BORDER, false);
 		contentBackground.setContent(itemsList);
 		
-		Color contentFillColor = new Color(COLOR_CONTENT_BORDER);
-		contentFillColor.a = 0.25f;
+		Color contentFillColor = CreateColor.from(COLOR_CONTENT_BORDER).changeAlphaTo(0.25f).getColor();
 
-		Border contentBorder = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - 42), contentFillColor, true);
+		Border contentBorder = new Border(new Rectangle(_bounds.getMinX() + 10, _bounds.getMinY() + 40, _bounds.getWidth() - 20, _bounds.getHeight() - 50 - buttonHeight), contentFillColor, true);
 		contentBorder.setContent(contentBackground);
 		
 		CanvasPanel windowCanvas = new CanvasPanel();
@@ -209,10 +209,15 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 			@Override
 			public void click(Button button) {
 				try {
+					// Get the modal panel:
+					FrameworkElement modalPanel = _inventoryUI.getParent();
+					modalPanel.setParent(null);
+					
 					_inventoryUI.setParent(null);
 					_inventoryUI = null;
 					_ui.modalWindowIsClosing();
 				} catch (Exception e) {
+					e.printStackTrace();
 					System.err.println("Error while attempting to close the inventory interface window.");
 				}
 			}

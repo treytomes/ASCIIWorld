@@ -19,7 +19,7 @@ public class RootVisualPanel extends CanvasPanel {
 		return _isModalWindowOpen;
 	}
 	
-	public void modalWindowIsOpening() {
+	private void modalWindowIsOpening() {
 		_isModalWindowOpen = true;
 	}
 	
@@ -46,8 +46,7 @@ public class RootVisualPanel extends CanvasPanel {
 			});
 			
 			if (mb.isModal()) {
-				makeModal(mb);
-				modalWindowIsOpening();
+				addModalChild(mb);
 			} else {
 				addChild(mb);
 			}
@@ -78,8 +77,7 @@ public class RootVisualPanel extends CanvasPanel {
 			});
 			
 			if (mb.isModal()) {
-				makeModal(mb);
-				modalWindowIsOpening();
+				addModalChild(mb);
 			} else {
 				addChild(mb);
 			}
@@ -91,12 +89,13 @@ public class RootVisualPanel extends CanvasPanel {
 		}
 	}
 	
-	public FrameworkElement makeModal(FrameworkElement ui) throws Exception {
+	public FrameworkElement addModalChild(FrameworkElement ui) throws Exception {
 		Rectangle bounds = new Rectangle(0, 0, getBounds().getWidth(), getBounds().getHeight());
 		CanvasPanel panel = new CanvasPanel(bounds);
 		panel.addChild(new Border(bounds, COLOR_MODAL_BACKGROUND, true));
 		panel.addChild(ui);
 		addChild(panel);
+		modalWindowIsOpening();
 		return panel;
 	}
 }
