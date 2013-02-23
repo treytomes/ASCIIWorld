@@ -3,26 +3,16 @@ package asciiWorld.entities;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.RoundedRectangle;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.CreateColor;
 import asciiWorld.CreateRectangle;
 import asciiWorld.Direction;
-import asciiWorld.FontFactory;
-import asciiWorld.ui.Border;
-import asciiWorld.ui.Button;
-import asciiWorld.ui.CanvasPanel;
-import asciiWorld.ui.FrameworkElement;
+import asciiWorld.ui.GridViewPanel;
 import asciiWorld.ui.Label;
 import asciiWorld.ui.ListView;
 import asciiWorld.ui.ListViewItemSelectedEvent;
-import asciiWorld.ui.MethodBinding;
 import asciiWorld.ui.RootVisualPanel;
-import asciiWorld.ui.StackPanel;
 import asciiWorld.ui.WindowPanel;
 
 public class PlayerControlComponent extends KeyboardAwareComponent {
@@ -114,7 +104,6 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 		_ui.addModalChild(_inventoryUI);
 	}
 	
-	
 	private WindowPanel generateUI(InventoryContainer inventory) throws Exception {
 		Rectangle bounds = CreateRectangle
 				.from(_ui.getBounds())
@@ -123,10 +112,17 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 				.getRectangle();
 		
 		ListView itemsList = createItemList(inventory);
+		Label detailsLabel = new Label("Details", Color.red);
+		
+		GridViewPanel gridView = new GridViewPanel(1, 2);
+		gridView.addChild(itemsList, 0, 0);
+		gridView.addChild(detailsLabel, 0, 1);
 		
 		WindowPanel window = new WindowPanel(bounds, "Inventory");
-		window.setWindowContent(itemsList);
-		
+		window.setWindowContent(gridView);
+
+		gridView.resetBounds();
+
 		return window;
 	}
 	
@@ -136,6 +132,7 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 		itemsList.addItemSelectedListener(new ListViewItemSelectedEvent() {
 			@Override
 			public void itemSelected(ListView listView, Object selectedItem) {
+				// TODO: Change _ui to listView.getRoot()
 				_ui.showMessageBox(true, String.format("Selected an item: %s", selectedItem.toString()), "You selected an item!");
 			}
 		});

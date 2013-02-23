@@ -60,6 +60,10 @@ public class Label extends FrameworkElement {
 		this(position, getDefaultFont(), new StaticText(text), color);
 	}
 	
+	public Label(String text, Color color) throws SlickException {
+		this(new Vector2f(0, 0), getDefaultFont(), new StaticText(text), color);
+	}
+	
 	public HorizontalAlignment getHorizontalContentAlignment() {
 		return _horizontalContentAlignment;
 	}
@@ -126,10 +130,6 @@ public class Label extends FrameworkElement {
 		}
 		
 		float contentWidth = getBounds().getWidth() - getMargin().getLeftMargin() - getMargin().getRightMargin();
-		
-		if (getText().length() > 20) {
-			int a = 1;
-		}
 		
 		Vector2f textPosition = getTextPosition();
 		
