@@ -20,13 +20,11 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 	private static final int KEY_TOUCH = Input.KEY_SPACE;
 	private static final int KEY_INVENTORY = Input.KEY_ESCAPE;
 	
-	private RootVisualPanel _ui;
 	private WindowPanel _inventoryUI;
 	private Direction _movingDirection;
 
-	public PlayerControlComponent(Entity owner, RootVisualPanel ui) {
+	public PlayerControlComponent(Entity owner) {
 		super(owner);
-		_ui = ui;
 		_inventoryUI = null;
 		_movingDirection = null;
 	}
@@ -96,15 +94,17 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 	}
 	
 	private void createInventoryWindow(InventoryContainer inventory) throws Exception {
+		RootVisualPanel root = RootVisualPanel.get();
+		
 		Rectangle bounds = CreateRectangle
-				.from(_ui.getBounds())
+				.from(root.getBounds())
 				.scale(2.0f / 3.0f)
-				.centerOn(_ui.getBounds())
+				.centerOn(root.getBounds())
 				.getRectangle();
 		
 		_inventoryUI = new WindowPanel(bounds, "Inventory");
 		_inventoryUI.setWindowContent(new InventoryView(inventory));
 		
-		_ui.addModalChild(_inventoryUI);
+		root.addModalChild(_inventoryUI);
 	}
 }

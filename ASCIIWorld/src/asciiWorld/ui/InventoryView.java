@@ -4,8 +4,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.UnicodeFont;
 
 import asciiWorld.FontFactory;
-import asciiWorld.RandomFactory;
-import asciiWorld.entities.Entity;
 import asciiWorld.entities.InventoryContainer;
 
 public class InventoryView extends GridViewPanel {

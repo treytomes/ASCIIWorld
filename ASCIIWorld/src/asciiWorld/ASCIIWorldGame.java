@@ -10,6 +10,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.ui.RootVisualPanel;
+
 public class ASCIIWorldGame extends StateBasedGame {
 	
 	static final String PATH_SETTINGS = "resources/settings.xml";
@@ -97,6 +99,13 @@ public class ASCIIWorldGame extends StateBasedGame {
 		container.setShowFPS(getShowFPS());
 		container.setVSync(true);
 		container.setAlwaysRender(true);
+		
+		try {
+			RootVisualPanel.initialize(container);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Unable to initialize the RootVisualPanel.");
+		}
 		
 		addState(new MainMenuState(STATE_MAINMENU));
 		addState(new GameplayState(STATE_GAMEPLAY));

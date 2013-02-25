@@ -21,7 +21,6 @@ import asciiWorld.ui.StackPanel;
 public class ConsoleState extends BasicGameState implements KeyListener {
 		
 	private int _stateID;
-	private RootVisualPanel _ui;
 	
 	public ConsoleState(int stateID) {
 		_stateID = stateID;
@@ -30,24 +29,52 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
+	}
+	
+	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		super.enter(container, game);
+		
 		try {
-			_ui = generateUI(container, game);
+			generateUI(container, game);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Unable to generate the user interface.");
+		}
+	}
+	
+	@Override
+	public void leave(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		super.leave(container, game);
+		try {
+			RootVisualPanel.get().clear();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Unable to clear the RootVisualPanel.");
 		}
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		_ui.update(container, delta);
+		try {
+			RootVisualPanel.get().update(container, delta);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 		g.clear();
-		_ui.render(g);
+		try {
+			RootVisualPanel.get().render(g);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -55,7 +82,7 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 		return _stateID;
 	}
 
-	private RootVisualPanel generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
+	private void generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
 		int buttonWidth = 202;
 		int buttonHeight = 42;
 		int margin = 5;
@@ -67,11 +94,11 @@ public class ConsoleState extends BasicGameState implements KeyListener {
 		menuButtonPanel.addChild(Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU));
 		menuButtonPanel.addChild(Button.createActionButton("Exit :-(", new MethodBinding(container, "exit")));
 		
-		RootVisualPanel root = new RootVisualPanel(container);
+		RootVisualPanel root = RootVisualPanel.get();
+		
 		root.addChild(new Label(new Vector2f(10, 10), "Script Console", Color.red)); // create the title label
 		root.addChild(menuButtonPanel);
 
 		root.addChild(new ImmediateWindow(container, new Rectangle(margin, topMargin, container.getWidth() - rightMargin, container.getHeight() - bottomMargin)));
-		return root;
 	}
 }

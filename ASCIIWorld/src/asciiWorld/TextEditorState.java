@@ -22,8 +22,6 @@ public class TextEditorState extends BasicGameState {
 	private int _stateID;
 	private ScriptingWindow _scriptingWindow;
 	
-	private RootVisualPanel _ui;
-	
 	public TextEditorState(int stateID) {
 		_stateID = stateID;
 	}
@@ -37,8 +35,9 @@ public class TextEditorState extends BasicGameState {
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		try {
-			_ui = generateUI(container, game);
+			generateUI(container, game);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Unable to generate the user interface.");
 		}
 	}
@@ -47,19 +46,33 @@ public class TextEditorState extends BasicGameState {
 	public void leave(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		_scriptingWindow.close(container);
+		try {
+			RootVisualPanel.get().clear();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Unable to clear the RootVisualPanel.");
+		}
 	}
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 		g.clear();
-		_ui.render(g);
+		try {
+			RootVisualPanel.get().render(g);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		_ui.update(container, delta);
+		try {
+			RootVisualPanel.get().update(container, delta);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -67,7 +80,7 @@ public class TextEditorState extends BasicGameState {
 		return _stateID;
 	}
 
-	public RootVisualPanel generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
+	public void generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
 		_scriptingWindow = new ScriptingWindow(container, new Rectangle(90, 90, 660, 500 + 42 + 10));
 		
 		int numberOfMenuOptions = 2;
@@ -75,11 +88,10 @@ public class TextEditorState extends BasicGameState {
 		menuButtonPanel.addChild(Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU));
 		menuButtonPanel.addChild(Button.createActionButton("Exit :-(", new MethodBinding(container, "exit")));
 		
-		RootVisualPanel root = new RootVisualPanel(container);
+		RootVisualPanel root = RootVisualPanel.get();
 		root.addChild(new Label(new Vector2f(10, 10), "Text Editor", Color.red)); // create the title label
 		root.addChild(new Label(new Vector2f(10, 30), "Press F11 to execute the Javascript.", Color.red)); // create the title label
 		root.addChild(_scriptingWindow);
 		root.addChild(menuButtonPanel);
-		return root;
 	}
 }

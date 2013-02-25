@@ -8,11 +8,28 @@ public class RootVisualPanel extends CanvasPanel {
 
 	private static final Color COLOR_MODAL_BACKGROUND = new Color(0, 0, 0, 0.5f);
 
+	private static RootVisualPanel _instance;
+	
 	private Boolean _isModalWindowOpen;
 
-	public RootVisualPanel(GameContainer container) throws Exception {
+	private RootVisualPanel(GameContainer container) throws Exception {
 		super(new Rectangle(0, 0, container.getWidth(), container.getHeight()));
 		_isModalWindowOpen = false;
+	}
+	
+	public static void initialize(GameContainer container) throws Exception {
+		_instance = new RootVisualPanel(container);
+	}
+	
+	public static RootVisualPanel get() throws Exception {
+		if (_instance == null) {
+			throw new Exception("You must initialize the RootVisualPanel before you can use it.");
+		}
+		return _instance;
+	}
+	
+	public void clear() {
+		getChildren().clear();
 	}
 	
 	public Boolean isModalWindowOpen() {

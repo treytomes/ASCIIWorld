@@ -33,7 +33,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 	private int _stateID = -1;
 	
 	private UnicodeFont _font = null;
-	private RootVisualPanel _ui = null;
 	private TileSet _tiles = null;
 	private Chunk _chunk = null;
 	private Entity _player = null;
@@ -75,12 +74,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		_font = FontFactory.get().getDefaultFont();
 		
 		try {
-			_ui = generateUI(container, game);
-		} catch (Exception e) {
-			System.err.println("Unable to generate the user interface.");
-		}
-		
-		try {
 			_tiles = TileSet.load("resources/tileSets/OEM437.xml");
 		} catch (JDOMException | IOException e) {
 			System.err.println("Unable to load the tileset resources.");
@@ -92,6 +85,12 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		super.enter(container, game);
 		
 		try {
+			generateUI(container, game);
+		} catch (Exception e) {
+			System.err.println("Unable to generate the user interface.");
+		}
+		
+		try {
 			_chunk = ChunkFactory.generateOverworld();
 		} catch (Exception e) {
 			throw new SlickException("Unable to generate the chunk.");
@@ -99,7 +98,7 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		
 		try {
 			_player = new Entity();
-			_player.getComponents().add(new PlayerControlComponent(_player, _ui));
+			_player.getComponents().add(new PlayerControlComponent(_player));
 			_player.moveTo(_chunk.findRandomSpawnPoint(), Chunk.LAYER_OBJECT);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -116,10 +115,22 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		_camera = new Camera(this, _player, 4.0f);
 		
 		try {
-			_ui.loadMessageBox("resources/ui/welcomeMessageBox.xml");
+			RootVisualPanel.get().loadMessageBox("resources/ui/welcomeMessageBox.xml");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void leave(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		super.leave(container, game);
+		
+		try {
+			RootVisualPanel.get().clear();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Unable to clear the RootVisualPanel.");
 		}
 	}
 
@@ -127,9 +138,13 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if (container.hasFocus()) {
 			if (!isPaused()) {
-				_ui.update(container, delta);
-				if (!_ui.isModalWindowOpen()) {
-					_chunk.update(container, game, delta);
+				try {
+					RootVisualPanel.get().update(container, delta);
+					if (!RootVisualPanel.get().isModalWindowOpen()) {
+						_chunk.update(container, game, delta);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -143,7 +158,11 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		
 		_camera.reset(g);
 		
-		_ui.render(g);
+		try {
+			RootVisualPanel.get().render(g);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		if (!container.hasFocus() || isPaused()) {
 			renderPauseScreen(container, game, g);
@@ -167,7 +186,7 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		return _stateID;
 	}
 	
-	private RootVisualPanel generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
+	private void generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
 		MethodBinding getPlayerPositionBinding = new MethodBinding(new MethodBinding(this, "getPlayer"), "getPosition");
 		
 		Button mainMenuButton = Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU);
@@ -184,7 +203,7 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		zoomButtonPanel.addChild(zoomOutButton);
 		zoomButtonPanel.addChild(zoomInButton);
 		
-		RootVisualPanel root = new RootVisualPanel(container);
+		RootVisualPanel root = RootVisualPanel.get();
 		root.addChild(new Label(new Vector2f(10, 10), _font, "Gameplay State", Color.red));
 		root.addChild(menuButtonPanel);
 		root.addChild(zoomButtonPanel);
@@ -192,8 +211,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		Label playerPositionLabel = new Label(new Vector2f(10, 30), _font, getPlayerPositionBinding, Color.blue);
 		playerPositionLabel.getBounds().setWidth(600);
 		root.addChild(playerPositionLabel);
-		
-		return root;
 	}
 	
 	public void zoomIn() {
