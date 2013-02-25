@@ -36,12 +36,13 @@ public class Label extends FrameworkElement {
 	public Label(Vector2f position, UnicodeFont font, Object textBinding, Color color) {
 		_font = font;
 		_color = color;
-		_bounds = new Rectangle(position.x, position.y, _font.getWidth(getText()), _font.getHeight(getText()));
 		
 		setHorizontalContentAlignment(HorizontalAlignment.Center);
 		setVerticalContentAlignment(VerticalAlignment.Center);
 		setTextBinding(textBinding);
 		getMargin().setValue(DEFAULT_MARGIN);
+		
+		_bounds = new Rectangle(position.x, position.y, _font.getWidth(getText()), _font.getHeight(getText()));
 	}
 	
 	public Label(Vector2f position, UnicodeFont font, String text, Color color) {
@@ -98,7 +99,7 @@ public class Label extends FrameworkElement {
 	
 	public void setTextBinding(Object value) {
 		_textBinding = value;
-		resetTextBounds();
+		_lastFrameText = getText();
 	}
 	
 	public String getText() {
@@ -126,7 +127,7 @@ public class Label extends FrameworkElement {
 		Rectangle previousWorldClip = setTransform(g);
 		
 		if (_lastFrameText != getText()) {
-			resetTextBounds();
+			resetBounds();
 		}
 		
 		float contentWidth = getBounds().getWidth() - getMargin().getLeftMargin() - getMargin().getRightMargin();
@@ -216,12 +217,6 @@ public class Label extends FrameworkElement {
 	@Override
 	protected Boolean contains(Vector2f point) {
 		return getBounds().contains(point.x, point.y);
-	}
-	
-	private void resetTextBounds() {
-		_bounds.setWidth(_font.getWidth(getText()));
-		_bounds.setHeight(_font.getHeight(getText()));
-		_lastFrameText = getText();
 	}
 	
 	private Vector2f getTextPosition() {

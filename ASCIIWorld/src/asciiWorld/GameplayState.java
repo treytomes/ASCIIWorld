@@ -188,7 +188,10 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		root.addChild(new Label(new Vector2f(10, 10), _font, "Gameplay State", Color.red));
 		root.addChild(menuButtonPanel);
 		root.addChild(zoomButtonPanel);
-		root.addChild(new Label(new Vector2f(10, 30), _font, getPlayerPositionBinding, Color.blue));
+		
+		Label playerPositionLabel = new Label(new Vector2f(10, 30), _font, getPlayerPositionBinding, Color.blue);
+		playerPositionLabel.getBounds().setWidth(600);
+		root.addChild(playerPositionLabel);
 		
 		return root;
 	}
