@@ -1,9 +1,9 @@
 package asciiWorld.entities;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.Vector3f;
 import asciiWorld.chunks.Chunk;
 
 public class EntityComponent {
@@ -28,7 +28,7 @@ public class EntityComponent {
 	
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) { }
 	
-	public void use(Entity source, Vector2f targetChunkPoint) { }
+	public void use(Entity source, Vector3f targetChunkPoint) { }
 	
 	public void touched(Entity touchedByEntity) { }
 	

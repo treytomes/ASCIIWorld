@@ -78,18 +78,18 @@ public class Chunk {
 		}
 	}
 
-	public Boolean isSpaceOccupied(Vector2f chunkPoint)
+	public Boolean isSpaceOccupied(Vector3f chunkPoint)
 	{
-		return getEntityAt(chunkPoint, LAYER_OBJECT) != null;
+		return getEntityAt(chunkPoint.toVector2f(), chunkPoint.z) != null;
 	}
 
-	public Vector2f findSpawnPoint() throws Exception
+	public Vector3f findSpawnPoint(int layer) throws Exception
 	{
 		for (int y = 0; y < Chunk.WIDTH; y++)
 		{
 			for (int x = 0; x < Chunk.HEIGHT; x++)
 			{
-				Vector2f chunkPoint = new Vector2f(x, y);
+				Vector3f chunkPoint = new Vector3f(x, y, layer);
 				if (!isSpaceOccupied(chunkPoint))
 				{
 					return chunkPoint;
@@ -99,11 +99,11 @@ public class Chunk {
 		throw new Exception("Unable to find a valid spawn point.");
 	}
 
-	public Vector2f findRandomSpawnPoint() throws Exception
+	public Vector3f findRandomSpawnPoint(int layer) throws Exception
 	{
 		while (true)
 		{
-			Vector2f chunkPoint = new Vector2f(RandomFactory.get().nextInt(0, WIDTH), RandomFactory.get().nextInt(0, HEIGHT));
+			Vector3f chunkPoint = new Vector3f(RandomFactory.get().nextInt(0, WIDTH), RandomFactory.get().nextInt(0, HEIGHT), layer);
 			if (!isSpaceOccupied(chunkPoint))
 			{
 				return chunkPoint;

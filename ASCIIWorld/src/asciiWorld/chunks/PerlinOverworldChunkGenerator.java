@@ -6,6 +6,7 @@ import java.util.List;
 import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.RandomFactory;
+import asciiWorld.Vector3f;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityFactory;
 
@@ -141,12 +142,12 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
     	
 		// Generate seed trees.
 		int seedTreeCount = RandomFactory.get().nextInt(SEEDTREE_MIN, SEEDTREE_MAX);
-		List<Vector2f> seedTrees = new ArrayList<Vector2f>();
+		List<Vector3f> seedTrees = new ArrayList<Vector3f>();
 		for (int n = 0; n < seedTreeCount; n++) {
-			Vector2f treePoint = chunk.findRandomSpawnPoint();
-			while (chunk.getEntityAt(treePoint, Chunk.LAYER_GROUND).getName() != "Grass") {
+			Vector3f treePoint = chunk.findRandomSpawnPoint(Chunk.LAYER_OBJECT);
+			while (chunk.getEntityAt(treePoint.toVector2f(), Chunk.LAYER_GROUND).getName() != "Grass") {
 				// Trees can only grow on grass.
-				treePoint = chunk.findRandomSpawnPoint();
+				treePoint = chunk.findRandomSpawnPoint(Chunk.LAYER_OBJECT);
 			}
 
 			seedTrees.add(treePoint);
@@ -160,7 +161,7 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		int totalTrees = RandomFactory.get().nextInt(TREES_MIN, TREES_MAX) - seedTreeCount;
 		for (int n = 0; n < totalTrees; n++) {
 			// Pick a seed position.
-			Vector2f seedPoint = seedTrees.get(RandomFactory.get().nextInt(0, seedTreeCount));
+			Vector3f seedPoint = seedTrees.get(RandomFactory.get().nextInt(0, seedTreeCount));
 			generateTree(chunk, seedPoint);
 			
 			System.out.print(".");
@@ -170,7 +171,7 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		return chunk;
     }
 
-	private Entity generateTree(Chunk chunk, Vector2f seedPoint) throws Exception
+	private Entity generateTree(Chunk chunk, Vector3f seedPoint) throws Exception
 	{
 		// Pick a random angle.
 		float angle = (float)(RandomFactory.get().nextInt(0, 360) * Math.PI / 180.0f);
@@ -178,8 +179,8 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		// Keep searching outward until a suitable spawn point is found.
 		int distance = 1;
 		while (true) {
-			Vector2f chunkPoint = new Vector2f(seedPoint.x + distance * (float)Math.cos(angle), seedPoint.y + distance * (float)Math.sin(angle));
-			Entity groundEntity = chunk.getEntityAt(chunkPoint, Chunk.LAYER_GROUND); 
+			Vector3f chunkPoint = new Vector3f(seedPoint.x + distance * (float)Math.cos(angle), seedPoint.y + distance * (float)Math.sin(angle), seedPoint.z);
+			Entity groundEntity = chunk.getEntityAt(chunkPoint.toVector2f(), Chunk.LAYER_GROUND); 
 			if ((groundEntity == null) || (groundEntity.getName() != "Grass")) {
 				// We're moving out into the desert; start over.
 				return generateTree(chunk, seedPoint);

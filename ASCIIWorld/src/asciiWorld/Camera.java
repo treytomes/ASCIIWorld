@@ -4,6 +4,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.entities.Entity;
+
 public class Camera implements IHasPosition, IHasBounds, IHasRangeOfVision {
 	
 	private static final float DEFAULT_RANGE_OF_VISION = 32;
@@ -84,4 +86,16 @@ public class Camera implements IHasPosition, IHasBounds, IHasRangeOfVision {
 	public void reset(Graphics g) {
 		g.resetTransform();
 	}
+
+	public Vector2f screenPositionToChunkPosition(Vector2f screenPosition) {
+		// TODO: Figure out why the "- 2" is necessary.  If it's not there, the bounds are always 2 pixels off.
+		float x = (screenPosition.x - getBounds().getCenterX() + Entity.MOVEMENT_STEP) / _scale + _focus.getPosition().x - 2;
+		float y = (screenPosition.y - getBounds().getCenterY() + Entity.MOVEMENT_STEP) / _scale + _focus.getPosition().y - 2;
+		return new Vector2f(x, y);
+	}
+
+	/*public Vector2f ChunkPositionToScreenPosition(Vector3f chunkPosition)
+	{
+		return (chunkPosition - _focus.Position) * _scale - Entity.MOVEMENT_STEP * Vector2.One + _viewportCenter;
+	}*/
 }

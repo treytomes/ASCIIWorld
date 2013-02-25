@@ -3,15 +3,18 @@ package asciiWorld.entities;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.Camera;
 import asciiWorld.CreateRectangle;
 import asciiWorld.Direction;
+import asciiWorld.Vector3f;
 import asciiWorld.ui.InventoryView;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.WindowPanel;
 
-public class PlayerControlComponent extends KeyboardAwareComponent {
+public class PlayerControlComponent extends InputAwareComponent {
 	
 	private static final int KEY_MOVE_NORTH = Input.KEY_W;
 	private static final int KEY_MOVE_SOUTH = Input.KEY_S;
@@ -22,11 +25,13 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 	
 	private WindowPanel _inventoryUI;
 	private Direction _movingDirection;
+	private Camera _camera;
 
-	public PlayerControlComponent(Entity owner) {
+	public PlayerControlComponent(Entity owner, Camera camera) {
 		super(owner);
 		_inventoryUI = null;
 		_movingDirection = null;
+		_camera = camera;
 	}
 	
 	@Override
@@ -77,6 +82,29 @@ public class PlayerControlComponent extends KeyboardAwareComponent {
 			_movingDirection = null;
 			break;
 		}
+	}
+	
+	@Override
+	public void mouseClicked(int button, int x, int y, int clickCount) {
+		switch (button) {
+		case Input.MOUSE_LEFT_BUTTON:
+			try {
+				Entity owner = getOwner();
+				InventoryContainer inventory = owner.getInventory();
+				if (inventory.getItemCount() > 0) {
+					inventory.getItemAt(0).use(getChunkPointAtMousePosition(x, y));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+		}
+	}
+	
+	private Vector3f getChunkPointAtMousePosition(int x, int y) {
+		Vector2f chunkPosition = _camera.screenPositionToChunkPosition(new Vector2f(x, y));
+		Vector2f chunkPoint = Entity.translatePositionToPoint(chunkPosition);
+		return new Vector3f(chunkPoint, getOwner().getPosition().z);
 	}
 	
 	private Boolean isInventoryUIOpen() {

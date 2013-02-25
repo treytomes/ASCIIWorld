@@ -243,8 +243,8 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		_moveToPosition = _position.clone();
 	}
 	
-	public void moveTo(Vector2f chunkPoint) {
-		moveTo(chunkPoint, getPosition().z);
+	public void moveTo(Vector3f chunkPoint) {
+		moveTo(chunkPoint.toVector2f(), chunkPoint.z);
 	}
 	
 	public void move(Direction direction) {
@@ -270,7 +270,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		}
 	}
 	
-	public void use(Vector2f targetChunkPoint) {
+	public void use(Vector3f targetChunkPoint) {
 		for (EntityComponent component : getComponents()) {
 			component.use(getContainer().getOwner(), targetChunkPoint);
 		}
@@ -328,11 +328,15 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		getTile().render(tiles, getPosition().toVector2f());
 	}
 
-	private static Vector2f translatePositionToPoint(Vector3f position) {
+	public static Vector2f translatePositionToPoint(Vector3f position) {
+		return translatePositionToPoint(position.toVector2f());
+	}
+
+	public static Vector2f translatePositionToPoint(Vector2f position) {
 		return new Vector2f((float)Math.floor(position.x / MOVEMENT_STEP), (float)Math.floor(position.y / MOVEMENT_STEP));
 	}
 
-	private static Vector3f translatePointToPosition(Vector2f chunkPoint, float layer) {
+	public static Vector3f translatePointToPosition(Vector2f chunkPoint, float layer) {
 		return new Vector3f(chunkPoint.x * MOVEMENT_STEP, chunkPoint.y * MOVEMENT_STEP, layer);
 	}
 }

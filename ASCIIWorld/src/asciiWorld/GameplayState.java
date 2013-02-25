@@ -85,8 +85,9 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		
 		try {
 			_player = new Entity();
-			_player.getComponents().add(new PlayerControlComponent(_player));
-			_player.moveTo(_chunk.findRandomSpawnPoint(), Chunk.LAYER_OBJECT);
+			_camera = new Camera(this, _player, 4.0f);
+			_player.getComponents().add(new PlayerControlComponent(_player, _camera));
+			_player.moveTo(_chunk.findRandomSpawnPoint(Chunk.LAYER_OBJECT));
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to create the player.");
@@ -98,8 +99,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		} catch (Exception e) {
 			throw new SlickException("Unable to load the tile resources.", e);
 		}
-		
-		_camera = new Camera(this, _player, 4.0f);
 		
 		try {
 			generateUI(container, game);

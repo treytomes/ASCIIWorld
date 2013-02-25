@@ -3,11 +3,11 @@ package asciiWorld.entities;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.FileHelper;
 import asciiWorld.JavascriptContext;
+import asciiWorld.Vector3f;
 import asciiWorld.chunks.Chunk;
 
 public class ScriptableComponent extends EntityComponent {
@@ -68,7 +68,7 @@ public class ScriptableComponent extends EntityComponent {
 	}
 	
 	@Override
-	public void use(Entity source, Vector2f targetChunkPoint) {
+	public void use(Entity source, Vector3f targetChunkPoint) {
 		executeFunction("use", new Object[] { source, targetChunkPoint });
 	}
 	
