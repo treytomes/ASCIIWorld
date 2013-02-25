@@ -9,7 +9,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -19,16 +18,10 @@ import asciiWorld.entities.Entity;
 import asciiWorld.entities.PlayerControlComponent;
 import asciiWorld.tiles.TileFactory;
 import asciiWorld.tiles.TileSet;
-import asciiWorld.ui.Button;
-import asciiWorld.ui.Label;
-import asciiWorld.ui.MethodBinding;
-import asciiWorld.ui.Orientation;
+import asciiWorld.ui.HUDView;
 import asciiWorld.ui.RootVisualPanel;
-import asciiWorld.ui.StackPanel;
 
 public class GameplayState extends BasicGameState implements IHasBounds {
-
-	private static final float ZOOM_INCREMENT = 0.1f;
 	
 	private int _stateID = -1;
 	
@@ -85,12 +78,6 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		super.enter(container, game);
 		
 		try {
-			generateUI(container, game);
-		} catch (Exception e) {
-			System.err.println("Unable to generate the user interface.");
-		}
-		
-		try {
 			_chunk = ChunkFactory.generateOverworld();
 		} catch (Exception e) {
 			throw new SlickException("Unable to generate the chunk.");
@@ -113,6 +100,12 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		}
 		
 		_camera = new Camera(this, _player, 4.0f);
+		
+		try {
+			generateUI(container, game);
+		} catch (Exception e) {
+			System.err.println("Unable to generate the user interface.");
+		}
 		
 		try {
 			RootVisualPanel.get().loadMessageBox("resources/ui/welcomeMessageBox.xml");
@@ -187,37 +180,9 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 	}
 	
 	private void generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
-		MethodBinding getPlayerPositionBinding = new MethodBinding(new MethodBinding(this, "getPlayer"), "getPosition");
-		
-		Button mainMenuButton = Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU);
-		Button exitButton = Button.createActionButton("Exit", new MethodBinding(container, "exit"));
-		
-		Button zoomInButton = Button.createActionButton("Zoom +", new MethodBinding(this, "zoomIn"));
-		Button zoomOutButton = Button.createActionButton("Zoom -", new MethodBinding(this, "zoomOut"));
-		
-		StackPanel menuButtonPanel = new StackPanel(new Rectangle(getBounds().getWidth() - 202 - 5, 5, 202, 42 * 2), Orientation.Vertical);
-		menuButtonPanel.addChild(mainMenuButton);
-		menuButtonPanel.addChild(exitButton);
-		
-		StackPanel zoomButtonPanel = new StackPanel(new Rectangle(getBounds().getWidth() - 106 * 2 - 5, getBounds().getHeight() - 42 - 5, 106 * 2, 42));
-		zoomButtonPanel.addChild(zoomOutButton);
-		zoomButtonPanel.addChild(zoomInButton);
-		
-		RootVisualPanel root = RootVisualPanel.get();
-		root.addChild(new Label(new Vector2f(10, 10), _font, "Gameplay State", Color.red));
-		root.addChild(menuButtonPanel);
-		root.addChild(zoomButtonPanel);
-		
-		Label playerPositionLabel = new Label(new Vector2f(10, 30), _font, getPlayerPositionBinding, Color.blue);
-		playerPositionLabel.getBounds().setWidth(600);
-		root.addChild(playerPositionLabel);
-	}
-	
-	public void zoomIn() {
-		_camera.setScale(_camera.getScale() + ZOOM_INCREMENT);
-	}
-	
-	public void zoomOut() {
-		_camera.setScale(_camera.getScale() - ZOOM_INCREMENT);
+		HUDView hud = new HUDView(container, game);
+		hud.setCamera(_camera);
+		hud.setPlayer(_player);
+		RootVisualPanel.get().addChild(hud);
 	}
 }

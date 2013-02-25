@@ -14,12 +14,12 @@ import asciiWorld.ui.RootVisualPanel;
 
 public class ASCIIWorldGame extends StateBasedGame {
 	
-	static final String PATH_SETTINGS = "resources/settings.xml";
+	public static final int STATE_MAINMENU = 0;
+	public static final int STATE_GAMEPLAY = 1;
+	public static final int STATE_TEXTEDITOR = 2;
+	public static final int STATE_CONSOLE = 3;
 	
-	static final int STATE_MAINMENU = 0;
-	static final int STATE_GAMEPLAY = 1;
-	static final int STATE_TEXTEDITOR = 2;
-	static final int STATE_CONSOLE = 3;
+	private static final String PATH_SETTINGS = "resources/settings.xml";
 	
 	private int _screenWidth;
 	private int _screenHeight;
