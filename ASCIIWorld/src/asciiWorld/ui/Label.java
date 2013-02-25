@@ -45,24 +45,24 @@ public class Label extends FrameworkElement {
 		_bounds = new Rectangle(position.x, position.y, _font.getWidth(getText()), _font.getHeight(getText()));
 	}
 	
-	public Label(Vector2f position, UnicodeFont font, String text, Color color) {
-		this(position, font, new StaticText(text), color);
-	}
+	/*public Label(Vector2f position, UnicodeFont font, String text, Color color) {
+		this(position, font, textBinding, color);
+	}*/
 	
 	public Label(UnicodeFont font, Object textBinding, Color color) {
 		this(new Vector2f(0, 0), font, textBinding, color);
 	}
 	
-	public Label(UnicodeFont font, String text, Color color) {
-		this(font, new StaticText(text), color);
+	/*public Label(UnicodeFont font, Object textBinding, Color color) {
+		this(font, textBinding, color);
+	}*/
+	
+	public Label(Vector2f position, Object textBinding, Color color) throws SlickException {
+		this(position, getDefaultFont(), textBinding, color);
 	}
 	
-	public Label(Vector2f position, String text, Color color) throws SlickException {
-		this(position, getDefaultFont(), new StaticText(text), color);
-	}
-	
-	public Label(String text, Color color) throws SlickException {
-		this(new Vector2f(0, 0), getDefaultFont(), new StaticText(text), color);
+	public Label(Object textBinding, Color color) throws SlickException {
+		this(new Vector2f(0, 0), getDefaultFont(), textBinding, color);
 	}
 	
 	public HorizontalAlignment getHorizontalContentAlignment() {
