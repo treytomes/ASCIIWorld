@@ -22,6 +22,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	private static final int DEFAULT_AGILITY = 1;
 	private static final int DEFAULT_PERCEPTION = 10;
+	private static final float DEFAULT_WEIGHT = 0;
 	
 	private static final float MODIFIER_AGILITY = 15.0f;
 	
@@ -39,6 +40,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	private int _agility;
 	private int _perception;
+	private float _weight;
 	
 	/**
 	 * The container that contains this entity.
@@ -65,6 +67,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		
 		setAgility(DEFAULT_AGILITY);
 		setPerception(DEFAULT_PERCEPTION);
+		setWeight(DEFAULT_WEIGHT);
 		
 		setContainer(null);
 		_inventory = new InventoryContainer(this);
@@ -180,6 +183,30 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	public void setPerception(int value) {
 		_perception = value;
+	}
+	
+	/**
+	 * 
+	 * @return The weight of this entity by itself, i.e. without counting it's inventory.
+	 */
+	public float getBaseWeight() {
+		return _weight;
+	}
+	
+	/**
+	 * 
+	 * @return The weight of this entity, including it's inventory.
+	 */
+	public float getTotalWeight() {
+		float weight = getBaseWeight();
+		for (Entity item : getInventory()) {
+			weight += item.getTotalWeight();
+		}
+		return weight;
+	}
+	
+	public void setWeight(float value) {
+		_weight = value;
 	}
 	
 	public float getBaseMovementSpeed() {
