@@ -76,7 +76,7 @@ public class ScriptableComponent extends EntityComponent {
 		return _context.executeScript(scriptText);
 	}
 	
-	public void load(String path) throws Exception {
+	public void loadScript(String path) throws Exception {
 		executeScript(FileHelper.readToEnd(path));
 	}
 }

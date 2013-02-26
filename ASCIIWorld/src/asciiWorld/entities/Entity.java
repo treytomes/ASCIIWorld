@@ -68,11 +68,11 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		newEntity.setTile(TileFactory.get().getResource(elem.getAttributeValue("tile")));
 		
 		Element componentsElem = elem.getChild("Components");
-		List<Element> componentElems = componentsElem.getChildren("Component");
-		for (Element componentElem : componentElems) {
-			Class<?> componentClass = Class.forName(String.format("asciiWorld.entities.%sComponent", componentElem.getAttributeValue("name")));
-			EntityComponent component = (EntityComponent)componentClass.getConstructor(Entity.class).newInstance(newEntity);
-			newEntity.getComponents().add(component);
+		if (componentsElem != null) {
+			List<Element> componentElems = componentsElem.getChildren("Component");
+			for (Element componentElem : componentElems) {
+				newEntity.getComponents().add(EntityComponent.fromXml(newEntity, componentElem));
+			}
 		}
 		
 		return newEntity;

@@ -48,17 +48,17 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 			for (int x = 0; x < Chunk.WIDTH; x++) {
 				int value = (int)terrain[y][x];
 				if (value > 1) {
-					EntityFactory.createDirtEntity(chunk, x, y);
-					EntityFactory.createStoneEntity(chunk, x, y);
+					EntityFactory.get().createDirtEntity(chunk, x, y);
+					EntityFactory.get().createStoneEntity(chunk, x, y);
 				}
 				else if (value > -3) {
-					EntityFactory.createGrassEntity(chunk, x, y);
+					EntityFactory.get().createGrassEntity(chunk, x, y);
 				}
 				else if (value > -4) {
-					EntityFactory.createSandEntity(chunk, x, y);
+					EntityFactory.get().createSandEntity(chunk, x, y);
 				}
 				else {
-					EntityFactory.createWaterEntity(chunk, x, y);
+					EntityFactory.get().createWaterEntity(chunk, x, y);
 				}
 			}
 		}
@@ -74,7 +74,7 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
     			RandomFactory.get().nextInt(0, Chunk.WIDTH),
     			RandomFactory.get().nextInt(0, Chunk.HEIGHT));
     	int attempt = 0;
-    	while (chunk.getEntityAt(point, Chunk.LAYER_GROUND).getName() != "Water") {
+    	while (!chunk.getEntityAt(point, Chunk.LAYER_GROUND).getName().equals("Water")) {
         	point.x = RandomFactory.get().nextInt(0, Chunk.WIDTH);
         	point.y = RandomFactory.get().nextInt(0, Chunk.HEIGHT);
         	
@@ -128,7 +128,7 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 			if (objectEntity != null) {
 				chunk.removeEntity(objectEntity);
 			}
-			EntityFactory.createWaterEntity(chunk, (int)chunkPoint.x, (int)chunkPoint.y);
+			EntityFactory.get().createWaterEntity(chunk, (int)chunkPoint.x, (int)chunkPoint.y);
 			
 			System.out.print(".");
 		}
@@ -145,14 +145,14 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		List<Vector3f> seedTrees = new ArrayList<Vector3f>();
 		for (int n = 0; n < seedTreeCount; n++) {
 			Vector3f treePoint = chunk.findRandomSpawnPoint(Chunk.LAYER_OBJECT);
-			while (chunk.getEntityAt(treePoint.toVector2f(), Chunk.LAYER_GROUND).getName() != "Grass") {
+			while (!chunk.getEntityAt(treePoint.toVector2f(), Chunk.LAYER_GROUND).getName().equals("Grass")) {
 				// Trees can only grow on grass.
 				treePoint = chunk.findRandomSpawnPoint(Chunk.LAYER_OBJECT);
 			}
 
 			seedTrees.add(treePoint);
 
-			EntityFactory.createTreeEntity(chunk, (int)treePoint.x, (int)treePoint.y);
+			EntityFactory.get().createTreeEntity(chunk, (int)treePoint.x, (int)treePoint.y);
 			
 			System.out.print(".");
 		}
@@ -181,12 +181,12 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		while (true) {
 			Vector3f chunkPoint = new Vector3f(seedPoint.x + distance * (float)Math.cos(angle), seedPoint.y + distance * (float)Math.sin(angle), seedPoint.z);
 			Entity groundEntity = chunk.getEntityAt(chunkPoint.toVector2f(), Chunk.LAYER_GROUND); 
-			if ((groundEntity == null) || (groundEntity.getName() != "Grass")) {
+			if ((groundEntity == null) || !groundEntity.getName().equals("Grass")) {
 				// We're moving out into the desert; start over.
 				return generateTree(chunk, seedPoint);
 			}
 			if (!chunk.isSpaceOccupied(chunkPoint)) {
-				return EntityFactory.createTreeEntity(chunk, (int)chunkPoint.x, (int)chunkPoint.y);
+				return EntityFactory.get().createTreeEntity(chunk, (int)chunkPoint.x, (int)chunkPoint.y);
 			} else {
 				distance++;
 			}
@@ -223,7 +223,7 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		}
 
 		// Create the entrance.
-		return EntityFactory.createCaveEntranceEntity(chunk, (int)chunkPoint.x, (int)chunkPoint.y);
+		return EntityFactory.get().createCaveEntranceEntity(chunk, (int)chunkPoint.x, (int)chunkPoint.y);
 	}
 
 	private Vector2f findPossibleCaveEntrance(Chunk chunk) throws Exception
@@ -242,7 +242,7 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 			if (entity == null) {
 				continue; // we need to find a mountain to dig into
 			}
-			if (entity.getName() == "Stone") {
+			if (entity.getName().equals("Stone")) {
 				chunk.removeEntity(entity);
 				return new Vector2f(x, y);
 			}

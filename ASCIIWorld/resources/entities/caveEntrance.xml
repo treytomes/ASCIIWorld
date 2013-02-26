@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Entity tile="CaveEntrance">
+<Entity tile="caveEntrance" name="Cave Entrance">
   <Components>
-    <Component name="ChunkTransition" />
+    <!--<Component name="ChunkTransition" />-->
     
     <!--<Component name="LightSource">
       <Properties>

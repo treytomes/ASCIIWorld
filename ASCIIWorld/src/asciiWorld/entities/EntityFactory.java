@@ -1,77 +1,87 @@
 package asciiWorld.entities;
 
+import org.jdom2.Element;
 import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.chunks.Chunk;
-import asciiWorld.tiles.TileFactory;
 
 public class EntityFactory {
+	
+	private static EntityFactory _instance = null;
+	
+	private EntityFactory() {
+	}
+	
+	public static EntityFactory get() {
+		if (_instance == null) {
+			_instance = new EntityFactory();
+		}
+		return _instance;
+	}
 
-	public static Entity createWaterEntity(Chunk chunk, int x, int y)
+	public Entity createWaterEntity(Chunk chunk, int x, int y)
 			throws Exception {
-		Entity entity = new Entity();
-		entity.setName("Water");
-		entity.setTile(TileFactory.get().getResource("water"));
-		entity.moveTo(new Vector2f(x, y), Chunk.LAYER_GROUND);
+		return createEntity("water", chunk, x, y, Chunk.LAYER_GROUND);
+	}
+
+	public Entity createSandEntity(Chunk chunk, int x, int y)
+			throws Exception {
+		return createEntity("sand", chunk, x, y, Chunk.LAYER_GROUND);
+	}
+
+	public Entity createDirtEntity(Chunk chunk, int x, int y)
+			throws Exception {
+		return createEntity("dirt", chunk, x, y, Chunk.LAYER_GROUND);
+	}
+
+	public Entity createGrassEntity(Chunk chunk, int x, int y)
+			throws Exception {
+		return createEntity("grass", chunk, x, y, Chunk.LAYER_GROUND);
+	}
+
+	public Entity createStoneEntity(Chunk chunk, int x, int y)
+			throws Exception {
+		return createEntity("stone", chunk, x, y);
+	}
+
+	public Entity createCaveEntranceEntity(Chunk chunk, int x, int y)
+			throws Exception {
+		return createEntity("caveEntrance", chunk, x, y);
+	}
+
+	public Entity createTreeEntity(Chunk chunk, int x, int y)
+			throws Exception {
+		return createEntity("tree", chunk, x, y);
+	}
+	
+	public Entity createEntity(String name, Chunk chunk, int x, int y, int z)
+			throws Exception {
+		Entity entity = getResource(name);
+		entity.moveTo(new Vector2f(x, y), z);
 		chunk.addEntity(entity);
 		return entity;
 	}
-
-	public static Entity createSandEntity(Chunk chunk, int x, int y)
+	
+	public Entity createEntity(String name, Chunk chunk, int x, int y)
 			throws Exception {
-		Entity entity = new Entity();
-		entity.setName("Sand");
-		entity.setTile(TileFactory.get().getResource("sand"));
-		entity.moveTo(new Vector2f(x, y), Chunk.LAYER_GROUND);
-		chunk.addEntity(entity);
-		return entity;
+		return createEntity(name, chunk, x, y, Chunk.LAYER_OBJECT);
+	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @return A fresh copy of the requested resource.
+	 * @throws Exception
+	 */
+	public Entity getResource(String name) throws Exception {
+		return Entity.load(getPathForResource(name));
 	}
 
-	public static Entity createDirtEntity(Chunk chunk, int x, int y)
-			throws Exception {
-		Entity entity = new Entity();
-		entity.setName("Dirt");
-		entity.setTile(TileFactory.get().getResource("dirt"));
-		entity.moveTo(new Vector2f(x, y), Chunk.LAYER_GROUND);
-		chunk.addEntity(entity);
-		return entity;
+	public Entity fromXml(Element elem) throws Exception {
+		return Entity.fromXml(elem);
 	}
-
-	public static Entity createGrassEntity(Chunk chunk, int x, int y)
-			throws Exception {
-		Entity entity = new Entity();
-		entity.setName("Grass");
-		entity.setTile(TileFactory.get().getResource("grass"));
-		entity.moveTo(new Vector2f(x, y), Chunk.LAYER_GROUND);
-		chunk.addEntity(entity);
-		return entity;
-	}
-
-	public static Entity createStoneEntity(Chunk chunk, int x, int y)
-			throws Exception {
-		Entity entity = new Entity();
-		entity.setName("Stone");
-		entity.setTile(TileFactory.get().getResource("stone"));
-		entity.moveTo(new Vector2f(x, y), Chunk.LAYER_OBJECT);
-		chunk.addEntity(entity);
-		return entity;
-	}
-
-	public static Entity createCaveEntranceEntity(Chunk chunk, int x, int y)
-			throws Exception {
-		Entity entity = new Entity();
-		entity.setName("Cave Entrance");
-		entity.setTile(TileFactory.get().getResource("caveEntrance"));
-		entity.moveTo(new Vector2f(x, y), Chunk.LAYER_OBJECT);
-		chunk.addEntity(entity);
-		return entity;
-	}
-
-	public static Entity createTreeEntity(Chunk chunk, int x, int y)
-			throws Exception {
-		Entity entity = Entity.load("resources/entities/tree.xml");
-		entity.moveTo(new Vector2f(x, y), Chunk.LAYER_OBJECT);
-		chunk.addEntity(entity);
-		return entity;
+	
+	private String getPathForResource(String name) {
+		return String.format("resources/entities/%s.xml", name);
 	}
 }
