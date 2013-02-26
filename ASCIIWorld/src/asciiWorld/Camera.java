@@ -94,8 +94,29 @@ public class Camera implements IHasPosition, IHasBounds, IHasRangeOfVision {
 		return new Vector2f(x, y);
 	}
 
+	public Vector2f screenPositionToChunkPoint(int x, int y) {
+		return screenPositionToChunkPoint(new Vector2f(x, y));
+	}
+
+	public Vector2f screenPositionToChunkPoint(Vector2f screenPosition) {
+		Vector2f chunkPosition = screenPositionToChunkPosition(screenPosition);
+		return translatePositionToPoint(chunkPosition);
+	}
+
 	/*public Vector2f ChunkPositionToScreenPosition(Vector3f chunkPosition)
 	{
 		return (chunkPosition - _focus.Position) * _scale - Entity.MOVEMENT_STEP * Vector2.One + _viewportCenter;
 	}*/
+
+	public static Vector2f translatePositionToPoint(Vector3f position) {
+		return translatePositionToPoint(position.toVector2f());
+	}
+
+	public static Vector2f translatePositionToPoint(Vector2f position) {
+		return new Vector2f((float)Math.floor(position.x / Entity.MOVEMENT_STEP), (float)Math.floor(position.y / Entity.MOVEMENT_STEP));
+	}
+
+	public static Vector3f translatePointToPosition(Vector2f chunkPoint, float layer) {
+		return new Vector3f(chunkPoint.x * Entity.MOVEMENT_STEP, chunkPoint.y * Entity.MOVEMENT_STEP, layer);
+	}
 }

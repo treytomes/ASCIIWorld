@@ -3,7 +3,6 @@ package asciiWorld.entities;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Camera;
@@ -102,9 +101,7 @@ public class PlayerControlComponent extends InputAwareComponent {
 	}
 	
 	private Vector3f getChunkPointAtMousePosition(int x, int y) {
-		Vector2f chunkPosition = _camera.screenPositionToChunkPosition(new Vector2f(x, y));
-		Vector2f chunkPoint = Entity.translatePositionToPoint(chunkPosition);
-		return new Vector3f(chunkPoint, getOwner().getPosition().z);
+		return new Vector3f(_camera.screenPositionToChunkPoint(x, y), getOwner().getPosition().z);
 	}
 	
 	private Boolean isInventoryUIOpen() {

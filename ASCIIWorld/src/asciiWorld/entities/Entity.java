@@ -10,6 +10,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.Camera;
 import asciiWorld.Direction;
 import asciiWorld.IHasPosition;
 import asciiWorld.IHasRangeOfVision;
@@ -174,7 +175,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	}
 	
 	public Vector2f getOccupiedChunkPoint() {
-		return translatePositionToPoint(_moveToPosition); // getPosition());
+		return Camera.translatePositionToPoint(_moveToPosition); // getPosition());
 	}
 	
 	public Boolean isMoving() {
@@ -262,7 +263,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	}
 	
 	public void moveTo(Vector2f chunkPoint, float layer) {
-		_position = translatePointToPosition(chunkPoint, layer);
+		_position = Camera.translatePointToPosition(chunkPoint, layer);
 		_moveFromPosition = _position.clone();
 		_moveToPosition = _position.clone();
 	}
@@ -281,7 +282,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 			
 			// Check for a collision:
 			if (cachedChunk != null) {
-				Vector2f pendingChunkPoint = translatePositionToPoint(pendingMoveToPosition);
+				Vector2f pendingChunkPoint = Camera.translatePositionToPoint(pendingMoveToPosition);
 				
 				Entity entity = getChunk().getEntityAt(pendingChunkPoint, getPosition().z);
 				if (entity != null) {
@@ -350,17 +351,5 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	public void render(TileSet tiles) {
 		getTile().render(tiles, getPosition().toVector2f());
-	}
-
-	public static Vector2f translatePositionToPoint(Vector3f position) {
-		return translatePositionToPoint(position.toVector2f());
-	}
-
-	public static Vector2f translatePositionToPoint(Vector2f position) {
-		return new Vector2f((float)Math.floor(position.x / MOVEMENT_STEP), (float)Math.floor(position.y / MOVEMENT_STEP));
-	}
-
-	public static Vector3f translatePointToPosition(Vector2f chunkPoint, float layer) {
-		return new Vector3f(chunkPoint.x * MOVEMENT_STEP, chunkPoint.y * MOVEMENT_STEP, layer);
 	}
 }
