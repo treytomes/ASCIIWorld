@@ -69,11 +69,7 @@ public class EntityFactory {
 
 	public static Entity createTreeEntity(Chunk chunk, int x, int y)
 			throws Exception {
-		Entity entity = new Entity();
-		entity.setName("Tree");
-		entity.setTile(TileFactory.get().getResource("tree"));
-		entity.getComponents().add(new CanBePickedUpComponent(entity));
-		entity.getComponents().add(new PlaceableComponent(entity));
+		Entity entity = Entity.load("resources/entities/tree.xml");
 		entity.moveTo(new Vector2f(x, y), Chunk.LAYER_OBJECT);
 		chunk.addEntity(entity);
 		return entity;

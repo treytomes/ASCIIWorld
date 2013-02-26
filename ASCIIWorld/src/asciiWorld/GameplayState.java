@@ -80,7 +80,7 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		try {
 			_chunk = ChunkFactory.generateOverworld();
 		} catch (Exception e) {
-			throw new SlickException("Unable to generate the chunk.");
+			throw new SlickException("Unable to generate the chunk.", e);
 		}
 		
 		try {

@@ -1,8 +1,11 @@
 package asciiWorld.entities;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -14,6 +17,7 @@ import asciiWorld.MathHelper;
 import asciiWorld.Vector3f;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.tiles.Tile;
+import asciiWorld.tiles.TileFactory;
 import asciiWorld.tiles.TileSet;
 
 public class Entity implements IHasPosition, IHasRangeOfVision {
@@ -53,6 +57,26 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	private InventoryContainer _inventory;
 	
 	private List<EntityComponent> _components;
+	
+	public static Entity load(String path) throws Exception {
+		return fromXml((Element)new SAXBuilder().build(new File(path)).getRootElement());
+	}
+	
+	public static Entity fromXml(Element elem) throws Exception {
+		Entity newEntity = new Entity();
+		newEntity.setName(elem.getAttributeValue("name"));
+		newEntity.setTile(TileFactory.get().getResource(elem.getAttributeValue("tile")));
+		
+		Element componentsElem = elem.getChild("Components");
+		List<Element> componentElems = componentsElem.getChildren("Component");
+		for (Element componentElem : componentElems) {
+			Class<?> componentClass = Class.forName(String.format("asciiWorld.entities.%sComponent", componentElem.getAttributeValue("name")));
+			EntityComponent component = (EntityComponent)componentClass.getConstructor(Entity.class).newInstance(newEntity);
+			newEntity.getComponents().add(component);
+		}
+		
+		return newEntity;
+	}
 	
 	public Entity() {
 		_chunk = null;
