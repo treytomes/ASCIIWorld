@@ -239,12 +239,12 @@ public class ImmediateWindow extends Border implements KeyListener {
 		_allText = _allText.concat(_currentLine);
 		StringBuilder sb = new StringBuilder();
 		try {
+			_history.push(_currentLine.trim());
 			Object result = _context.executeScript(_currentLine);
 			if (result != Undefined.instance) {
 				sb.append(JavascriptContext.toString(result)).append("\n");
 				_context.addObjectToContext(result, "_");
 			}
-			_history.push(_currentLine.trim());
 		} catch (Exception e) {
 			sb.append(e.getMessage()).append("\n");
 		}
