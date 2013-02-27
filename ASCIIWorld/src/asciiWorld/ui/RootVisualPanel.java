@@ -115,4 +115,10 @@ public class RootVisualPanel extends CanvasPanel {
 		modalWindowIsOpening();
 		return panel;
 	}
+	
+	@Override
+	public void update(GameContainer container, int delta) {
+		setInputFocus(null);
+		super.update(container, delta);
+	}
 }

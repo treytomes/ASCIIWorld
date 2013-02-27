@@ -57,6 +57,11 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	 */
 	private InventoryContainer _inventory;
 	
+	/**
+	 * This is the item that this entity is currently using.
+	 */
+	private Entity _activeItem;
+	
 	private List<EntityComponent> _components;
 	
 	public static Entity load(String path) throws Exception {
@@ -96,6 +101,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		
 		setContainer(null);
 		_inventory = new InventoryContainer(this);
+		setActiveItem(null);
 
 		setComponents(new ArrayList<EntityComponent>());
 	}
@@ -260,6 +266,42 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	public float getRangeOfVision() {
 		return getBaseRangeOfVision();
+	}
+	
+	public Entity getActiveItem() {
+		if (!getInventory().contains(_activeItem)) {
+			_activeItem = null;
+		}
+		return _activeItem;
+	}
+	
+	/**
+	 * The item will be added to this entity's inventory if it isn't already there.
+	 * 
+	 * @param item
+	 */
+	public void setActiveItem(Entity item) {
+		if (item != null) {
+			if (!getInventory().contains(item)) {
+				try {
+					getInventory().add(item);
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.err.println("Unable to set the active item.");
+				}
+			}
+		}
+		_activeItem = item;
+	}
+	
+	public Boolean hasActiveItem() {
+		return getActiveItem() != null;
+	}
+	
+	public void useActiveItem(Vector3f targetChunkPoint) {
+		if (hasActiveItem()) {
+			getActiveItem().use(targetChunkPoint);
+		}
 	}
 	
 	public void moveTo(Vector2f chunkPoint, float layer) {

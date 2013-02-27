@@ -4,6 +4,9 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.UnicodeFont;
 
 import asciiWorld.FontFactory;
+import asciiWorld.entities.Entity;
+import asciiWorld.entities.HotKeyInfo;
+import asciiWorld.entities.HotKeyManager;
 import asciiWorld.entities.InventoryContainer;
 
 public class InventoryView extends GridViewPanel {
@@ -11,16 +14,22 @@ public class InventoryView extends GridViewPanel {
 	private static final Color COLOR_TEXT_DESCRIPTION = Color.white;
 	private static final Color COLOR_TEXT_DETAILS = Color.yellow;
 	
+	//private InventoryContainer _inventory;
 	private ListView _itemList;
 	private GridViewPanel _itemDetails;
 
-	public InventoryView(InventoryContainer inventory) throws Exception {
+	public InventoryView(InventoryContainer inventory, HotKeyManager hotkeys) throws Exception {
 		super(1, 2);
+		
+		setColumnWidth(0, 0.25f);
+		setColumnWidth(1, 0.75f);
+		
+		//_inventory = inventory;
 		
 		_itemList = createItemList(inventory);
 		addChild(_itemList, 0, 0);
 		
-		_itemDetails = createDetailsPanel();
+		_itemDetails = createDetailsPanel(hotkeys);
 		addChild(_itemDetails, 0, 1);
 	}
 	
@@ -30,10 +39,10 @@ public class InventoryView extends GridViewPanel {
 		return itemsList;
 	}
 	
-	private GridViewPanel createDetailsPanel() throws Exception {
+	private GridViewPanel createDetailsPanel(final HotKeyManager hotkeys) throws Exception {
 		MethodBinding selectedItemBinding = new MethodBinding(_itemList, "getSelectedItem");
 		
-		GridViewPanel details = new GridViewPanel(6, 2);
+		GridViewPanel details = new GridViewPanel(7, 2);
 		
 		UnicodeFont largeFont = FontFactory.get().getResource(30);
 		
@@ -54,6 +63,28 @@ public class InventoryView extends GridViewPanel {
 		
 		details.addChild(new Label("Range of vision:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 5, 0);
 		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getRangeOfVision"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 5, 1);
+		
+		details.addChild(new Label("Hot key assignment:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 6, 0);
+		HotKeyPanel hotkeyPanel = new HotKeyPanel(hotkeys);
+		hotkeyPanel.addItemSelectedListener(new HotKeySelectedEvent() {
+			@Override
+			public void selected(HotKeyPanel sender, HotKeyInfo info) {
+				Entity item = (Entity)_itemList.getSelectedItem();
+				
+				for (HotKeyInfo hk : hotkeys) {
+					try {
+						if (hk.getItem() == item) {
+							hk.setItem(null);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				info.setItem(item);
+			}
+		});
+		details.addChild(hotkeyPanel, 6, 1);
 		
 		return details;
 	}

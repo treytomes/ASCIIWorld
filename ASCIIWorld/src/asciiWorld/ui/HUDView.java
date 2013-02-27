@@ -7,6 +7,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import asciiWorld.ASCIIWorldGame;
 import asciiWorld.Camera;
 import asciiWorld.entities.Entity;
+import asciiWorld.entities.HotKeyInfo;
+import asciiWorld.entities.HotKeyManager;
 
 public class HUDView extends CanvasPanel {
 	
@@ -20,9 +22,9 @@ public class HUDView extends CanvasPanel {
 	private Camera _camera;
 	private Entity _player;
 	
-	public HUDView(GameContainer container, StateBasedGame game) throws Exception {
+	public HUDView(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
 		super(new Rectangle(0, 0, container.getWidth(), container.getHeight()));
-		generateUI(container, game);
+		generateUI(container, game, hotkeys);
 	}
 	
 	public Camera getCamera() {
@@ -41,25 +43,27 @@ public class HUDView extends CanvasPanel {
 		_player = value;
 	}
 	
-	private void generateUI(GameContainer container, StateBasedGame game) throws Exception {
+	private void generateUI(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
 		//addChild(createTitleLabel());
-		addChild(createInventoryHotKeys());
+		addChild(createInventoryHotKeys(hotkeys));
 		addChild(createMenuPanel(container, game));
 		addChild(createZoomPanel());
 		//addChild(createPlayerPositionLabel());
 	}
 	
-	private StackPanel createInventoryHotKeys() throws Exception {
-		int numPanels = 10;
-		int panelSize = 32;
-		StackPanel panel = new StackPanel(new Rectangle(0, 0, (panelSize + MARGIN * 2) * numPanels, panelSize + MARGIN * 2), Orientation.Horizontal);
-
-		MethodBinding playerBinding = new MethodBinding(this, "getPlayer");
+	private HotKeyPanel createInventoryHotKeys(HotKeyManager hotkeys) throws Exception {
+		HotKeyPanel panel = new HotKeyPanel(hotkeys);
 		
-		for (int index = 0; index < numPanels; index++) {
-			HotKeyView itemPanel = new HotKeyView(playerBinding, index);
-			panel.addChild(itemPanel);
-		}
+		panel.addItemSelectedListener(new HotKeySelectedEvent() {
+			@Override
+			public void selected(HotKeyPanel sender, HotKeyInfo info) {
+				try {
+					getPlayer().setActiveItem(info.getItem());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		
 		return panel;
 	}

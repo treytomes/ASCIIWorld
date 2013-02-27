@@ -6,6 +6,8 @@ import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.chunks.Chunk;
+
 public abstract class InputAwareComponent extends EntityComponent implements KeyListener, MouseListener {
 	
 	//private Boolean _addedToKeyListeners;
@@ -24,6 +26,13 @@ public abstract class InputAwareComponent extends EntityComponent implements Key
 		}
 		super.update(container, game, deltaTime);
 	}
+	
+	@Override
+	public void afterRemovedFromChunk(Chunk chunk) {
+		super.afterRemovedFromChunk(chunk);
+		
+		setInput(null);
+	}
 
 	@Override
 	public void setInput(Input input) {
@@ -31,9 +40,13 @@ public abstract class InputAwareComponent extends EntityComponent implements Key
 			_input.removeKeyListener(this);
 			_input.removeMouseListener(this);
 		}
+		
 		_input = input;
-		_input.addKeyListener(this);
-		_input.addMouseListener(this);
+		
+		if (_input != null) {
+			_input.addKeyListener(this);
+			_input.addMouseListener(this);
+		}
 	}
 	
 	public Input getInput() {

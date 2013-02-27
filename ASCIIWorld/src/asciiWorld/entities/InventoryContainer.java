@@ -23,14 +23,22 @@ public class InventoryContainer implements Iterable<Entity> {
 	}
 	
 	public Entity getItemAt(Integer index) {
-		return _items.get(index);
+		if ((index < 0) || (index > _items.size())) {
+			return null;
+		} else {
+			return _items.get(index);
+		}
+	}
+	
+	public Boolean contains(Entity item) {
+		return _items.contains(item);
 	}
 	
 	public void remove(Entity item) throws Exception {
 		if (item == null) {
 			throw new Exception("Please specify an item to remove from the inventory.");
 		}
-		else if (!_items.contains(item)) {
+		else if (!contains(item)) {
 			throw new Exception("That item is not in the inventory.");
 		} else {
 			_items.remove(item);
@@ -42,7 +50,7 @@ public class InventoryContainer implements Iterable<Entity> {
 		if (item == null) {
 			throw new Exception("Please specify an item to add to the inventory.");
 		}
-		else if (_items.contains(item)) {
+		else if (contains(item)) {
 			throw new Exception("That item is already in the inventory.");
 		} else {
 			if (item.getChunk() != null) {

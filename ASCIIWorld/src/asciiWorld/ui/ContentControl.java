@@ -48,6 +48,15 @@ public abstract class ContentControl extends FrameworkElement {
 	}
 	
 	@Override
+	public FrameworkElement findMouseHover() {
+		FrameworkElement mouseHover = getContent().findMouseHover();
+		if (mouseHover != null) {
+			return mouseHover;
+		}
+		return super.findMouseHover();
+	}
+	
+	@Override
 	public void render(Graphics g) {
 		Rectangle previousWorldClip = setTransform(g);
 		

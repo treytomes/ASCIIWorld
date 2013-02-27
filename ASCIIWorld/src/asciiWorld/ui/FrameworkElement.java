@@ -26,6 +26,7 @@ public abstract class FrameworkElement {
 	private Margin _margin;
 	
 	private FrameworkElement _parent;
+	private FrameworkElement _inputFocus;
 	
 	private Boolean _inputHandled;
 
@@ -74,6 +75,28 @@ public abstract class FrameworkElement {
 	
 	public void removeMouseUpListener(MouseButtonEvent listener) {
 		_mouseUpListeners.remove(listener);
+	}
+	
+	public FrameworkElement findMouseHover() {
+		if (containsMouse()) {
+			return this;
+		} else {
+			return null;
+		}
+	}
+	
+	public FrameworkElement getInputFocus() {
+		if (getParent() != null) {
+			return getParent().getInputFocus();
+		}
+		return _inputFocus;
+	}
+	
+	public void setInputFocus(FrameworkElement value) {
+		_inputFocus = value;
+		if (getParent() != null) {
+			getParent().setInputFocus(value);
+		}
 	}
 	
 	/**
@@ -218,10 +241,10 @@ public abstract class FrameworkElement {
 	
 	private void updateMouseEvents(Input input) {
 		Vector2f mousePosition = new Vector2f(input.getMouseX(), input.getMouseY());
-		
+
 		Boolean lastFrameContainedMouse = _containsMouse;
 		_containsMouse = contains(mousePosition);
-		
+
 		if (_containsMouse && !lastFrameContainedMouse) {
 			for (MousePositionEvent l : _mouseOverListeners) {
 				l.mousePositionChanged(this, mousePosition);
@@ -230,11 +253,9 @@ public abstract class FrameworkElement {
 		else if (lastFrameContainedMouse && !_containsMouse) {
 			releaseMouseHover(input);
 		}
-		
+
 		if (_containsMouse) {
-			checkMouseButtonState(input, MouseButton.Left, mousePosition);
-			checkMouseButtonState(input, MouseButton.Middle, mousePosition);
-			checkMouseButtonState(input, MouseButton.Right, mousePosition);
+			checkMouseButtonStates(input, mousePosition);
 
 			setInputHandled(true);
 		} else {
@@ -244,10 +265,22 @@ public abstract class FrameworkElement {
 	
 	protected void releaseMouseHover(Input input) {
 		Vector2f mousePosition = new Vector2f(input.getMouseX(), input.getMouseY());
-		_containsMouse = false;
 		for (MousePositionEvent l : _mouseOutListeners) {
 			l.mousePositionChanged(this, mousePosition);
 		}
+	}
+	
+	/**
+	 * If the state of the mouse button has changed since the last frame,
+	 * invoke the relevant event handler.
+	 * 
+	 * @param input
+	 * @param mousePosition
+	 */
+	private void checkMouseButtonStates(Input input, Vector2f mousePosition) {
+		checkMouseButtonState(input, MouseButton.Left, mousePosition);
+		checkMouseButtonState(input, MouseButton.Middle, mousePosition);
+		checkMouseButtonState(input, MouseButton.Right, mousePosition);
 	}
 	
 	private void checkMouseButtonState(Input input, MouseButton button, Vector2f mousePosition) {
@@ -258,11 +291,13 @@ public abstract class FrameworkElement {
 			for (MouseButtonEvent l : _mouseDownListeners) {
 				l.mouseButtonChanged(this, button, mousePosition);
 			}
+			setInputFocus(this);
 		}
 		else if (lastState && !currentState) {
 			for (MouseButtonEvent l : _mouseUpListeners) {
 				l.mouseButtonChanged(this, button, mousePosition);
 			}
+			setInputFocus(this);
 		}
 	}
 	

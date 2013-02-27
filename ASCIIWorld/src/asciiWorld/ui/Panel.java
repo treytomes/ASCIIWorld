@@ -12,12 +12,10 @@ public abstract class Panel extends FrameworkElement {
 	
 	private Rectangle _bounds;
 	private List<FrameworkElement> _children;
-	private FrameworkElement _inputFocus;
 	
 	public Panel(Rectangle bounds) {
 		_bounds = bounds;
 		_children = new ArrayList<FrameworkElement>();
-		_inputFocus = null;
 	}
 	
 	public Boolean containsChild(FrameworkElement child) {
@@ -60,6 +58,18 @@ public abstract class Panel extends FrameworkElement {
 	}
 	
 	@Override
+	public FrameworkElement findMouseHover() {
+		FrameworkElement mouseHover = null;
+		for (FrameworkElement elem : getChildren()) {
+			mouseHover = elem.findMouseHover();
+			if (mouseHover != null) {
+				return mouseHover;
+			}
+		}
+		return super.findMouseHover();
+	}
+	
+	@Override
 	public void render(Graphics g) {
 		Rectangle previousWorldClip = setTransform(g);
 		
@@ -76,7 +86,7 @@ public abstract class Panel extends FrameworkElement {
 		setInputHandled(false);
 		
 		if (shouldHandleNewInput()) {
-			if (_inputFocus != null) {
+			/*if (_inputFocus != null) {
 				_inputFocus.update(container, delta);
 				if (_inputFocus.getInputHandled()) {
 					setInputHandled(true);
@@ -85,6 +95,7 @@ public abstract class Panel extends FrameworkElement {
 					_inputFocus = null;
 				}
 			}
+			*/
 			
 			if (!getInputHandled()) {
 				//List<FrameworkElement> reverseChildCopy = new ArrayList<FrameworkElement>(_children);
@@ -95,9 +106,9 @@ public abstract class Panel extends FrameworkElement {
 					//if (getInputHandled()) {
 					//	continue;
 					//}
-					if (child == _inputFocus) {
+					/*if (child == _inputFocus) {
 						continue;
-					}
+					}*/
 					
 					child.update(container, delta);
 					if (child.getInputHandled()) {

@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.chunks.ChunkFactory;
 import asciiWorld.entities.Entity;
+import asciiWorld.entities.HotKeyManager;
 import asciiWorld.entities.PlayerControlComponent;
 import asciiWorld.tiles.TileFactory;
 import asciiWorld.tiles.TileSet;
@@ -83,10 +84,13 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 			throw new SlickException("Unable to generate the chunk.", e);
 		}
 		
+		PlayerControlComponent playerControl = null;
+		
 		try {
 			_player = new Entity();
 			_camera = new Camera(this, _player, 4.0f);
-			_player.getComponents().add(new PlayerControlComponent(_player, _camera));
+			playerControl = new PlayerControlComponent(_player, _camera);
+			_player.getComponents().add(playerControl);
 			_player.moveTo(_chunk.findRandomSpawnPoint(Chunk.LAYER_OBJECT));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -101,7 +105,7 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		}
 		
 		try {
-			generateUI(container, game);
+			generateUI(container, game, playerControl.getHotKeyManager());
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to generate the user interface.");
@@ -179,8 +183,8 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		return _stateID;
 	}
 	
-	private void generateUI(final GameContainer container, final StateBasedGame game) throws Exception {
-		HUDView hud = new HUDView(container, game);
+	private void generateUI(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
+		HUDView hud = new HUDView(container, game, hotkeys);
 		hud.setCamera(_camera);
 		hud.setPlayer(_player);
 		RootVisualPanel.get().addChild(hud);

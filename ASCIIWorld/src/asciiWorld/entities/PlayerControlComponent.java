@@ -9,6 +9,7 @@ import asciiWorld.Camera;
 import asciiWorld.CreateRectangle;
 import asciiWorld.Direction;
 import asciiWorld.Vector3f;
+import asciiWorld.ui.HUDView;
 import asciiWorld.ui.InventoryView;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.WindowPanel;
@@ -25,17 +26,27 @@ public class PlayerControlComponent extends InputAwareComponent {
 	private WindowPanel _inventoryUI;
 	private Direction _movingDirection;
 	private Camera _camera;
+	private HotKeyManager _hotkeys;
 
 	public PlayerControlComponent(Entity owner, Camera camera) {
 		super(owner);
 		_inventoryUI = null;
 		_movingDirection = null;
 		_camera = camera;
+		_hotkeys = new HotKeyManager(getOwner());
+	}
+	
+	public HotKeyManager getHotKeyManager() {
+		return _hotkeys;
 	}
 	
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
 		super.update(container, game, deltaTime);
+		
+		if (!isAcceptingInput()) {
+			_movingDirection = null;
+		}
 		
 		if (_movingDirection != null) {
 			getOwner().move(_movingDirection);
@@ -44,7 +55,17 @@ public class PlayerControlComponent extends InputAwareComponent {
 	
 	@Override
 	public boolean isAcceptingInput() {
-		return !isInventoryUIOpen();
+		if (isInventoryUIOpen()) {
+			return false;
+		}
+		try {
+			if (!(RootVisualPanel.get().findMouseHover() instanceof HUDView)) {
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 	
 	@Override
@@ -88,11 +109,7 @@ public class PlayerControlComponent extends InputAwareComponent {
 		switch (button) {
 		case Input.MOUSE_LEFT_BUTTON:
 			try {
-				Entity owner = getOwner();
-				InventoryContainer inventory = owner.getInventory();
-				if (inventory.getItemCount() > 0) {
-					inventory.getItemAt(0).use(getChunkPointAtMousePosition(x, y));
-				}
+				getOwner().useActiveItem(getChunkPointAtMousePosition(x, y));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -109,6 +126,10 @@ public class PlayerControlComponent extends InputAwareComponent {
 	}
 	
 	private void openInventoryInterface() {
+		if (isInventoryUIOpen()) {
+			return;
+		}
+		
 		try {
 			InventoryContainer inventory = getOwner().getInventory();
 			createInventoryWindow(inventory);
@@ -128,7 +149,7 @@ public class PlayerControlComponent extends InputAwareComponent {
 				.getRectangle();
 		
 		_inventoryUI = new WindowPanel(bounds, "Inventory");
-		_inventoryUI.setWindowContent(new InventoryView(inventory));
+		_inventoryUI.setWindowContent(new InventoryView(inventory, getHotKeyManager()));
 		
 		root.addModalChild(_inventoryUI);
 	}

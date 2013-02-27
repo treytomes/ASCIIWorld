@@ -48,10 +48,29 @@ public class MethodBinding {
 				source = ((MethodBinding)source).getValue();
 			}
 			
-			return source.getClass().getMethod(getMethodName(), getClassesFor(_arguments)).invoke(source, _arguments);
+			Object[] arguments = getArguments();
+			return source.getClass().getMethod(getMethodName(), getClassesFor(arguments)).invoke(source, arguments);
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	/**
+	 * Processes any MethodBindings in the arguments list.
+	 * 
+	 * @return
+	 */
+	private Object[] getArguments() {
+		Object[] argumentsCopy = new Object[_arguments.length];
+		for (int index = 0; index < _arguments.length; index++) {
+			Object arg = _arguments[index];
+			if (arg instanceof MethodBinding) {
+				argumentsCopy[index] = ((MethodBinding)arg).getValue();
+			} else {
+				argumentsCopy[index] = arg;
+			}
+		}
+		return argumentsCopy;
 	}
 	
 	private Class<?>[] getClassesFor(Object[] values) {
