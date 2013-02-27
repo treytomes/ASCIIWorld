@@ -1,9 +1,7 @@
 package asciiWorld.ui;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.ASCIIWorldGame;
@@ -56,16 +54,10 @@ public class HUDView extends CanvasPanel {
 		int panelSize = 32;
 		StackPanel panel = new StackPanel(new Rectangle(0, 0, (panelSize + MARGIN * 2) * numPanels, panelSize + MARGIN * 2), Orientation.Horizontal);
 
-		MethodBinding getPlayerBinding = new MethodBinding(this, "getPlayer");
-		MethodBinding getInventoryBinding = new MethodBinding(getPlayerBinding, "getInventory");
+		MethodBinding playerBinding = new MethodBinding(this, "getPlayer");
 		
 		for (int index = 0; index < numPanels; index++) {
-			Border itemPanel = new Border(new RoundedRectangle(0, 0, panelSize, panelSize, 8), new Color(0.2f, 0.0f, 1.0f, 0.5f), true);
-			itemPanel.getMargin().setValue(MARGIN);
-
-			MethodBinding getItemAtBinding = new MethodBinding(getInventoryBinding, "getItemAt", index);
-			MethodBinding getTileBinding = new MethodBinding(getItemAtBinding, "getTile");
-			itemPanel.setContent(new TileView(getTileBinding));
+			HotKeyView itemPanel = new HotKeyView(playerBinding, index);
 			panel.addChild(itemPanel);
 		}
 		
