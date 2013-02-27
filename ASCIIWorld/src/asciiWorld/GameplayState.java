@@ -1,8 +1,5 @@
 package asciiWorld;
 
-import java.io.IOException;
-
-import org.jdom2.JDOMException;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -22,6 +19,8 @@ import asciiWorld.ui.HUDView;
 import asciiWorld.ui.RootVisualPanel;
 
 public class GameplayState extends BasicGameState implements IHasBounds {
+	
+	private static final String TILESET_NAME = "resources/tileSets/OEM437.xml";
 	
 	private int _stateID = -1;
 	
@@ -67,9 +66,10 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		_font = FontFactory.get().getDefaultFont();
 		
 		try {
-			_tiles = TileSet.load("resources/tileSets/OEM437.xml");
-		} catch (JDOMException | IOException e) {
-			System.err.println("Unable to load the tileset resources.");
+			_tiles = TileSet.load(TILESET_NAME);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Unable to load the tileset resource.");
 		}
 	}
 	
@@ -103,6 +103,7 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		try {
 			generateUI(container, game);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Unable to generate the user interface.");
 		}
 		

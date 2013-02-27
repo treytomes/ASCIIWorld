@@ -11,7 +11,7 @@ import asciiWorld.Camera;
 import asciiWorld.entities.Entity;
 
 public class HUDView extends CanvasPanel {
-
+	
 	private static final float ZOOM_INCREMENT = 0.1f;
 	
 	//private static final String STATE_TITLE = "Gameplay State";
@@ -24,7 +24,6 @@ public class HUDView extends CanvasPanel {
 	
 	public HUDView(GameContainer container, StateBasedGame game) throws Exception {
 		super(new Rectangle(0, 0, container.getWidth(), container.getHeight()));
-		
 		generateUI(container, game);
 	}
 	
@@ -56,10 +55,17 @@ public class HUDView extends CanvasPanel {
 		int numPanels = 10;
 		int panelSize = 32;
 		StackPanel panel = new StackPanel(new Rectangle(0, 0, (panelSize + MARGIN * 2) * numPanels, panelSize + MARGIN * 2), Orientation.Horizontal);
+
+		MethodBinding getPlayerBinding = new MethodBinding(this, "getPlayer");
+		MethodBinding getInventoryBinding = new MethodBinding(getPlayerBinding, "getInventory");
 		
 		for (int index = 0; index < numPanels; index++) {
 			Border itemPanel = new Border(new RoundedRectangle(0, 0, panelSize, panelSize, 8), new Color(0.2f, 0.0f, 1.0f, 0.5f), true);
 			itemPanel.getMargin().setValue(MARGIN);
+
+			MethodBinding getItemAtBinding = new MethodBinding(getInventoryBinding, "getItemAt", index);
+			MethodBinding getTileBinding = new MethodBinding(getItemAtBinding, "getTile");
+			itemPanel.setContent(new TileView(getTileBinding));
 			panel.addChild(itemPanel);
 		}
 		

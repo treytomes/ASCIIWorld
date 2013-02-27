@@ -22,7 +22,7 @@ public class InventoryContainer implements Iterable<Entity> {
 		return _items.size();
 	}
 	
-	public Entity getItemAt(int index) {
+	public Entity getItemAt(Integer index) {
 		return _items.get(index);
 	}
 	

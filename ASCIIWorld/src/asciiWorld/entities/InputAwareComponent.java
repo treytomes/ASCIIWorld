@@ -6,7 +6,7 @@ import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class InputAwareComponent extends EntityComponent implements KeyListener, MouseListener {
+public abstract class InputAwareComponent extends EntityComponent implements KeyListener, MouseListener {
 	
 	//private Boolean _addedToKeyListeners;
 	private Input _input;
