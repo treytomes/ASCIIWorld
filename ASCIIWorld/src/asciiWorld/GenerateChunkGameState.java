@@ -52,6 +52,20 @@ public class GenerateChunkGameState extends GameState {
 			e.printStackTrace();
 		}
 		_loggingWindow.getMessageLabel().setText(_logStream.toString());
+		
+		if (isComplete()) {
+			try {
+				getManager().switchTo(new LoadGraphicsGameState(getChunk()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			RootVisualPanel.get().update(container, delta);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

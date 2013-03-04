@@ -108,7 +108,7 @@ public class ASCIIWorldGame extends StateBasedGame {
 		}
 		
 		addState(new MainMenuState(STATE_MAINMENU));
-		addState(new GameplayState(STATE_GAMEPLAY));
+		addState(new SlickGameplayState(STATE_GAMEPLAY));
 		addState(new TextEditorState(STATE_TEXTEDITOR));
 		addState(new ConsoleState(STATE_CONSOLE));
 		

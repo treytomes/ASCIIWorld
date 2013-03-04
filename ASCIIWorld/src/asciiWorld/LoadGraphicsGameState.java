@@ -1,6 +1,7 @@
 package asciiWorld;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -57,6 +58,29 @@ public class LoadGraphicsGameState extends GameState {
 		generateUI(container, game, _playerControl.getHotKeyManager());
 		generateGreeting();
 		_isComplete = true;
+		
+		if (isComplete()) {
+			try {
+				getManager().switchTo(new GameplayState(getChunk(), getCamera()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			RootVisualPanel.get().update(container, delta);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void render(GameContainer container, StateBasedGame game, Graphics g) {
+		try {
+			RootVisualPanel.get().render(g);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void generateGreeting() {
