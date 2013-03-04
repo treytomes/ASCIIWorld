@@ -24,59 +24,11 @@ public class MessageBox extends WindowPanel {
 	private List<MessageBoxClosedEvent> _closedListeners;
 
 	private Boolean _isModal;
-	private String _message;
+	private Label _messageLabel;
 	//private String _acceptButtonText;
 	//private String _cancelButtonText;
 	
 	private Boolean _result;
-	
-	private MessageBox(RootVisualPanel rootUI, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
-		super(createBounds(rootUI), title);
-		
-		_closedListeners = new ArrayList<MessageBoxClosedEvent>();
-		
-		_isModal = isModal;
-		//_acceptButtonText = acceptButtonText;
-		//_cancelButtonText = cancelButtonText;
-		_message = message;
-		_result = false;
-		
-		Label messageLabel = new Label(new Vector2f(0, 0), _message, COLOR_TEXT_MESSAGE);
-		messageLabel.getMargin().setValue(5);
-		messageLabel.setHorizontalContentAlignment(HorizontalAlignment.Left);
-		messageLabel.setVerticalContentAlignment(VerticalAlignment.Top);
-		
-		setWindowContent(messageLabel);
-	}
-	
-	private static RoundedRectangle createBounds(RootVisualPanel rootUI) {
-		return CreateRectangle
-				.from(rootUI.getBounds())
-				.scale(1.0f / 3.0f, 2.0f / 3.0f)
-				.centerOn(rootUI.getBounds())
-				.setCornerRadius(8)
-				.getRectangle();
-	}
-	
-	public Boolean isModal() {
-		return _isModal;
-	}
-	
-	public void addClosedListener(MessageBoxClosedEvent listener) {
-		_closedListeners.add(listener);
-	}
-	
-	public void removeClosedListener(MessageBoxClosedEvent listener) {
-		_closedListeners.remove(listener);
-	}
-	
-	public Boolean isOpen() {
-		return getParent() != null;
-	}
-	
-	public Boolean getResult() {
-		return _result;
-	}
 	
 	public static MessageBox create(RootVisualPanel rootUI, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
 		return new MessageBox(rootUI, isModal, message, title, acceptButtonText, cancelButtonText);
@@ -122,6 +74,57 @@ public class MessageBox extends WindowPanel {
 				throw new Exception("Invalid message source type.");
 			}
 		}
+	}
+	
+	private MessageBox(RootVisualPanel rootUI, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
+		super(createBounds(rootUI), title);
+		
+		_closedListeners = new ArrayList<MessageBoxClosedEvent>();
+		
+		_isModal = isModal;
+		//_acceptButtonText = acceptButtonText;
+		//_cancelButtonText = cancelButtonText;
+		_result = false;
+		
+		_messageLabel = new Label(new Vector2f(0, 0), message, COLOR_TEXT_MESSAGE);
+		_messageLabel.getMargin().setValue(5);
+		_messageLabel.setHorizontalContentAlignment(HorizontalAlignment.Left);
+		_messageLabel.setVerticalContentAlignment(VerticalAlignment.Top);
+		
+		setWindowContent(_messageLabel);
+	}
+	
+	private static RoundedRectangle createBounds(RootVisualPanel rootUI) {
+		return CreateRectangle
+				.from(rootUI.getBounds())
+				.scale(1.0f / 3.0f, 2.0f / 3.0f)
+				.centerOn(rootUI.getBounds())
+				.setCornerRadius(8)
+				.getRectangle();
+	}
+	
+	public Label getMessageLabel() {
+		return _messageLabel;
+	}
+	
+	public Boolean isModal() {
+		return _isModal;
+	}
+	
+	public void addClosedListener(MessageBoxClosedEvent listener) {
+		_closedListeners.add(listener);
+	}
+	
+	public void removeClosedListener(MessageBoxClosedEvent listener) {
+		_closedListeners.remove(listener);
+	}
+	
+	public Boolean isOpen() {
+		return getParent() != null;
+	}
+	
+	public Boolean getResult() {
+		return _result;
 	}
 	
 	/*private StackPanel getButtons(Rectangle dialogBounds, final String firstButtonText, final String secondButtonText) throws Exception {
