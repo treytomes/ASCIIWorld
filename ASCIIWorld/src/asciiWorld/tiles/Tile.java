@@ -151,6 +151,10 @@ public class Tile implements ITile {
 		tiles.draw(getTileIndex(), position, getForegroundColor(), getRotation(), getEffect());
 	}
 	
+	public void render(TileSet tiles) {
+		render(tiles, new Vector2f(0, 0));
+	}
+	
 	public Tile clone() {
 		return new Tile(this);
 	}

@@ -1,6 +1,7 @@
 package asciiWorld.ui;
 
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Vector2f;
 
 public class GridViewPanel extends Panel {
 	
@@ -115,8 +116,9 @@ public class GridViewPanel extends Panel {
 				float columnWidth = parentWidth * getColumnWidth(column);
 				
 				if (_gridChildren[row][column] == child) {
-					childBounds.setX(x);
-					childBounds.setY(y);
+					child.moveTo(new Vector2f(x, y));
+					//childBounds.setX(x);
+					//childBounds.setY(y);
 					childBounds.setWidth(columnWidth);
 					childBounds.setHeight(rowHeight);
 					

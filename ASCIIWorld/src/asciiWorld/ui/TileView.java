@@ -69,14 +69,21 @@ public class TileView extends FrameworkElement {
 			try {
 				Tile tile = getTile();
 				if (tile != null) {
-					//float scale = getScale();
-					//Rectangle bounds = getBounds();
-					//g.scale(scale, scale);
-					//g.translate((_position.x - bounds.getWidth() / 2) / scale, (_position.y - bounds.getHeight() / 2) / scale);
-					//tile.render(getTileSet(), new Vector2f(0, 0));
-					//g.resetTransform();
+					float scale = getScale();
 					
-					tile.render(getTileSet(), _position);
+					float parentWidth = getParent().getBounds().getWidth();
+					float parentHeight = getParent().getBounds().getHeight();
+					float myWidth = getBounds().getWidth();
+					float myHeight = getBounds().getHeight();
+					float centerX = _position.x + (parentWidth - myWidth) / 2;
+					float centerY = _position.y + (parentHeight - myHeight) / 2;
+
+					g.scale(scale, scale);
+					
+					g.translate(centerX / scale - scale, centerY / scale - scale);
+					tile.render(getTileSet());
+					
+					g.resetTransform();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

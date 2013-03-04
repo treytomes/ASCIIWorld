@@ -6,6 +6,7 @@ import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.CreateColor;
+import asciiWorld.FontFactory;
 import asciiWorld.entities.HotKeyInfo;
 
 public class HotKeyView extends Border {
@@ -34,12 +35,13 @@ public class HotKeyView extends Border {
 		};
 		setContent(_selectionBorder);
 		
-		GridViewPanel grid = new GridViewPanel(2, 1) {
+		GridViewPanel grid = new GridViewPanel(4, 4) {
 			@Override
 			public void update(GameContainer container, int delta) {
 				// Don't do anything.
 			}
 		};
+		_selectionBorder.setContent(grid);
 		
 		_tileView = new TileView(getTileBinding()) {
 			@Override
@@ -49,16 +51,13 @@ public class HotKeyView extends Border {
 		};
 		grid.addChild(_tileView, 0, 0);
 		
-		Label label = new Label(info.getKeyboardKeyName(), Color.white) {
+		Label label = new Label(FontFactory.get().getResource(10), info.getKeyboardKeyName(), Color.white) {
 			@Override
 			public void update(GameContainer container, int delta) {
 				// Don't do anything.
 			}
 		};
-		grid.addChild(label, 1, 0);
-		
-		//setContent(grid);
-		_selectionBorder.setContent(_tileView);
+		grid.addChild(label, 3, 3);
 		
 		addMouseOverListener(new MousePositionEvent() {
 			@Override
