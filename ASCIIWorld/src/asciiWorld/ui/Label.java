@@ -12,7 +12,10 @@ import asciiWorld.tiles.StaticText;
 
 public class Label extends FrameworkElement {
 
+	private static final HorizontalAlignment DEFAULT_HORIZONTAL_ALIGNMENT = HorizontalAlignment.Center;
+	private static final VerticalAlignment DEFAULT_VERTICAL_ALIGNMENT = VerticalAlignment.Center;
 	private static final int DEFAULT_MARGIN = 5;
+	private static final TextWrappingMode DEFAULT_TEXT_WRAPPING_MODE = TextWrappingMode.WordWrap;
 	
 	private static UnicodeFont _defaultFont = null;
 	
@@ -20,6 +23,7 @@ public class Label extends FrameworkElement {
 	private UnicodeFont _font = null;
 	private Object _textBinding = null;
 	private Color _color;
+	private TextWrappingMode _textWrappingMode;
 	
 	private HorizontalAlignment _horizontalContentAlignment;
 	private VerticalAlignment _verticalContentAlignment;
@@ -37,25 +41,18 @@ public class Label extends FrameworkElement {
 		_font = font;
 		_color = color;
 		
-		setHorizontalContentAlignment(HorizontalAlignment.Center);
-		setVerticalContentAlignment(VerticalAlignment.Center);
+		setHorizontalContentAlignment(DEFAULT_HORIZONTAL_ALIGNMENT);
+		setVerticalContentAlignment(DEFAULT_VERTICAL_ALIGNMENT);
 		setTextBinding(textBinding);
 		getMargin().setValue(DEFAULT_MARGIN);
+		setTextWrappingMode(DEFAULT_TEXT_WRAPPING_MODE);
 		
 		_bounds = new Rectangle(position.x, position.y, _font.getWidth(getText()), _font.getHeight(getText()));
 	}
 	
-	/*public Label(Vector2f position, UnicodeFont font, String text, Color color) {
-		this(position, font, textBinding, color);
-	}*/
-	
 	public Label(UnicodeFont font, Object textBinding, Color color) {
 		this(new Vector2f(0, 0), font, textBinding, color);
 	}
-	
-	/*public Label(UnicodeFont font, Object textBinding, Color color) {
-		this(font, textBinding, color);
-	}*/
 	
 	public Label(Vector2f position, Object textBinding, Color color) throws SlickException {
 		this(position, getDefaultFont(), textBinding, color);
@@ -63,6 +60,14 @@ public class Label extends FrameworkElement {
 	
 	public Label(Object textBinding, Color color) throws SlickException {
 		this(new Vector2f(0, 0), getDefaultFont(), textBinding, color);
+	}
+	
+	public TextWrappingMode getTextWrappingMode() {
+		return _textWrappingMode;
+	}
+	
+	public void setTextWrappingMode(TextWrappingMode value) {
+		_textWrappingMode = value;
 	}
 	
 	public HorizontalAlignment getHorizontalContentAlignment() {
@@ -127,12 +132,16 @@ public class Label extends FrameworkElement {
 		Rectangle previousWorldClip = setTransform(g);
 		
 		if (_lastFrameText != getText()) {
-			resetBounds();
+			if (getParent() != null) {
+				getParent().resetBounds();
+			} else {
+				resetBounds();
+			}
 		}
 		
 		float contentWidth = getBounds().getWidth() - getMargin().getLeftMargin() - getMargin().getRightMargin();
-		
 		Vector2f textPosition = getTextPosition();
+		TextWrappingMode textWrappingMode = getTextWrappingMode();
 		
 		String remainingText = getText();
 		while (remainingText.length() > 0) {
@@ -159,7 +168,7 @@ public class Label extends FrameworkElement {
 				if (substring.endsWith("\n")) { // System.lineSeparator();
 					break;
 				}
-				if (_font.getWidth(substring) < contentWidth) {
+				if ((_font.getWidth(substring) < contentWidth) || (textWrappingMode == TextWrappingMode.NoWrap)) {
 					lengthToChop++;
 				} else {
 					break;
@@ -169,20 +178,22 @@ public class Label extends FrameworkElement {
 				lengthToChop--;
 			}
 			
-			// Prevent words being chopped in half:
-			if (lengthToChop < remainingText.length()) {
-				String subCheck = remainingText.substring(0, lengthToChop + 1);
-				String lineSeparator = "\n"; // System.lineSeparator();
-				if (!subCheck.endsWith(lineSeparator)) {
-					while ((lengthToChop > 0) && !Character.isWhitespace(remainingText.charAt(lengthToChop - 1))) {
-						if (Character.isWhitespace(remainingText.charAt(lengthToChop))) {
-							break;
+			if (textWrappingMode == TextWrappingMode.WordWrap) {
+				// Prevent words being chopped in half:
+				if (lengthToChop < remainingText.length()) {
+					String subCheck = remainingText.substring(0, lengthToChop + 1);
+					String lineSeparator = "\n"; // System.lineSeparator();
+					if (!subCheck.endsWith(lineSeparator)) {
+						while ((lengthToChop > 0) && !Character.isWhitespace(remainingText.charAt(lengthToChop - 1))) {
+							if (Character.isWhitespace(remainingText.charAt(lengthToChop))) {
+								break;
+							}
+							lengthToChop--;
 						}
-						lengthToChop--;
 					}
 				}
+				// This will also prevent the final space from being rendered on the next line.
 			}
-			// This will also prevent the final space from being rendered on the next line.
 			
 			// Make sure that the substring is no longer than the length of the remaining text:
 			if (lengthToChop > remainingText.length()) {
