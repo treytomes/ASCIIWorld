@@ -83,10 +83,14 @@ public class WindowPanel extends Border {
 	
 	public void closeWindow() {
 		try {
-			getRoot().modalWindowIsClosing();
-			getParent().setParent(null); // close the modal panel
-			setParent(null); // close the inventory window
-			//_inventoryUI = null;
+			if (getRoot() instanceof RootVisualPanel) {
+				// Ensure that this window can only be closed once.
+				getRoot().modalWindowIsClosing();
+				if (getParent() != null) {
+					getParent().setParent(null); // close the modal panel
+					setParent(null); // close the inventory window
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Error while attempting to close the window.");

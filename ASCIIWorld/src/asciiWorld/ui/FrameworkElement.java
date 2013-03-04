@@ -126,10 +126,18 @@ public abstract class FrameworkElement {
 		return _parent;
 	}
 	
+	/**
+	 * 
+	 * @return The RootVisualPanel, or null if it is not present.
+	 */
 	public RootVisualPanel getRoot() {
 		FrameworkElement parent = getParent();
 		if (parent == null) {
-			return (RootVisualPanel)this;
+			if (this instanceof RootVisualPanel) {
+				return (RootVisualPanel)this;
+			} else {
+				return null;
+			}
 		}
 		while (parent.getParent() != null) {
 			parent = parent.getParent();

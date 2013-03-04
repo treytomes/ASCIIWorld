@@ -1,5 +1,7 @@
 package asciiWorld.chunks;
 
+import java.io.PrintStream;
+
 import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.RandomFactory;
@@ -92,9 +94,9 @@ public class ChunkFactory {
 		return chunk;
 	}
 	
-	public static Chunk generateOverworld() throws Exception {
+	public static Chunk generateOverworld(PrintStream logStream) throws Exception {
 		Chunk chunk = new Chunk();
 		long seed = RandomFactory.get().nextInt(0, Integer.MAX_VALUE);
-		return new PerlinOverworldChunkGenerator().generate(chunk, seed);
+		return new PerlinOverworldChunkGenerator().generate(chunk, seed, logStream);
 	}
 }

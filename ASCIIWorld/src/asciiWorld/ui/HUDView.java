@@ -1,5 +1,6 @@
 package asciiWorld.ui;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
@@ -84,10 +85,11 @@ public class HUDView extends CanvasPanel {
 	}
 	
 	private StackPanel createZoomPanel() throws Exception {
-		int numZoomButtons = 2;
+		int numItems = 3;
 
-		StackPanel zoomButtonPanel = new StackPanel(new Rectangle(getBounds().getWidth() - BUTTON_WIDTH * numZoomButtons - MARGIN, getBounds().getHeight() - BUTTON_HEIGHT - MARGIN, BUTTON_WIDTH * numZoomButtons, BUTTON_HEIGHT));
+		StackPanel zoomButtonPanel = new StackPanel(new Rectangle(getBounds().getWidth() - BUTTON_WIDTH * numItems - MARGIN, getBounds().getHeight() - BUTTON_HEIGHT - MARGIN, BUTTON_WIDTH * numItems, BUTTON_HEIGHT));
 		zoomButtonPanel.addChild(Button.createActionButton("Zoom +", new MethodBinding(this, "zoomIn")));
+		zoomButtonPanel.addChild(new Label(new MethodBinding(new MethodBinding(this, "getCamera"), "getScale"), Color.white));
 		zoomButtonPanel.addChild(Button.createActionButton("Zoom -", new MethodBinding(this, "zoomOut")));
 		
 		return zoomButtonPanel;

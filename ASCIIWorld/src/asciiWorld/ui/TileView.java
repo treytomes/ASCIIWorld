@@ -25,6 +25,7 @@ public class TileView extends FrameworkElement {
 		try {
 			_tiles = TileSet.load(TILESET_NAME);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Unable to load the tileset resource.");
 		}
 	}
