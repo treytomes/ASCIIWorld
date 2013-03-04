@@ -27,6 +27,13 @@ public class Chunk {
 	public Chunk() {
 		_entities = new ArrayList<Entity>();
 	}
+
+	public void clearEntities() {
+		List<Entity> children = getEntities();
+		while (children.size() != 0) {
+			removeEntity(children.get(0));
+		}
+	}
 	
 	public List<Entity> getEntities() {
 		return _entities;

@@ -1,10 +1,5 @@
 package asciiWorld;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.List;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -15,23 +10,17 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.chunks.Chunk;
-import asciiWorld.chunks.ChunkFactory;
 import asciiWorld.entities.Entity;
-import asciiWorld.entities.HotKeyManager;
-import asciiWorld.entities.PlayerControlComponent;
-import asciiWorld.tiles.TileFactory;
 import asciiWorld.tiles.TileSet;
-import asciiWorld.ui.HUDView;
-import asciiWorld.ui.MessageBox;
 import asciiWorld.ui.RootVisualPanel;
-import asciiWorld.ui.TextWrappingMode;
 
 public class GameplayState extends BasicGameState implements IHasBounds {
 	
 	private enum RunState {
 		GeneratingChunk,
 		LoadGraphics,
-		Play;
+		Play,
+		Pause
 	}
 	private RunState _state;
 	
@@ -48,9 +37,8 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 	
 	private Boolean _isPaused;
 	
-	private Thread _chunkGenerationThread;
-	private ByteArrayOutputStream _logStream;
-	private MessageBox _loggingWindow;
+	private GenerateChunkGameState _chunkGenerationState;
+	private LoadGraphicsGameState _loadGraphicsState;
 	
 	public GameplayState(int stateID) {
 		_stateID = stateID;
@@ -96,32 +84,8 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 	public void enter(final GameContainer container, final StateBasedGame game) throws SlickException {
 		super.enter(container, game);
 		
-		try {
-			_state = RunState.GeneratingChunk;
-			_logStream = new ByteArrayOutputStream();
-			_loggingWindow = RootVisualPanel.get().showMessageBox(true, "Generating chunk...", "Generating Chunk");
-			_loggingWindow.getMessageLabel().setTextWrappingMode(TextWrappingMode.CharacterWrap);
-			
-			_chunkGenerationThread = new Thread()
-			{
-				public void run()
-				{
-					// Generate the chunk.
-					try {
-						_chunk = ChunkFactory.generateOverworld(new PrintStream(_logStream, true));
-					} catch (Exception e) {
-						System.err.println("Unable to generate the chunk.");
-					}
-					if (_loggingWindow != null) {
-						_loggingWindow.closeWindow();
-					}
-					_state = RunState.LoadGraphics;
-				}
-			};
-			_chunkGenerationThread.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		_state = RunState.GeneratingChunk;
+		_chunkGenerationState = new GenerateChunkGameState();
 	}
 	
 	@Override
@@ -130,11 +94,9 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		super.leave(container, game);
 		
 		// Destroy the chunk.
-		List<Entity> children = _chunk.getEntities();
-		while (children.size() != 0) {
-			_chunk.removeEntity(children.get(0));
-		}
+		_chunk.clearEntities();
 		
+		// Clear the user interface.
 		try {
 			RootVisualPanel.get().clear();
 		} catch (Exception e) {
@@ -143,104 +105,91 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 		}
 	}
 	
-	private void updateLoggingWindow() {
-		try {
-			_logStream.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		_loggingWindow.getMessageLabel().setText(_logStream.toString());
-	}
-	
-	private void loadGraphics(GameContainer container, StateBasedGame game) {
-		// Place the player.
-		PlayerControlComponent playerControl = null;
-		
-		try {
-			_player = new Entity();
-			_camera = new Camera(this, _player, 4.0f);
-			playerControl = new PlayerControlComponent(_player, _camera);
-			_player.getComponents().add(playerControl);
-			_player.moveTo(_chunk.findRandomSpawnPoint(Chunk.LAYER_OBJECT));
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Unable to create the player.");
-		}
-		_chunk.addEntity(_player);
-		
-		try {
-			_player.setTile(TileFactory.get().getResource("player"));
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Unable to load the tile resources.");
-		}
-		
-		try {
-			generateUI(container, game, playerControl.getHotKeyManager());
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Unable to generate the user interface.");
-		}
-		
-		// Greet the player.
-		try {
-			RootVisualPanel.get().loadMessageBox("resources/ui/welcomeMessageBox.xml");
-		} catch (Exception e) {
-			e.printStackTrace();
+	private void updateLoggingWindow(GameContainer container, StateBasedGame game, int delta) {
+		_chunkGenerationState.update(container, game, delta);
+		if (_chunkGenerationState.isComplete()) {
+			_loadGraphicsState = new LoadGraphicsGameState(_chunkGenerationState.getChunk());
+			_state = RunState.LoadGraphics;
 		}
 	}
 	
-	private void updateRunState(GameContainer container, StateBasedGame game, int delta) {
-		switch (_state) {
-		case GeneratingChunk:
-			updateLoggingWindow();
-			break;
-		case LoadGraphics:
-			loadGraphics(container, game);
+	private void loadGraphics(GameContainer container, StateBasedGame game, int delta) {
+		_loadGraphicsState.update(container, game, delta);
+		if (_loadGraphicsState.isComplete()) {
+			_chunk = _loadGraphicsState.getChunk();
+			_player = _loadGraphicsState.getPlayer();
+			_camera = _loadGraphicsState.getCamera();
 			_state = RunState.Play;
-			break;
-		case Play:
-			try {
-				if (!RootVisualPanel.get().isModalWindowOpen()) {
-					_chunk.update(container, game, delta);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			break;
 		}
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if (container.hasFocus()) {
-			if (!isPaused()) {
-				try {
-					RootVisualPanel.get().update(container, delta);
-					updateRunState(container, game, delta);
-				} catch (Exception e) {
-					e.printStackTrace();
+		switch (_state) {
+		case GeneratingChunk:
+			updateLoggingWindow(container, game, delta);
+			break;
+		case LoadGraphics:
+			loadGraphics(container, game, delta);
+			break;
+		case Play:
+			if (container.hasFocus()) {
+				if (!isPaused()) {
+					try {
+						RootVisualPanel.get().update(container, delta);
+						try {
+							if (!RootVisualPanel.get().isModalWindowOpen()) {
+								_chunk.update(container, game, delta);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
+			
+			if (!container.hasFocus() || isPaused()) {
+				_state = RunState.Pause;
+			}
+			break;
+		case Pause:
+			if (container.hasFocus() && !isPaused()) {
+				_state = RunState.Play;
+			}
+			break;
 		}
 	}
 	
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		if (_state == RunState.Play) {
-			_camera.apply(g);
-			_chunk.render(_camera, _tiles);
-			_camera.reset(g);
+		switch (_state) {
+		case GeneratingChunk:
+			_chunkGenerationState.render(container, game, g);
+			break;
+		case LoadGraphics:
+			_loadGraphicsState.render(container, game, g);
+			break;
+		case Play:
+			renderPlayScreen(container, game, g);
+			break;
+		case Pause:
+			renderPlayScreen(container, game, g);
+			renderPauseScreen(container, game, g);
+			break;
 		}
+	}
+	
+	private void renderPlayScreen(GameContainer container, StateBasedGame game, Graphics g) {
+		_camera.apply(g);
+		_chunk.render(_camera, _tiles);
+		_camera.reset(g);
 		
 		try {
 			RootVisualPanel.get().render(g);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		
-		if (!container.hasFocus() || isPaused()) {
-			renderPauseScreen(container, game, g);
 		}
 	}
 	
@@ -259,12 +208,5 @@ public class GameplayState extends BasicGameState implements IHasBounds {
 	@Override
 	public int getID() {
 		return _stateID;
-	}
-	
-	private void generateUI(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
-		HUDView hud = new HUDView(container, game, hotkeys);
-		hud.setCamera(_camera);
-		hud.setPlayer(_player);
-		RootVisualPanel.get().addChild(hud);
 	}
 }

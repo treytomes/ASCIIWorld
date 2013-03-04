@@ -73,7 +73,8 @@ public abstract class Panel extends FrameworkElement {
 	public void render(Graphics g) {
 		Rectangle previousWorldClip = setTransform(g);
 		
-		for (FrameworkElement child : _children) {
+		for (int index = 0; index < _children.size(); index++) {
+			FrameworkElement child = _children.get(index);
 			//setChildBounds(child);
 			child.render(g);
 		}
