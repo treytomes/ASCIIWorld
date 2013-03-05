@@ -6,11 +6,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.chunks.Chunk;
 import asciiWorld.tiles.TileSet;
+import asciiWorld.tiles.TileSetFactory;
 import asciiWorld.ui.RootVisualPanel;
 
 public class GameplayState extends GameState {
-	
-	private static final String TILESET_NAME = "resources/tileSets/OEM437.xml";
 	
 	private TileSet _tiles;
 	private Chunk _chunk;
@@ -21,7 +20,7 @@ public class GameplayState extends GameState {
 		_camera = camera;
 		
 		try {
-			_tiles = TileSet.load(TILESET_NAME);
+			_tiles = TileSetFactory.get().getDefaultTileSet();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to load the tileset resource.");

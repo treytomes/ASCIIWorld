@@ -6,10 +6,10 @@ import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.tiles.Tile;
 import asciiWorld.tiles.TileSet;
+import asciiWorld.tiles.TileSetFactory;
 
 public class TileView extends FrameworkElement {
 	
-	private static final String TILESET_NAME = "resources/tileSets/OEM437.xml";
 	private static final float DEFAULT_SCALE = 2.0f;
 	
 	private Vector2f _position;
@@ -23,7 +23,7 @@ public class TileView extends FrameworkElement {
 		setScale(DEFAULT_SCALE);
 		
 		try {
-			_tiles = TileSet.load(TILESET_NAME);
+			_tiles = TileSetFactory.get().getDefaultTileSet();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to load the tileset resource.");
