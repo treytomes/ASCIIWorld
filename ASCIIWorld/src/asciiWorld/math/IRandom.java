@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.math;
 
 public interface IRandom {
 	

@@ -1,6 +1,6 @@
-package asciiWorld;
+package asciiWorld.math;
 
-import asciiWorld.IRandom;
+import asciiWorld.math.IRandom;
 
 public class RandomFactory {
 	

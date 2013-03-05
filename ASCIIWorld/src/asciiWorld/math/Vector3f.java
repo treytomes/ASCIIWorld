@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.math;
 
 import org.newdawn.slick.geom.Vector2f;
 

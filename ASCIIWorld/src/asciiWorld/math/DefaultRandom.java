@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.math;
 
 import java.util.Random;
 
