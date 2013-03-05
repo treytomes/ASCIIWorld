@@ -245,7 +245,9 @@ public abstract class FrameworkElement {
 		return (getParent() == null) || !getParent().getInputHandled();
 	}
 	
-	protected abstract Boolean contains(Vector2f point);
+	protected Boolean contains(Vector2f point) {
+		return getBounds().contains(point.x, point.y);
+	}
 	
 	private void updateMouseEvents(Input input) {
 		Vector2f mousePosition = new Vector2f(input.getMouseX(), input.getMouseY());
