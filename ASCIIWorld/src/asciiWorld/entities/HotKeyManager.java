@@ -79,6 +79,64 @@ public class HotKeyManager implements Iterable<HotKeyInfo>, KeyListener {
 		}
 	}
 	
+	public void activatePreviousItem() {
+		int startingIndex = indexOf(getOwner().getActiveItem());
+		if (startingIndex < 0) {
+			startingIndex = 0;
+		}
+		
+		int index = startingIndex - 1;
+		while (true) {
+			if (index < 0) {
+				index = size() - 1;
+			}
+			if (index == startingIndex) {
+				break;
+			}
+			
+			try {
+				HotKeyInfo info = get(index);
+				if (info.getItem() != null) {
+					activateItem(info);
+					break;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			index--;
+		}
+	}
+	
+	public void activateNextItem() {
+		int startingIndex = indexOf(getOwner().getActiveItem());
+		if (startingIndex >= size()) {
+			startingIndex = size() - 1;
+		}
+		
+		int index = startingIndex + 1;
+		while (true) {
+			if (index >= size()) {
+				index = 0;
+			}
+			if (index == startingIndex) {
+				break;
+			}
+			
+			try {
+				HotKeyInfo info = get(index);
+				if (info.getItem() != null) {
+					activateItem(info);
+					break;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			index++;
+		}
+	}
+	
 	private void activateItem(HotKeyInfo info) {
 		try {
 			getOwner().setActiveItem(info.getItem());

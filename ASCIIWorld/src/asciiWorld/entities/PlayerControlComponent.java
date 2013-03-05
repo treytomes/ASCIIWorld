@@ -53,72 +53,7 @@ public class PlayerControlComponent extends InputAwareComponent {
 			getOwner().move(_movingDirection);
 		}
 		
-		int mouseWheel = Mouse.getDWheel();
-		if (mouseWheel < 0) {
-			activatePreviousHotKeySlot();
-		} else if (mouseWheel > 0) {
-			activateNextHotKeySlot();
-		}
-	}
-	
-	private void activatePreviousHotKeySlot() {
-		int startingIndex = getHotKeyManager().indexOf(getOwner().getActiveItem());
-		if (startingIndex < 0) {
-			startingIndex = 0;
-		}
-		
-		int index = startingIndex - 1;
-		while (true) {
-			if (index < 0) {
-				index = getHotKeyManager().size() - 1;
-			}
-			if (index == startingIndex) {
-				break;
-			}
-			
-			HotKeyInfo info = getHotKeyManager().get(index);
-			try {
-				Entity item = info.getItem();
-				if (item != null) {
-					getOwner().setActiveItem(item);
-					break;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			index--;
-		}
-	}
-	
-	private void activateNextHotKeySlot() {
-		int startingIndex = getHotKeyManager().indexOf(getOwner().getActiveItem());
-		if (startingIndex >= getHotKeyManager().size()) {
-			startingIndex = getHotKeyManager().size() - 1;
-		}
-		
-		int index = startingIndex + 1;
-		while (true) {
-			if (index >= getHotKeyManager().size()) {
-				index = 0;
-			}
-			if (index == startingIndex) {
-				break;
-			}
-			
-			HotKeyInfo info = getHotKeyManager().get(index);
-			try {
-				Entity item = info.getItem();
-				if (item != null) {
-					getOwner().setActiveItem(item);
-					break;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			index++;
-		}
+		handleMouseWheel();
 	}
 	
 	@Override
@@ -162,6 +97,14 @@ public class PlayerControlComponent extends InputAwareComponent {
 			return false;
 		}
 		return true;
+	}
+	
+	private Boolean isAcceptingMouseInput() {
+		try {
+			return RootVisualPanel.get().findMouseHover() instanceof HUDView;
+		} catch (Exception e) {
+			return true;
+		}
 	}
 	
 	@Override
@@ -214,21 +157,26 @@ public class PlayerControlComponent extends InputAwareComponent {
 	
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
-		try {
-			if (RootVisualPanel.get().findMouseHover() instanceof HUDView) {
-				switch (button) {
-				case Input.MOUSE_LEFT_BUTTON:
-					try {
-						getOwner().useActiveItem(getChunkPointAtMousePosition(x, y));
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					break;
+		if (isAcceptingMouseInput()) {
+			switch (button) {
+			case Input.MOUSE_LEFT_BUTTON:
+				try {
+					getOwner().useActiveItem(getChunkPointAtMousePosition(x, y));
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.err.println("Unable to use the active item.");
 				}
+				break;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Unable to handle the mouse click.");
+		}
+	}
+	
+	private void handleMouseWheel() {
+		int mouseWheelValue = Mouse.getDWheel();
+		if (mouseWheelValue < 0) {
+			getHotKeyManager().activatePreviousItem();
+		} else if (mouseWheelValue > 0) {
+			getHotKeyManager().activateNextItem();
 		}
 	}
 	
