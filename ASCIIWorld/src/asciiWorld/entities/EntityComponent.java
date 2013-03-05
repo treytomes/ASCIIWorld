@@ -36,10 +36,26 @@ public class EntityComponent {
 	public void beforeAddedToChunk(Chunk chunk) { }
 	
 	public void afterAddedToChunk(Chunk chunk) { }
-	
+
 	public void beforeRemovedFromChunk(Chunk chunk) { }
 	
 	public void afterRemovedFromChunk(Chunk chunk) { }
+	
+	/**
+	 * Called before this entity is added to an inventory.
+	 * @param chunk
+	 */
+	public void beforeAddedToInventory(InventoryContainer container) { }
+	
+	public void afterAddedToInventory(InventoryContainer container) { }
+	
+	/**
+	 * Called before this entity is removed from an inventory.
+	 * @param chunk
+	 */
+	public void beforeRemovedFromInventory(InventoryContainer container) { }
+	
+	public void afterRemovedFromInventory(InventoryContainer container) { }
 	
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) { }
 	
@@ -48,4 +64,17 @@ public class EntityComponent {
 	public void touched(Entity touchedByEntity) { }
 	
 	public void collided(Entity collidedWithEntity) { }
+	
+	/**
+	 * Called when an item is added to this entity's inventory.
+	 *  
+	 * @param item
+	 */
+	public void itemWasGained(Entity item) { }
+	
+	/**
+	 * Called when an item is removed from this entity's inventory.
+	 * @param item
+	 */
+	public void itemWasLost(Entity item) { }
 }

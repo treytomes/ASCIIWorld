@@ -100,7 +100,12 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		setWeight(DEFAULT_WEIGHT);
 		
 		setContainer(null);
-		_inventory = new InventoryContainer(this);
+		try {
+			_inventory = new InventoryContainer(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Unable to initialize the inventory container.");
+		}
 		setActiveItem(null);
 
 		setComponents(new ArrayList<EntityComponent>());

@@ -42,15 +42,15 @@ public class HotKeyInfo {
 		return _item;
 	}
 	
+	public void setItem(Entity value) {
+		_item = value;
+	}
+	
 	public Boolean isActive() {
 		try {
 			return (getItem() != null) && (getOwner().getActiveItem() == getItem());
 		} catch (Exception e) {
 			return false;
 		}
-	}
-	
-	public void setItem(Entity value) {
-		_item = value;
 	}
 }

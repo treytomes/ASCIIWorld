@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import asciiWorld.Require;
+
 public class InventoryContainer implements Iterable<Entity> {
 	
 	private Entity _owner;
 	private List<Entity> _items;
 	
-	public InventoryContainer(Entity owner) {
+	public InventoryContainer(Entity owner) throws Exception {
+		Require.that(owner, "owner").isNotNull();
+		
 		_owner = owner;
 		_items = new ArrayList<Entity>();
 	}
@@ -41,8 +45,17 @@ public class InventoryContainer implements Iterable<Entity> {
 		else if (!contains(item)) {
 			throw new Exception("That item is not in the inventory.");
 		} else {
+			for (EntityComponent component : item.getComponents()) {
+				component.beforeRemovedFromInventory(this);
+			}
 			_items.remove(item);
 			item.setContainer(null);
+			for (EntityComponent component : item.getComponents()) {
+				component.afterRemovedFromInventory(this);
+			}
+			for (EntityComponent component : getOwner().getComponents()) {
+				component.itemWasLost(item);
+			}
 		}
 	}
 	
@@ -59,8 +72,17 @@ public class InventoryContainer implements Iterable<Entity> {
 			if (item.getContainer() != null) {
 				item.getContainer().remove(item);
 			}
+			for (EntityComponent component : item.getComponents()) {
+				component.beforeAddedToInventory(this);
+			}
 			_items.add(item);
 			item.setContainer(this);
+			for (EntityComponent component : item.getComponents()) {
+				component.afterAddedToInventory(this);
+			}
+			for (EntityComponent component : getOwner().getComponents()) {
+				component.itemWasGained(item);
+			}
 		}
 	}
 	@Override

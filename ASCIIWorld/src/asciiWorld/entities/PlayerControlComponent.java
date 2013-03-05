@@ -54,16 +54,44 @@ public class PlayerControlComponent extends InputAwareComponent {
 	}
 	
 	@Override
+	public void itemWasGained(Entity item) {
+		for (HotKeyInfo info : getHotKeyManager()) {
+			try {
+				if (info.getItem() == null) {
+					info.setItem(item);
+					break;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println("Unable to assign item to hotkey.");
+			}
+		}
+		if (getOwner().getActiveItem() == null) {
+			getOwner().setActiveItem(item);
+		}
+	}
+	
+	@Override
+	public void itemWasLost(Entity item) {
+		if (getOwner().getActiveItem() == null) {
+			for (HotKeyInfo info : getHotKeyManager()) {
+				try {
+					if (info.getItem() != null) {
+						getOwner().setActiveItem(info.getItem());
+						break;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.err.println("Unable to assign a new active item.");
+				}
+			}
+		}
+	}
+	
+	@Override
 	public boolean isAcceptingInput() {
 		if (isInventoryUIOpen()) {
 			return false;
-		}
-		try {
-			if (!(RootVisualPanel.get().findMouseHover() instanceof HUDView)) {
-				return false;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return true;
 	}
@@ -106,14 +134,21 @@ public class PlayerControlComponent extends InputAwareComponent {
 	
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
-		switch (button) {
-		case Input.MOUSE_LEFT_BUTTON:
-			try {
-				getOwner().useActiveItem(getChunkPointAtMousePosition(x, y));
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			if (RootVisualPanel.get().findMouseHover() instanceof HUDView) {
+				switch (button) {
+				case Input.MOUSE_LEFT_BUTTON:
+					try {
+						getOwner().useActiveItem(getChunkPointAtMousePosition(x, y));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				}
 			}
-			break;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Unable to handle the mouse click.");
 		}
 	}
 	
