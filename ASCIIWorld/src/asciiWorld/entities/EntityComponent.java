@@ -7,8 +7,8 @@ import org.jdom2.input.SAXBuilder;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.Vector3f;
 import asciiWorld.chunks.Chunk;
+import asciiWorld.math.Vector3f;
 
 public class EntityComponent {
 	

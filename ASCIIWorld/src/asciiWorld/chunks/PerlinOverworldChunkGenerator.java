@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.newdawn.slick.geom.Vector2f;
 
-import asciiWorld.RandomFactory;
-import asciiWorld.Vector3f;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityFactory;
+import asciiWorld.math.RandomFactory;
+import asciiWorld.math.Vector3f;
 
 public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 	

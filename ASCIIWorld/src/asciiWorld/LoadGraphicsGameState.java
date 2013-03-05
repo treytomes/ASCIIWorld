@@ -9,6 +9,7 @@ import asciiWorld.chunks.Chunk;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.HotKeyManager;
 import asciiWorld.entities.PlayerControlComponent;
+import asciiWorld.math.Vector3f;
 import asciiWorld.tiles.TileFactory;
 import asciiWorld.ui.HUDView;
 import asciiWorld.ui.RootVisualPanel;

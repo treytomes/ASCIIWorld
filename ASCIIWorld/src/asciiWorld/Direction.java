@@ -2,6 +2,8 @@ package asciiWorld;
 
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.math.Vector3f;
+
 public enum Direction {
 	
 	North,

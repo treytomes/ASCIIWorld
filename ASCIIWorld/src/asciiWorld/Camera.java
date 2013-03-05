@@ -5,6 +5,7 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.entities.Entity;
+import asciiWorld.math.Vector3f;
 
 public class Camera implements IHasPosition, IHasBounds, IHasRangeOfVision {
 	

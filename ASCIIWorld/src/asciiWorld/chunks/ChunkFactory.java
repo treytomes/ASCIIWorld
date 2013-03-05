@@ -4,11 +4,11 @@ import java.io.PrintStream;
 
 import org.newdawn.slick.geom.Vector2f;
 
-import asciiWorld.RandomFactory;
 import asciiWorld.entities.CanBePickedUpComponent;
 import asciiWorld.entities.CanBePushedComponent;
 import asciiWorld.entities.CanSpeakComponent;
 import asciiWorld.entities.Entity;
+import asciiWorld.math.RandomFactory;
 import asciiWorld.tiles.TileFactory;
 import asciiWorld.ui.RootVisualPanel;
 

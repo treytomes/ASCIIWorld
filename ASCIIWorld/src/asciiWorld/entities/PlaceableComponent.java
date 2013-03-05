@@ -1,6 +1,6 @@
 package asciiWorld.entities;
 
-import asciiWorld.Vector3f;
+import asciiWorld.math.Vector3f;
 
 public class PlaceableComponent extends EntityComponent {
 

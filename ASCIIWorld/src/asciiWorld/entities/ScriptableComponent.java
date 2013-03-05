@@ -7,8 +7,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.FileHelper;
 import asciiWorld.JavascriptContext;
-import asciiWorld.Vector3f;
 import asciiWorld.chunks.Chunk;
+import asciiWorld.math.Vector3f;
 
 public class ScriptableComponent extends EntityComponent {
 

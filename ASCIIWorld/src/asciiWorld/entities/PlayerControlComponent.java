@@ -8,7 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import asciiWorld.Camera;
 import asciiWorld.CreateRectangle;
 import asciiWorld.Direction;
-import asciiWorld.Vector3f;
+import asciiWorld.math.Vector3f;
 import asciiWorld.ui.HUDView;
 import asciiWorld.ui.InventoryView;
 import asciiWorld.ui.RootVisualPanel;

@@ -8,9 +8,9 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Camera;
-import asciiWorld.RandomFactory;
-import asciiWorld.Vector3f;
 import asciiWorld.entities.Entity;
+import asciiWorld.math.RandomFactory;
+import asciiWorld.math.Vector3f;
 import asciiWorld.tiles.TileSet;
 
 public class Chunk {

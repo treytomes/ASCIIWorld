@@ -16,6 +16,7 @@ public class HotKeyView extends Border {
 	private static final Color COLOR_SELECTED = new Color(1.0f, 0.4f, 0.0f, 0.0f);
 	private static final int CORNER_RADIUS = 8;
 	private static final int MARGIN = 5;
+	private static final int KEY_FONT_HEIGHT = 12;
 	
 	private HotKeyInfo _info;
 	private TileView _tileView;
@@ -51,7 +52,7 @@ public class HotKeyView extends Border {
 		};
 		grid.addChild(_tileView, 0, 0);
 		
-		Label label = new Label(FontFactory.get().getResource(10), info.getKeyboardKeyName(), Color.white) {
+		Label label = new Label(FontFactory.get().getResource(KEY_FONT_HEIGHT), info.getKeyboardKeyName(), Color.white) {
 			@Override
 			public void update(GameContainer container, int delta) {
 				// Don't do anything.

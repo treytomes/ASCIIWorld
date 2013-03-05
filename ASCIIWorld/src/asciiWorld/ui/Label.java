@@ -131,6 +131,10 @@ public class Label extends FrameworkElement {
 	public void render(Graphics g) {
 		Rectangle previousWorldClip = setTransform(g);
 		
+		g.pushTransform();
+		Vector2f translationPosition = getTextPosition();
+		g.translate(translationPosition.x, translationPosition.y);
+		
 		if (_lastFrameText != getText()) {
 			if (getParent() != null) {
 				getParent().resetBounds();
@@ -140,7 +144,7 @@ public class Label extends FrameworkElement {
 		}
 		
 		float contentWidth = getBounds().getWidth() - getMargin().getLeftMargin() - getMargin().getRightMargin();
-		Vector2f textPosition = getTextPosition();
+		Vector2f textPosition = new Vector2f(0, 0);
 		TextWrappingMode textWrappingMode = getTextWrappingMode();
 		
 		String remainingText = getText();
@@ -217,6 +221,7 @@ public class Label extends FrameworkElement {
 			}
 		}
 		
+		g.popTransform();
 		clearTransform(g, previousWorldClip);
 	}
 
