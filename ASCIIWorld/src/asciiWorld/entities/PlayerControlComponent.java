@@ -1,5 +1,6 @@
 package asciiWorld.entities;
 
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
@@ -50,6 +51,73 @@ public class PlayerControlComponent extends InputAwareComponent {
 		
 		if (_movingDirection != null) {
 			getOwner().move(_movingDirection);
+		}
+		
+		int mouseWheel = Mouse.getDWheel();
+		if (mouseWheel < 0) {
+			activatePreviousHotKeySlot();
+		} else if (mouseWheel > 0) {
+			activateNextHotKeySlot();
+		}
+	}
+	
+	private void activatePreviousHotKeySlot() {
+		int startingIndex = getHotKeyManager().indexOf(getOwner().getActiveItem());
+		if (startingIndex < 0) {
+			startingIndex = 0;
+		}
+		
+		int index = startingIndex - 1;
+		while (true) {
+			if (index < 0) {
+				index = getHotKeyManager().size() - 1;
+			}
+			if (index == startingIndex) {
+				break;
+			}
+			
+			HotKeyInfo info = getHotKeyManager().get(index);
+			try {
+				Entity item = info.getItem();
+				if (item != null) {
+					getOwner().setActiveItem(item);
+					break;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			index--;
+		}
+	}
+	
+	private void activateNextHotKeySlot() {
+		int startingIndex = getHotKeyManager().indexOf(getOwner().getActiveItem());
+		if (startingIndex >= getHotKeyManager().size()) {
+			startingIndex = getHotKeyManager().size() - 1;
+		}
+		
+		int index = startingIndex + 1;
+		while (true) {
+			if (index >= getHotKeyManager().size()) {
+				index = 0;
+			}
+			if (index == startingIndex) {
+				break;
+			}
+			
+			HotKeyInfo info = getHotKeyManager().get(index);
+			try {
+				Entity item = info.getItem();
+				if (item != null) {
+					getOwner().setActiveItem(item);
+					break;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			index++;
 		}
 	}
 	
@@ -117,6 +185,18 @@ public class PlayerControlComponent extends InputAwareComponent {
 		case KEY_INVENTORY:
 			openInventoryInterface();
 			break;
+		default:
+			for (HotKeyInfo info : getHotKeyManager()) {
+				if (info.getKeyboardKey() == key) {
+					try {
+						getOwner().setActiveItem(info.getItem());
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.err.println("Unable to select the hot-key item.");
+					}
+					break;
+				}
+			}
 		}
 	}
 	

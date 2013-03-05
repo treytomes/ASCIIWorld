@@ -41,6 +41,28 @@ public class HotKeyManager implements Iterable<HotKeyInfo>, KeyListener {
 	public Entity getOwner() {
 		return _owner;
 	}
+	
+	public int indexOf(Entity item) {
+		for (int index = 0; index < _list.size(); index++) {
+			HotKeyInfo info = _list.get(index);
+			try {
+				if (info.getItem() == item) {
+					return index;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;
+	}
+	
+	public int indexOf(HotKeyInfo info) {
+		return _list.indexOf(info);
+	}
+	
+	public HotKeyInfo get(int index) {
+		return _list.get(index);
+	}
 
 	@Override
 	public Iterator<HotKeyInfo> iterator() {
