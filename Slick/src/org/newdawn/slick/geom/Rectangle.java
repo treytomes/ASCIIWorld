@@ -266,4 +266,11 @@ public class Rectangle extends Shape {
 
         return resultPolygon;
     }
+
+	/**
+	 * @return The position of this rectangle.
+	 */
+	public Vector2f getPosition() {
+		return new Vector2f(getX(), getY());
+	}
 }

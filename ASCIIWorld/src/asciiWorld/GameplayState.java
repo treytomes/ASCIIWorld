@@ -68,7 +68,7 @@ public class GameplayState extends GameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		_camera.apply(g);
-		_chunk.render(_camera, _tiles);
+		_chunk.render(g, _camera, _tiles);
 		_camera.reset(g);
 		
 		try {

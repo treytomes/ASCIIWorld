@@ -23,4 +23,18 @@ public class MathHelper {
 		vector.y = from.y + ((to.y - from.y) * weight);
 		return vector;
 	}
+
+	public static float clamp(float value, float lowerBound, float upperBound) {
+		if (value < lowerBound) {
+			return lowerBound;
+		} else if (value > upperBound) {
+			return upperBound;
+		} else {
+			return value;
+		}
+	}
+
+	public static float lerp(float from, float to, float weight) {
+		return from + ((to - from) * weight);
+	}
 }

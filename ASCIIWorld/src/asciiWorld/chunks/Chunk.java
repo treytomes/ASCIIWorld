@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -124,23 +125,23 @@ public class Chunk {
 		}
 	}
 	
-	public void render(Camera camera, TileSet tiles) {
+	public void render(Graphics g, Camera camera, TileSet tiles) {
 		Vector2f position = camera.getPosition().toVector2f();
 		float rangeOfVision = camera.getRangeOfVision();
 		
-		tiles.startBatchDraw();
-		render(position, tiles, LAYER_GROUND, rangeOfVision);
-		render(position, tiles, LAYER_OBJECT, rangeOfVision);
-		render(position, tiles, LAYER_SKY, rangeOfVision);
-		tiles.endBatchDraw();
+		//tiles.startBatchDraw();
+		render(g, position, tiles, LAYER_GROUND, rangeOfVision);
+		render(g, position, tiles, LAYER_OBJECT, rangeOfVision);
+		render(g, position, tiles, LAYER_SKY, rangeOfVision);
+		//tiles.endBatchDraw();
 	}
 	
-	private void render(Vector2f center, TileSet tiles, int layerIndex, float rangeOfVision) {
+	private void render(Graphics g,Vector2f center, TileSet tiles, int layerIndex, float rangeOfVision) {
 		for (Entity entity : getEntities()) {
 			Vector3f position = entity.getPosition();
 			if (position.z == layerIndex) {
 				if (position.getDistance(center) <= Entity.MOVEMENT_STEP * rangeOfVision) {
-					entity.render(tiles);
+					entity.render(g, tiles);
 				}
 			}
 		}

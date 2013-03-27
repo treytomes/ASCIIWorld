@@ -94,7 +94,7 @@ public class TileView extends FrameworkElement {
 
 	@Override
 	public Rectangle getBounds() {
-		Vector2f tileSize = _tiles.getTileSize();
+		Vector2f tileSize = _tiles.getSize();
 		return new Rectangle(_position.x, _position.y, tileSize.x, tileSize.y);
 	}
 

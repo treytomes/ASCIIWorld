@@ -7,6 +7,7 @@ import java.util.List;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -14,6 +15,7 @@ import asciiWorld.Camera;
 import asciiWorld.Direction;
 import asciiWorld.IHasPosition;
 import asciiWorld.IHasRangeOfVision;
+import asciiWorld.animations.TileSwingAnimation;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.math.MathHelper;
 import asciiWorld.math.Vector3f;
@@ -26,14 +28,17 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	public static final float MOVEMENT_STEP = 8.0f;
 	
 	private static final int DEFAULT_AGILITY = 1;
+	private static final int DEFAULT_STRENGTH = 2;
 	private static final int DEFAULT_PERCEPTION = 10;
-	private static final float DEFAULT_WEIGHT = 0;
+	private static final float DEFAULT_WEIGHT = 1;
 	
 	private static final float MODIFIER_AGILITY = 15.0f;
+	private static final float SPEED_TIME_DIVISOR = 20.0f;
 	
 	private Chunk _chunk;
 	
 	private Tile _tile;
+	private List<TileSwingAnimation> _animations;
 	
 	private Direction _direction;
 	private Vector3f _position;
@@ -45,6 +50,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	private int _agility;
 	private int _perception;
+	private int _strength;
 	private float _weight;
 	
 	/**
@@ -87,6 +93,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	public Entity() {
 		_chunk = null;
 		_tile = null;
+		_animations = new ArrayList<TileSwingAnimation>();
 		_position = new Vector3f();
 		_moveFromPosition = new Vector3f();
 		_moveToPosition = new Vector3f();
@@ -96,6 +103,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		setName("");
 		
 		setAgility(DEFAULT_AGILITY);
+		setStrength(DEFAULT_STRENGTH);
 		setPerception(DEFAULT_PERCEPTION);
 		setWeight(DEFAULT_WEIGHT);
 		
@@ -181,6 +189,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		_tile = value;
 	}
 	
+	public void addAnimation(TileSwingAnimation value) {
+		_animations.add(value);
+	}
+	
 	public Vector3f getPosition() {
 		return _position;
 	}
@@ -211,6 +223,18 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	public void setAgility(int value) {
 		_agility = value;
+	}
+	
+	public int getStrength() {
+		return _strength;
+	}
+	
+	public void setStrength(int value) {
+		_strength = value;
+	}
+	
+	public int getAttackSpeed() {
+		return getStrength() * getAgility();
 	}
 	
 	public int getPerception() {
@@ -305,6 +329,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	public void useActiveItem(Vector3f targetChunkPoint) {
 		if (hasActiveItem()) {
+			addAnimation(TileSwingAnimation.createUseActiveItemAnimation(this, targetChunkPoint));
 			getActiveItem().use(targetChunkPoint);
 		}
 	}
@@ -380,7 +405,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		if (getContainer() == null) {
 			if (isMoving()) {
 				_position = MathHelper.smoothStep(_moveFromPosition, _moveToPosition, _movementWeight);
-				_movementWeight += (deltaTime / 20.0f) * getMovementSpeed();
+				_movementWeight += (deltaTime / SPEED_TIME_DIVISOR) * getMovementSpeed();
 				if (_movementWeight > 1.0f) {
 					_position = _moveToPosition.clone();
 					_moveFromPosition = _moveToPosition.clone();
@@ -391,12 +416,27 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		
 		_tile.update(deltaTime);
 		
+		List<TileSwingAnimation> deadAnimations = new ArrayList<TileSwingAnimation>();
+		for (TileSwingAnimation animation : _animations) {
+			animation.update(deltaTime);
+			if (!animation.isAlive()) {
+				deadAnimations.add(animation);
+			}
+		}
+		while (!deadAnimations.isEmpty()) {
+			_animations.remove(deadAnimations.remove(0));
+		}
+		
 		for (EntityComponent component : getComponents()) {
 			component.update(container, game, deltaTime);
 		}
 	}
 	
-	public void render(TileSet tiles) {
+	public void render(Graphics g, TileSet tiles) {
 		getTile().render(tiles, getPosition().toVector2f());
+		
+		for (TileSwingAnimation animation : _animations) {
+			animation.render(g, tiles);
+		}
 	}
 }

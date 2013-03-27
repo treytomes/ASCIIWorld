@@ -195,7 +195,7 @@ public class Line extends Shape {
 		this.end.set(end);
 
 		vec = new Vector2f(end);
-		vec.sub(start);
+		vec.subtract(start);
 
 		lenSquared = vec.lengthSquared();
 	}
@@ -324,7 +324,7 @@ public class Line extends Shape {
 	 */
 	public float distanceSquared(Vector2f point) {
 		getClosestPoint(point, closest);
-		closest.sub(point);
+		closest.subtract(point);
 
 		float result = closest.lengthSquared();
 
@@ -341,7 +341,7 @@ public class Line extends Shape {
 	 */
 	public void getClosestPoint(Vector2f point, Vector2f result) {
 		loc.set(point);
-		loc.sub(start);
+		loc.subtract(start);
 
 		float projDistance = vec.dot(loc);
 

@@ -17,7 +17,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
-public class TileSet {
+import asciiWorld.IHasSize;
+
+public class TileSet implements IHasSize {
 	
 	static final int SCALE_FILTER = Image.FILTER_NEAREST;
 	
@@ -25,7 +27,7 @@ public class TileSet {
 	Image _sourceImage;
 	int _rows;
 	int _columns;
-	Vector2f _tileSize;
+	Vector2f _size;
 	Boolean _isBatchDraw = false;
 	
 	public TileSet(String imagePath, int rows, int columns) throws SlickException {
@@ -74,18 +76,18 @@ public class TileSet {
 		reset();
 	}
 	
-	public Vector2f getTileSize() {
-		return _tileSize;
+	public Vector2f getSize() {
+		return _size;
 	}
 	
 	public Rectangle getDestinationRectangle(Vector2f position) {
-		return new Rectangle(position.x, position.y, _tileSize.x, _tileSize.y);
+		return new Rectangle(position.x, position.y, _size.x, _size.y);
 	}
 	
 	public Rectangle getSourceRectangle(int tileIndex) {
-		int sourceX = (tileIndex % _columns) * (int)_tileSize.x;
-		int sourceY = (int)(tileIndex / _columns) * (int)_tileSize.y;
-		return new Rectangle(sourceX, sourceY, _tileSize.x, _tileSize.y);
+		int sourceX = (tileIndex % _columns) * (int)_size.x;
+		int sourceY = (int)(tileIndex / _columns) * (int)_size.y;
+		return new Rectangle(sourceX, sourceY, _size.x, _size.y);
 	}
 	
 	public void scaleImage(float scale) throws SlickException {
@@ -165,7 +167,7 @@ public class TileSet {
 		Vector2f copy = position.copy();
 		for (int index = 0; index < text.length(); index++) {
 			draw((int)text.charAt(index), copy, color);
-			copy.x += _tileSize.x;
+			copy.x += _size.x;
 		}
 	}
 
@@ -206,7 +208,7 @@ public class TileSet {
 	
 	private void reset() {
 		if ((_rows != 0) && (_columns != 0)) {
-			_tileSize = new Vector2f(_sourceImage.getWidth() / _columns, _sourceImage.getHeight() / _rows);
+			_size = new Vector2f(_sourceImage.getWidth() / _columns, _sourceImage.getHeight() / _rows);
 			//getSourceImage().setCenterOfRotation(_tileSize.x / 2, _tileSize.y / 2);
 		}
 	}

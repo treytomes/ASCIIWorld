@@ -199,8 +199,8 @@ public strictfp class Circle extends Ellipse {
         // calculate point on line closest to the circle center and then 
         // compare radius to distance to the point for intersection result 
         Vector2f closest; 
-        Vector2f segv = lineSegmentEnd.copy().sub(lineSegmentStart); 
-        Vector2f ptv = circleCenter.copy().sub(lineSegmentStart); 
+        Vector2f segv = lineSegmentEnd.copy().subtract(lineSegmentStart); 
+        Vector2f ptv = circleCenter.copy().subtract(lineSegmentStart); 
         float segvLength = segv.length(); 
         float projvl = ptv.dot(segv) / segvLength; 
         if (projvl < 0) 
@@ -216,7 +216,7 @@ public strictfp class Circle extends Ellipse {
             Vector2f projv = segv.copy().scale(projvl / segvLength); 
             closest = lineSegmentStart.copy().add(projv); 
         } 
-        boolean intersects = circleCenter.copy().sub(closest).lengthSquared() <= getRadius()*getRadius(); 
+        boolean intersects = circleCenter.copy().subtract(closest).lengthSquared() <= getRadius()*getRadius(); 
         
         return intersects; 
     } 

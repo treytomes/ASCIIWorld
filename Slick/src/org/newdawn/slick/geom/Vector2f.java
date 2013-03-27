@@ -251,7 +251,7 @@ public strictfp class Vector2f implements Serializable {
 	 * @param v The vector subtract
 	 * @return This vector - useful for chaining operations
 	 */
-	public Vector2f sub(Vector2f v)
+	public Vector2f subtract(Vector2f v)
 	{
 		x -= v.getX(); 
 		y -= v.getY();
@@ -330,8 +330,14 @@ public strictfp class Vector2f implements Serializable {
 		float dp = b.dot(this);
 		
 		result.x = dp * b.getX();
-		result.y = dp * b.getY();
-		
+		result.y = dp * b.getY();	
+	}
+
+	/**
+	 * @return Get the angle represented by this vector.
+	 */
+	public float getAngle() {
+		return (float)Math.atan2(y, x);
 	}
 	
 	/**
@@ -371,8 +377,7 @@ public strictfp class Vector2f implements Serializable {
 	public float distanceSquared(Vector2f other) {
 		float dx = other.getX() - getX();
 		float dy = other.getY() - getY();
-		
-		return (float) (dx*dx)+(dy*dy);
+		return (dx * dx) + (dy * dy);
 	}
 	
 	/**
