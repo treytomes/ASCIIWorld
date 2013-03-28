@@ -21,10 +21,13 @@ public class RandomFactory {
 		
 	}
 	
-	public static RandomFactory get()
-			throws Exception {
+	public static RandomFactory get() {
 		if (_instance == null) {
-			_instance = new RandomFactory();
+			try {
+				_instance = new RandomFactory();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return _instance;
 	}
