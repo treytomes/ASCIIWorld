@@ -15,6 +15,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.math.RandomFactory;
+
 public class LightTestGame extends BasicGame {
 	
 	private List<ConvexHull> _hulls;
@@ -29,7 +31,7 @@ public class LightTestGame extends BasicGame {
 		_hulls.add(new ConvexHull(new Vector2f(150, 200), new Polygon(new float[] { 0, 0, 50, -75, 100, -75, 150, 0, 100, 75, 50, 75 })));
 		
 		_lights = new ArrayList<Light>();
-		_lights.add(new Light(new Vector2f(0, 300), 200.0f));
+		_lights.add(new Light(new Vector2f(0, 300), (float)RandomFactory.get().nextDouble() * 200.0f));
 		
 		for (int x = 0; x < 16; x++) {
 			_hulls.add(new ConvexHull(new Vector2f(100 + x * 40, 500), new Polygon(new float[] { 0, 0, 20, 0, 20, 20, 0, 20 })));
@@ -56,12 +58,11 @@ public class LightTestGame extends BasicGame {
 	
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
-		// TODO Auto-generated method stub
 		super.mouseClicked(button, x, y, clickCount);
 		
 		switch (button) {
 		case Input.MOUSE_LEFT_BUTTON:
-			_lights.add(0, new Light(new Vector2f(x, y), 200.0f));
+			_lights.add(0, new Light(new Vector2f(x, y), (float)RandomFactory.get().nextDouble() * 200.0f));
 		}
 	}
 
@@ -74,8 +75,6 @@ public class LightTestGame extends BasicGame {
 	    // Use less-than or equal depth testing
 	    GL11.glDepthFunc(GL11.GL_LEQUAL);
 		
-		//GL11.glPushAttrib(GL11.GL_ACCUM_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_CURRENT_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT |
-		//		GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT | GL11.GL_TRANSFORM_BIT);
 		_framebuffer.enable();
 		
 		GL11.glClearDepth(1.1);
@@ -125,11 +124,9 @@ public class LightTestGame extends BasicGame {
 
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 	    GL11.glDisable(GL11.GL_BLEND);
-	    //GL11.glPopAttrib();
 
 		g.clear();
 		
-
 		// Render the fbo on top of the color buffer
 	    _framebuffer.render();
 	}
