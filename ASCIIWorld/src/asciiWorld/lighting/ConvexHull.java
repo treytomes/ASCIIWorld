@@ -239,17 +239,7 @@ public class ConvexHull {
 	}
 	
 	public void render(Graphics g) {
-        GL11.glColor4f(_color.r, _color.g, _color.b, 1.0f);
-        GL11.glBegin(GL11.GL_POLYGON);
-        for (int x = 0; x < _shape.getPointCount(); x++) {
-        	float[] pnt = _shape.getPoint(x);
-            GL11.glVertex3f(pnt[0], pnt[1], _depth);
-        }
-        GL11.glEnd();
-		/*g.pushTransform();
-		g.translate(_position.x, _position.y);
 		g.setColor(_color);
 		g.fill(_shape);
-		g.popTransform();*/
 	}
 }

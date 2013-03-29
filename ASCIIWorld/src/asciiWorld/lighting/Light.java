@@ -1,10 +1,10 @@
 package asciiWorld.lighting;
 
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.CreateColor;
 import asciiWorld.math.RandomFactory;
 
 public class Light {
@@ -18,7 +18,7 @@ public class Light {
 
 	private Vector2f _position;
 	private float _radius;
-	private float _depth;
+	private float _depth; // TODO: Is depth always 0?  Will it ever need to be otherwise?
 	private Color _color;
 	private float _sourceRadius;
 	private float _intensity;
@@ -109,28 +109,8 @@ public class Light {
 	}
 	
 	private void renderSource(Graphics g) {
-		/*g.pushTransform();
-		g.setColor(new Color(1.0f, 1.0f, 0.0f, 1.0f));
-		g.translate(_position.x, _position.y);
-		g.drawOval(0, 0, _sourceRadius, _sourceRadius);
-		g.popTransform();*/
-
-		GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-
-        // Color
-		GL11.glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-		GL11.glVertex3f(_position.x, _position.y, _depth);
-
-        float angle = 0;
-        while (angle <= Math.PI * 2.0f) {
-        	GL11.glVertex3f(_sourceRadius * (float)Math.cos(angle) + _position.x,
-        			_sourceRadius * (float)Math.sin(angle) + _position.y,
-        			_depth);
-            angle += Math.PI * 2.0f / 12.0f;
-        }
-        GL11.glVertex3f(_position.x + _sourceRadius, _position.y, _depth);
-
-        GL11.glEnd();
+		g.setColor(CreateColor.from(_color).changeAlphaTo(_intensity).getColor());
+		g.fillOval(_position.x - _sourceRadius, _position.y - _sourceRadius, _sourceRadius * 2, _sourceRadius * 2);
 	}
 	
 	public void render(Graphics g) {
@@ -139,17 +119,12 @@ public class Light {
 		Color stateColor = new Color(_color.r, _color.g, _color.b, _intensity);
 		shader.setState(stateColor);
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(_position.x, _position.y, 0);
-        GL11.glScalef(_radius, _radius, 0);
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glVertex3f(-1.0f, -1.0f, _depth);
-        GL11.glVertex3f(1.0f, -1.0f, _depth);
-        GL11.glVertex3f(1.0f, 1.0f, _depth);
-        GL11.glVertex3f(-1.0f, 1.0f, _depth);
-        GL11.glEnd();
-        GL11.glPopMatrix();
-
+		g.pushTransform();
+		g.translate(_position.x, _position.y);
+		g.scale(_radius, _radius);
+		g.fillRect(-1, -1, 2, 2);
+		g.popTransform();
+        
 		shader.disable();
 
 		renderSource(g); // Remove this! (I think it draws a circle indicating the light's area.)

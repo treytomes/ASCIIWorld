@@ -7,6 +7,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -41,11 +42,12 @@ public class LightTestGame extends BasicGame {
 	@Override
 	public void init(GameContainer container) throws SlickException {
 		try {
-			_framebuffer = new FrameBufferObject(container.getWidth(), container.getHeight());
+			//_framebuffer = new FrameBufferObject(container.getWidth(), container.getHeight());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	    GL11.glDepthFunc(GL11.GL_LEQUAL); // use less-than or equal depth testing
 		
 		_bg = new Image("resources/gfx/greenlg.png");
 	}
@@ -53,7 +55,12 @@ public class LightTestGame extends BasicGame {
 	@Override
 	public void update(GameContainer container, int delta)
 			throws SlickException {
-		_lights.get(0).setPosition(new Vector2f(Mouse.getX(), Mouse.getY()));
+	}
+	
+	@Override
+	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
+		super.mouseMoved(oldx, oldy, newx, newy);
+		_lights.get(0).setPosition(new Vector2f(newx, newy));
 	}
 	
 	@Override
@@ -62,37 +69,37 @@ public class LightTestGame extends BasicGame {
 		
 		switch (button) {
 		case Input.MOUSE_LEFT_BUTTON:
-			_lights.add(0, new Light(new Vector2f(x, y), (float)RandomFactory.get().nextDouble() * 200.0f));
+			_lights.add(0, new Light(new Vector2f(x, y), (float)RandomFactory.get().nextDouble() * 150.0f + 50.0f));
 		}
+		System.err.println(String.format("Mouse: %d, %d", x, y));
 	}
 
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	    GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT |GL11.GL_STENCIL_BUFFER_BIT);
-
-	    // Use less-than or equal depth testing
-	    GL11.glDepthFunc(GL11.GL_LEQUAL);
-		
-		_framebuffer.enable();
+	    // TODO: This seems to work without the framebuffer being enabled.  Why?
+	    // And why is the y-axis being flipped?
+		//_framebuffer.enable();
 		
 		GL11.glClearDepth(1.1);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		
-		_bg.draw(0, 0);
+		_bg.draw(100, 100);
 		
 		for (ConvexHull hull : _hulls) {
 			hull.render(g);
 		}
 		
+		g.setColor(new Color(0, 0, 0, 0.6f)); // ambient light
+		g.fillRect(0, 0, container.getWidth(), container.getHeight());
+		
 		for (Light light : _lights) {
-			// Clear the alpha channel of the framebuffer to 0.0
+			// Clear the alpha channel of the framebuffer to 0.0.
 			GL11.glColorMask(false, false, false, true);
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		    
-			// Write new framebuffer alpha
+			// Write new framebuffer alpha.
 			GL11.glDisable(GL11.GL_BLEND);
 	        GL11.glEnable(GL11.GL_DEPTH_TEST);
 	        GL11.glColorMask(false, false, false, true);
@@ -100,17 +107,17 @@ public class LightTestGame extends BasicGame {
 			
 			GL11.glEnable(GL11.GL_BLEND);
 	        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
-	        // Draw shadow geometry
+	        // Draw shadow geometry.
 			for (ConvexHull hull : _hulls) {
 				hull.drawShadowGeometry(light);
 			}
 
-	        // Draw geometry
+	        // Draw geometry.
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
 	        GL11.glEnable(GL11.GL_BLEND);
 	        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
 	        GL11.glColorMask(true, true, true, false);
-	        if (true) { // addlight:
+	        if (true) { // addlight
 	    		for (Light light2 : _lights) {
 	    			light2.render(g);
 	    		}
@@ -120,15 +127,16 @@ public class LightTestGame extends BasicGame {
 			}
 		}
 
-		_framebuffer.disable();
+		//_framebuffer.disable();
 
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 	    GL11.glDisable(GL11.GL_BLEND);
-
-		g.clear();
-		
-		// Render the fbo on top of the color buffer
-	    _framebuffer.render();
+	    //_framebuffer.render(g);
+	    
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	    GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public static void main(String[] args) {

@@ -28,6 +28,10 @@ import org.lwjgl.opengl.GL11;
 
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GLContext;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.opengl.TextureImpl;
 
 public class FrameBufferObject {
 	int colorTextureID;
@@ -61,7 +65,7 @@ public class FrameBufferObject {
 		// initialize color texture
 		colorTextureID = glGenTextures();												// and a new texture used as a color buffer
 		glBindTexture(GL_TEXTURE_2D, colorTextureID);									// Bind the colorbuffer texture
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, _width, _height, 0,GL_RGBA, GL11.GL_UNSIGNED_BYTE, (java.nio.ByteBuffer) null);	// Create the texture data
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, _width, _height, 0, GL_RGBA, GL11.GL_UNSIGNED_BYTE, (java.nio.ByteBuffer) null);	// Create the texture data
 		glTexParameterf(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);				// make it linear filterd
 		glTexParameterf(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);				// make it linear filterd
 		GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL_LINEAR);				// make it linear filterd
@@ -86,16 +90,12 @@ public class FrameBufferObject {
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);					// switch to rendering on the framebuffer
 	}
 	
-	public void render() {
-		//glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+	public void render(Graphics g) {
+		g.setColor(Color.white);
 		
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear Screen And Depth Buffer on the framebuffer to black
-
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, colorTextureID);					// bind our FBO texture
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorTextureID);					// bind our FBO texture
 
-		GL11.glColor4f(1, 1, 1, 1);
-		
 		GL11.glBegin(GL11.GL_QUADS);
 		
 		GL11.glTexCoord2f(0, 0);
@@ -113,8 +113,5 @@ public class FrameBufferObject {
 		GL11.glEnd();
 
 		glDisable(GL_TEXTURE_2D);
-		//glFlush ();
-		
-		
 	}
 }
