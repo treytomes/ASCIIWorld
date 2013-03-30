@@ -3,7 +3,6 @@ package asciiWorld.lighting;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -19,6 +18,8 @@ import org.newdawn.slick.geom.Vector2f;
 import asciiWorld.math.RandomFactory;
 
 public class LightTestGame extends BasicGame {
+	
+	private static final boolean USE_FRAMEBUFFER = false;
 	
 	private List<ConvexHull> _hulls;
 	private List<Light> _lights;
@@ -42,7 +43,7 @@ public class LightTestGame extends BasicGame {
 	@Override
 	public void init(GameContainer container) throws SlickException {
 		try {
-			//_framebuffer = new FrameBufferObject(container.getWidth(), container.getHeight());
+			_framebuffer = new FrameBufferObject(container.getWidth(), container.getHeight());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -71,15 +72,15 @@ public class LightTestGame extends BasicGame {
 		case Input.MOUSE_LEFT_BUTTON:
 			_lights.add(0, new Light(new Vector2f(x, y), (float)RandomFactory.get().nextDouble() * 150.0f + 50.0f));
 		}
-		System.err.println(String.format("Mouse: %d, %d", x, y));
 	}
 
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
 	    // TODO: This seems to work without the framebuffer being enabled.  Why?
-	    // And why is the y-axis being flipped?
-		//_framebuffer.enable();
+		if (USE_FRAMEBUFFER) {
+			_framebuffer.enable();
+		}
 		
 		GL11.glClearDepth(1.1);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -117,22 +118,29 @@ public class LightTestGame extends BasicGame {
 	        GL11.glEnable(GL11.GL_BLEND);
 	        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
 	        GL11.glColorMask(true, true, true, false);
-	        if (true) { // addlight
+	        //if (true) { // addlight
 	    		for (Light light2 : _lights) {
 	    			light2.render(g);
 	    		}
-	        }
-			for (ConvexHull hull : _hulls) {
+	        //}
+	        
+	        // This part doesn't seem to be necessary.
+			/*for (ConvexHull hull : _hulls) {
 	            hull.render(g);
-			}
+			}*/
+		}
+		
+		if (USE_FRAMEBUFFER) {
+			_framebuffer.disable();
 		}
 
-		//_framebuffer.disable();
-
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-	    GL11.glDisable(GL11.GL_BLEND);
-	    //_framebuffer.render(g);
-	    
+		if (USE_FRAMEBUFFER) {
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GL11.glDisable(GL11.GL_BLEND);
+			_framebuffer.render(g);
+		}
+		
+		// Reset OpenGL settings for Slick.
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	    GL11.glEnable(GL11.GL_BLEND);

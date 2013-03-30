@@ -15,21 +15,21 @@ public class ShadowFin {
 	private float _depth;
 	private int _index;
 	
-	public ShadowFin(Vector2f rootPosition) {
+	public ShadowFin(Vector2f rootPosition, int index) {
 		_rootPosition = rootPosition;
 		_outer = null;
 		_penumbraIntensity = 1.0f;
 		_inner = null;
 		_umbraIntensity = 0.0f;
 		_depth = 0.0f;
-		_index = 0;
+		setIndex(index);
 	}
 	
 	public int getIndex() {
 		return _index;
 	}
 	
-	public void setIndex(int value) {
+	private void setIndex(int value) {
 		_index = value;
 	}
 	

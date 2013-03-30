@@ -11,60 +11,59 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class ConvexHull {
 
-	private static final Color DEFAULT_COLOR = Color.white;
+	private static final Color DEFAULT_COLOR = Color.white;	
+	private static final float PI_OVER_TWO = (float)Math.PI / 2.0f;
 	
 	private Color _color;
 	private Shape _shape;
 	private float _depth;
-	private Boolean _lastNodeFrontFacing;
+	private Vector2f[] _points;
 	
 	public ConvexHull(Vector2f position, Shape shape, Color color) {
 		_color = color;
 		_shape = shape;
 		_shape.setLocation(position);
 		_depth = 0.0f;
+		
+		_points = new Vector2f[_shape.getPointCount()];
+		for (int n = 0; n < _shape.getPointCount(); n++) {
+			_points[n] = new Vector2f(_shape.getPoint(n));
+		}
 	}
 	
 	public ConvexHull(Vector2f position, Shape shape) {
 		this(position, shape, DEFAULT_COLOR);
 	}
 	
-	private static int getIndexOfPointInShape(Shape shape, Vector2f point) {
-		for (int index = 0; index < shape.getPointCount(); index++) {
-			Vector2f thisPoint = new Vector2f(shape.getPoint(index));
-			if ((thisPoint.x == point.x) && (thisPoint.y == point.y)) {
-				return index;
-			}
-		}
-		return -1;
-	}
-	
 	public void drawShadowGeometry(Light light) {
-        // Calculate all the front facing sides
+        // Calculate all the front facing sides.
 		Integer first = null;
 		Integer last = null;
-		_lastNodeFrontFacing = false;
-        for (int x = -1; x < _shape.getPointCount(); x++) {
-        	int index1 = (x >= 0) ? x : (_shape.getPointCount() + x);
-            Vector2f current_point = new Vector2f(_shape.getPoint(index1));
-        	int index2 = ((index1 - 1) >= 0) ? (index1 - 1) : (_shape.getPointCount() + (index1 - 1));
-            Vector2f prev_point = new Vector2f(_shape.getPoint(index2));
+		boolean lastNodeFrontFacing = false;
+		
+		Vector2f lightPosition = light.getPosition();
+		int shapePointCount = _points.length;
+        for (int x = -1; x < shapePointCount; x++) {
+        	int index1 = (x + shapePointCount) % shapePointCount;
+            Vector2f current_point = _points[index1];
+            
+    		int index2 = ((index1 - 1) + shapePointCount) % shapePointCount;
+            Vector2f prev_point = _points[index2];
 
             Vector2f nv = new Vector2f(current_point.y - prev_point.y, current_point.x - prev_point.x);
-
-            Vector2f lv = new Vector2f(current_point.x - light.getPosition().x, current_point.y - light.getPosition().y);
+            Vector2f lv = new Vector2f(current_point.x - lightPosition.x, current_point.y - lightPosition.y);
 
             // Check if the face is front-facing
-            if ((nv.x * -1 * lv.x) + (nv.y * lv.y) > 0) {
-                if (_lastNodeFrontFacing == false) {
-                    last = getIndexOfPointInShape(_shape, prev_point);
+            if (((nv.y * lv.y) - (nv.x * lv.x)) > 0) {
+                if (!lastNodeFrontFacing) {
+                    last = index2;
                 }
-                _lastNodeFrontFacing = true;
+                lastNodeFrontFacing = true;
             } else {
-                if (_lastNodeFrontFacing) {
-                    first = getIndexOfPointInShape(_shape, prev_point);
+                if (lastNodeFrontFacing) {
+                    first = index2;
                 }
-                _lastNodeFrontFacing = false;
+                lastNodeFrontFacing = false;
             }
         }
 
@@ -92,9 +91,9 @@ public class ConvexHull {
 
         // Get a list of all the back edges
         List<Vector2f> backpoints = new ArrayList<Vector2f>();
-        for (int x = first; x < first + _shape.getPointCount(); x++) {
-        	backpoints.add(0, new Vector2f(_shape.getPoint(x % _shape.getPointCount())));
-            if ((x % _shape.getPointCount()) == last) {
+        for (int x = first; x < first + shapePointCount; x++) {
+        	backpoints.add(0, _points[x % shapePointCount]);
+            if ((x % shapePointCount) == last) {
                 break;
             }
         }
@@ -105,7 +104,9 @@ public class ConvexHull {
         back_length.add(0.0f);
         float sum_back_length = 0;
         for (int x = 1; x < backpoints.size(); x++) {
-            float l = backpoints.get(x - 1).copy().subtract(backpoints.get(x)).length();
+        	Vector2f lastPoint = backpoints.get(x - 1);
+        	Vector2f thisPoint = backpoints.get(x);
+            float l = new Vector2f(lastPoint.x - thisPoint.x, lastPoint.y - thisPoint.y).length();
             back_length.add(0, l);
             sum_back_length += l;
         }
@@ -136,28 +137,23 @@ public class ConvexHull {
 
         // Go backwards to see if we need any shadow fins
         int i = origin;
+        int shapePointCount = _points.length;
         while (true) {
-            Vector2f p1 = new Vector2f(_shape.getPoint(i));
+            Vector2f p1 = _points[i];
 
             // Make sure we wrap around.
-            i -= step;
-            if (i < 0) {
-                i = _shape.getPointCount() - 1;
-            } else if (i == _shape.getPointCount()) {
-                i = 0;
-            }
+            i = ((i - step) + shapePointCount) % shapePointCount;
 
-            Vector2f p0 = new Vector2f(_shape.getPoint(i));
+            Vector2f p0 = _points[i];
 
-            Vector2f edge = p1.copy().subtract(p0).normalise();
+            Vector2f edge = new Vector2f(p1.x - p0.x, p1.y - p0.y).normalise();
 
-            ShadowFin shadowfin = new ShadowFin(p0);
-            shadowfin.setIndex(i);
+            ShadowFin shadowfin = new ShadowFin(p0, i);
 
             float angle = edge.getAngle() - light.outerVector(p0, step).getAngle();
 
             if (step == 1) {
-                if ((angle < 0) || (angle > Math.PI * 0.5)) {
+                if ((angle < 0) || (angle > PI_OVER_TWO)) {
                     break;
                 }
             } else if (step == -1) {
@@ -165,51 +161,44 @@ public class ConvexHull {
                 if (angle > Math.PI) {
                     angle -= Math.PI * 2;
                 }
-                if ((angle > 0) || (angle < -Math.PI * 0.5)) {
+                if ((angle > 0) || (angle < -PI_OVER_TWO)) {
                     break;
                 }
             }
 
             shadowfin.setOuter(light.outerVector(p0, step));
-            shadowfin.setInner(edge.copy().scale(light.innerVector(p0, step).length()));
+            shadowfin.setInner(edge.scale(light.innerVector(p0, step).length()));
 
             shadowfins.add(shadowfin);
-            //break
         }
         
         // Go forwards and see if we need any shadow fins.
         i = origin;
         while (true) {
-        	ShadowFin shadowfin = new ShadowFin(new Vector2f(_shape.getPoint(i)));
-            shadowfin.setIndex(i);
+        	ShadowFin shadowfin = new ShadowFin(_points[i], i);
 
-            shadowfin.setOuter(light.outerVector(new Vector2f(_shape.getPoint(i)), step));
-            shadowfin.setInner(light.innerVector(new Vector2f(_shape.getPoint(i)), step));
+            shadowfin.setOuter(light.outerVector(_points[i], step));
+            shadowfin.setInner(light.innerVector(_points[i], step));
 
             if (shadowfins.size() > 0) {
                 shadowfin.setOuter(shadowfins.get(0).getInner());
             }
 
-            Vector2f p0 = new Vector2f(_shape.getPoint(i));
+            Vector2f p0 = _points[i];
 
             // Make sure we wrap around.
-            i += step;
-            if (i < 0) {
-                i = _shape.getPointCount() - 1;
-            } else if (i == _shape.getPointCount()) {
-                i = 0;
-            }
+            i = ((i + step) + shapePointCount) % shapePointCount;
 
-            Vector2f p1 = new Vector2f(_shape.getPoint(i));
+            Vector2f p1 = _points[i];
 
-            Vector2f edge = p1.copy().subtract(p0).normalise();
+            Vector2f edge = new Vector2f(p1.x - p0.x, p1.y - p0.y).normalise();
 
             boolean done = true;
             Vector2f penumbra = shadowfin.getOuter().copy().normalise();
             Vector2f umbra = shadowfin.getInner().copy().normalise();
             
             if (Math.acos(edge.dot(penumbra)) < Math.acos(umbra.dot(penumbra))) {
-                shadowfin.setInner(edge.copy().scale(light.outerVector(p0, step).length()));
+                shadowfin.setInner(edge.scale(light.outerVector(p0, step).length()));
                 done = false;
             }
 
@@ -222,16 +211,16 @@ public class ConvexHull {
         
         // Get the total angle.
         float sum_angles = 0;
-        for (int x = 0; x < shadowfins.size(); x++) {
-            sum_angles += shadowfins.get(x).getAngle();
+        for (ShadowFin fin : shadowfins) {
+            sum_angles += fin.getAngle();
         }
         
         // Calculate the inner and outer intensity of the shadowfins.
         float angle = 0;
-        for (int x = 0; x < shadowfins.size(); x++) {
-            shadowfins.get(x).setUmbraIntensity(angle / sum_angles);
-            angle += shadowfins.get(x).getAngle();
-            shadowfins.get(x).setPenumbraIntensity(angle / sum_angles);
+        for (ShadowFin fin : shadowfins) {
+        	fin.setUmbraIntensity(angle / sum_angles);
+			angle += fin.getAngle();
+			fin.setPenumbraIntensity(angle / sum_angles);
         }
 
         // We'll use these for our umbra generation.
