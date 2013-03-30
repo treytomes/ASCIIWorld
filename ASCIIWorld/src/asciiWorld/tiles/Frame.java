@@ -13,7 +13,7 @@ import org.jdom2.output.XMLOutputter;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Vector2f;
 
-public class Frame implements ITile {
+public class Frame implements ITile, IRenderable {
 	
 	public static final int TILEINDEX_SOLID = 219;
 	

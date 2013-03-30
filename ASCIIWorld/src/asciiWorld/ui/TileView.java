@@ -83,7 +83,7 @@ public class TileView extends FrameworkElement {
 					g.scale(scale, scale);
 					
 					g.translate(centerX / scale - scale, centerY / scale - scale);
-					tile.render();
+					tile.render(g);
 					
 					g.resetTransform();
 				}

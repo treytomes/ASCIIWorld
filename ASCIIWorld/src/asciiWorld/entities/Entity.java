@@ -432,7 +432,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	}
 	
 	public void render(Graphics g) {
-		getTile().render(getPosition().toVector2f());
+		getTile().render(g, getPosition().toVector2f());
 		
 		for (TileSwingAnimation animation : _animations) {
 			animation.render(g);

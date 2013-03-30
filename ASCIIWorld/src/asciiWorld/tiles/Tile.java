@@ -1,29 +1,25 @@
 package asciiWorld.tiles;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.jdom2.Attribute;
 import org.jdom2.DataConversionException;
-import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
-import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 
-public class Tile implements ITile {
+public class Tile {
 	
 	private static final int MS_PER_SEC = 1000;
 	
 	private int _framesPerSecond;
 	private int _msecPerFrame;
-	private Frame[] _frames = null;
+	private IRenderable[] _frames = null;
 	private int _animationIndex;
 	private float _friction;
-	private TileTransform[] _transformations = null;
+	private List<TileTransform> _transformations = null;
 	private TileSet _tileSet;
 	
 	private int _currentTime;
@@ -36,12 +32,13 @@ public class Tile implements ITile {
 		_lastUpdateTime = 0;
 		_tileSet = null;
 		_tileSetName = null;
+		_transformations = new ArrayList<TileTransform>();
 	}
 	
 	public Tile(Tile clone) {
 		this();
 		
-		setTileSet(clone.getTileSet());
+		//setTileSet(clone.getTileSet());
 		setFramesPerSecond(clone.getFramesPerSecond());
 		setFrames(clone.copyFrames());
 		setFriction(clone.getFriction());
@@ -81,19 +78,19 @@ public class Tile implements ITile {
 		_msecPerFrame = MS_PER_SEC / _framesPerSecond;
 	}
 	
-	public Frame[] getFrames() {
+	public IRenderable[] getFrames() {
 		return _frames;
 	}
 	
-	public void setFrames(Frame[] value) {
+	public void setFrames(IRenderable[] value) {
 		_frames = value;
 	}
 	
-	public TileTransform[] getTransformations() {
+	public List<TileTransform> getTransformations() {
 		return _transformations;
 	}
 	
-	public void setTransformations(TileTransform[] value) {
+	public void setTransformations(List<TileTransform> value) {
 		_transformations = value;
 	}
 	
@@ -144,20 +141,9 @@ public class Tile implements ITile {
 		}
 		return effect;
 	}
-
-	@Override
-	public Color getBackgroundColor() {
-		return _frames[_animationIndex].getBackgroundColor();
-	}
-
-	@Override
-	public Color getForegroundColor() {
-		return _frames[_animationIndex].getForegroundColor();
-	}
-
-	@Override
-	public int getTileIndex() {
-		return _frames[_animationIndex].getTileIndex();
+	
+	public IRenderable getCurrentFrame() {
+		return _frames[_animationIndex];
 	}
 	
 	public void update(int deltaTime) {
@@ -168,7 +154,7 @@ public class Tile implements ITile {
 		}
 	}
 	
-	public void render(Vector2f position) {
+	public void render(Graphics g, Vector2f position) {
 		/*if (tile.getBackgroundColor().getAlpha() > 0) {
 			Vector2f tileSize = getTileSize();
 			Shape backFill = new Rectangle(0, 0, tileSize.x + 1, tileSize.y + 1)
@@ -177,12 +163,19 @@ public class Tile implements ITile {
 			g.setColor(tile.getBackgroundColor());
 			g.fill(backFill);
 		}*/
-		getTileSet().draw(Frame.TILEINDEX_SOLID, position, getBackgroundColor(), getRotation(), getEffect());
-		getTileSet().draw(getTileIndex(), position, getForegroundColor(), getRotation(), getEffect());
+		
+		Vector2f tileSize = getTileSet().getSize();
+		g.pushTransform();
+		g.rotate(position.x + tileSize.x / 2.0f, position.y + tileSize.y / 2.0f, getRotation());
+		getCurrentFrame().render(getTileSet(), position);
+		g.popTransform();
+		
+		//getTileSet().draw(Frame.TILEINDEX_SOLID, position, getBackgroundColor(), getRotation(), getEffect());
+		//getTileSet().draw(getTileIndex(), position, getForegroundColor(), getRotation(), getEffect());
 	}
 	
-	public void render() {
-		render(new Vector2f(0, 0));
+	public void render(Graphics g) {
+		render(g, new Vector2f(0, 0));
 	}
 	
 	public Tile clone() {
@@ -218,10 +211,14 @@ public class Tile implements ITile {
 		return tile;
 	}
 	
-	private static Frame[] parseFrames(final List<Element> frameElements) {
-		Frame[] frames = new Frame[frameElements.size()];
+	private static IRenderable[] parseFrames(final List<Element> frameElements) {
+		IRenderable[] frames = new IRenderable[frameElements.size()];
 		for (int index = 0; index < frameElements.size(); index++) {
-			frames[index] = Frame.fromXml(frameElements.get(index));
+			if (frameElements.get(index).getName() == "Frame") {
+				frames[index] = Frame.fromXml(frameElements.get(index));
+			} else if (frameElements.get(index).getName() == "FrameStack") {
+				frames[index] = FrameStack.fromXml(frameElements.get(index));
+			}
 		}
 		return frames;
 	}
@@ -242,15 +239,15 @@ public class Tile implements ITile {
 		}
 	}
 	
-	private static TileTransform[] parseTransformations(final List<Element> transformationElements) throws DataConversionException {
-		TileTransform[] transformations = new TileTransform[transformationElements.size()];
+	private static List<TileTransform> parseTransformations(final List<Element> transformationElements) throws DataConversionException {
+		List<TileTransform> transformations = new ArrayList<TileTransform>(); // TileTransform[transformationElements.size()];
 		for (int index = 0; index < transformationElements.size(); index++) {
-			transformations[index] = TileTransform.fromXml(transformationElements.get(index));
+			transformations.add(TileTransform.fromXml(transformationElements.get(index)));
 		}
 		return transformations;
 	}
 	
-	public void save(String path) throws Exception {
+	/*public void save(String path) throws Exception {
 		Element elem = toXml();
 		Document doc = new Document(elem);
 		doc.setRootElement(elem);
@@ -260,15 +257,15 @@ public class Tile implements ITile {
 		xmlOutput.output(doc, new FileWriter(path));
 		
 		System.out.println(String.format("Saved Tile to '%s.'", path));
-	}
+	}*/
 	
-	public Element toXml() throws Exception {
+	/*public Element toXml() throws Exception {
 		Element tileElement = new Element("Tile");
 		tileElement.setAttribute("tileSet", getTileSet().getName());
 		
 		Element framesElement = new Element("Frames");
 		framesElement.setAttribute(new Attribute("framesPerSecond", Integer.toString(getFramesPerSecond())));
-		for (Frame frame : getFrames()) {
+		for (IRenderable frame : getFrames()) {
 			framesElement.addContent(frame.toXml());
 		}
 		tileElement.addContent(framesElement);
@@ -277,9 +274,9 @@ public class Tile implements ITile {
 		propertiesElement.addContent(propertyToXml("Friction"));
 
 		return tileElement;
-	}
+	}*/
 	
-	private Element propertyToXml(String propertyName) throws Exception {
+	/*private Element propertyToXml(String propertyName) throws Exception {
 		Element elem = new Element("Property");
 		switch (propertyName) {
 		case "Friction":
@@ -290,15 +287,15 @@ public class Tile implements ITile {
 			throw new Exception(String.format("The property '%s' does not exist.", propertyName));
 		}
 		return elem;
-	}
+	}*/
 
 	/**
 	 * 
 	 * @return A deep copy of the frames array.
 	 */
-	protected Frame[] copyFrames() {
-		Frame[] myFrames = getFrames();
-		Frame[] newFrames = new Frame[myFrames.length];
+	protected IRenderable[] copyFrames() {
+		IRenderable[] myFrames = getFrames();
+		IRenderable[] newFrames = new IRenderable[myFrames.length];
 		for (int index = 0; index < myFrames.length; index++) {
 			newFrames[index] = myFrames[index].clone();
 		}
@@ -309,14 +306,14 @@ public class Tile implements ITile {
 	 * 
 	 * @return A deep copy of the transformations array.
 	 */
-	protected TileTransform[] copyTransformations() {
-		TileTransform[] myTransformations = getTransformations();
+	protected List<TileTransform> copyTransformations() {
+		List<TileTransform> myTransformations = getTransformations();
 		if (myTransformations == null) {
 			return null;
 		} else {
-			TileTransform[] newTransformations = new TileTransform[myTransformations.length];
-			for (int index = 0; index < myTransformations.length; index++) {
-				newTransformations[index] = myTransformations[index].clone();
+			List<TileTransform> newTransformations = new ArrayList<TileTransform>(); // TileTransform[myTransformations.length];
+			for (int index = 0; index < myTransformations.size(); index++) {
+				newTransformations.add(myTransformations.get(index).clone());
 			}
 			return newTransformations;
 		}

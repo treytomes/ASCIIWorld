@@ -134,7 +134,7 @@ public class TileSwingAnimation {
 		g.pushTransform();
 		translate(g);
 		rotate(g);
-		_tile.render();
+		_tile.render(g);
 		g.popTransform();
 	}
 }
