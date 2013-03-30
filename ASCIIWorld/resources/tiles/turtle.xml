@@ -1,0 +1,10 @@
+﻿<Tile tileSet="OEM437_8">
+	<Frames framesPerSecond="1">
+		<FrameStack>
+			<Frame backgroundColor="00000000" foregroundColor="FF256B26" tileIndex="161" />
+			<Frame backgroundColor="00000000" foregroundColor="FF256B26" tileIndex="'x'" />
+			<Frame backgroundColor="00000000" foregroundColor="FF442B1A" tileIndex="7" />
+			<Frame backgroundColor="00000000" foregroundColor="FF966139" tileIndex="9" />
+		</FrameStack>
+	</Frames>
+</Tile>

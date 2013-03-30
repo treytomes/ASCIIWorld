@@ -9,6 +9,7 @@ import asciiWorld.chunks.Chunk;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.HotKeyManager;
 import asciiWorld.entities.PlayerControlComponent;
+import asciiWorld.entities.RotateInFacingDirectionComponent;
 import asciiWorld.math.Vector3f;
 import asciiWorld.tiles.TileFactory;
 import asciiWorld.ui.HUDView;
@@ -23,7 +24,7 @@ import asciiWorld.ui.RootVisualPanel;
 public class LoadGraphicsGameState extends GameState {
 	
 	private static final float DEFAULT_ZOOM = 4.0f;
-	private static final String DEFAULT_PLAYER_TILE = "player";
+	private static final String DEFAULT_PLAYER_TILE = "turtle";
 	
 	private Entity _player;
 	private Camera _camera;
@@ -97,6 +98,7 @@ public class LoadGraphicsGameState extends GameState {
 		createCamera(container);
 		_playerControl = new PlayerControlComponent(_player, _camera);
 		_player.getComponents().add(_playerControl);
+		_player.getComponents().add(new RotateInFacingDirectionComponent(_player));
 
 		try {
 			_player.setTile(TileFactory.get().getResource(DEFAULT_PLAYER_TILE));
