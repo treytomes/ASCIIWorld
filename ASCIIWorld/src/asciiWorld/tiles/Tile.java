@@ -24,22 +24,52 @@ public class Tile implements ITile {
 	private int _animationIndex;
 	private float _friction;
 	private TileTransform[] _transformations = null;
+	private TileSet _tileSet;
 	
 	private int _currentTime;
 	private int _lastUpdateTime;
 	
+	private String _tileSetName;
+	
 	public Tile() {
 		_animationIndex = 0;
 		_lastUpdateTime = 0;
+		_tileSet = null;
+		_tileSetName = null;
 	}
 	
 	public Tile(Tile clone) {
 		this();
 		
+		setTileSet(clone.getTileSet());
 		setFramesPerSecond(clone.getFramesPerSecond());
 		setFrames(clone.copyFrames());
 		setFriction(clone.getFriction());
 		setTransformations(clone.copyTransformations());
+
+		_tileSetName = clone._tileSetName;
+	}
+	
+	public TileSet getTileSet() {
+		if (_tileSet == null) {
+			if (_tileSetName != null) {
+				try {
+					_tileSet = TileSetFactory.get().getResource(_tileSetName);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return _tileSet;
+	}
+	
+	public void setTileSet(TileSet value) {
+		_tileSet = value;
+		if (_tileSet != null) {
+			_tileSetName = _tileSet.getName();
+		} else {
+			_tileSetName = null;
+		}
 	}
 	
 	public int getFramesPerSecond() {
@@ -138,7 +168,7 @@ public class Tile implements ITile {
 		}
 	}
 	
-	public void render(TileSet tiles, Vector2f position) {
+	public void render(Vector2f position) {
 		/*if (tile.getBackgroundColor().getAlpha() > 0) {
 			Vector2f tileSize = getTileSize();
 			Shape backFill = new Rectangle(0, 0, tileSize.x + 1, tileSize.y + 1)
@@ -147,12 +177,12 @@ public class Tile implements ITile {
 			g.setColor(tile.getBackgroundColor());
 			g.fill(backFill);
 		}*/
-		tiles.draw(Frame.TILEINDEX_SOLID, position, getBackgroundColor(), getRotation(), getEffect());
-		tiles.draw(getTileIndex(), position, getForegroundColor(), getRotation(), getEffect());
+		getTileSet().draw(Frame.TILEINDEX_SOLID, position, getBackgroundColor(), getRotation(), getEffect());
+		getTileSet().draw(getTileIndex(), position, getForegroundColor(), getRotation(), getEffect());
 	}
 	
-	public void render(TileSet tiles) {
-		render(tiles, new Vector2f(0, 0));
+	public void render() {
+		render(new Vector2f(0, 0));
 	}
 	
 	public Tile clone() {
@@ -165,6 +195,9 @@ public class Tile implements ITile {
 	
 	public static Tile fromXml(Element elem) throws Exception {
 		Tile tile = new Tile();
+		
+		tile._tileSetName = elem.getAttributeValue("tileSet");
+		//tile.setTileSet(TileSetFactory.get().getResource(tileSetName));
 		
 		Element framesElement = elem.getChild("Frames");
 		
@@ -231,6 +264,7 @@ public class Tile implements ITile {
 	
 	public Element toXml() throws Exception {
 		Element tileElement = new Element("Tile");
+		tileElement.setAttribute("tileSet", getTileSet().getName());
 		
 		Element framesElement = new Element("Frames");
 		framesElement.setAttribute(new Attribute("framesPerSecond", Integer.toString(getFramesPerSecond())));

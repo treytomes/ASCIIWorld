@@ -8,7 +8,6 @@ import asciiWorld.entities.Entity;
 import asciiWorld.math.MathHelper;
 import asciiWorld.math.Vector3f;
 import asciiWorld.tiles.Tile;
-import asciiWorld.tiles.TileSet;
 
 public class TileSwingAnimation {
 
@@ -106,10 +105,9 @@ public class TileSwingAnimation {
 		return new Vector2f((float)Math.cos(getAngle()), (float)Math.sin(getAngle()));
 	}
 	
-	private Vector2f getPosition(TileSet tiles) 
-	{
+	private Vector2f getPosition() {
 		Vector3f position = _owner.getPosition();
-		Vector2f size = tiles.getSize();
+		Vector2f size = _tile.getTileSet().getSize();
 		Vector2f offset = getOffset();
 		return new Vector2f(
 				position.x + size.x * offset.x,
@@ -122,21 +120,21 @@ public class TileSwingAnimation {
 		}
 	}
 	
-	private void translate(Graphics g, TileSet tiles) {
-		Vector2f position = getPosition(tiles);
+	private void translate(Graphics g) {
+		Vector2f position = getPosition();
 		g.translate(position.x, position.y);
 	}
 	
-	private void rotate(Graphics g, TileSet tiles) {
-		Vector2f size = tiles.getSize();
+	private void rotate(Graphics g) {
+		Vector2f size = _tile.getTileSet().getSize();
 		g.rotate(size.x / 2, size.y / 2, getTileRotationAngle());
 	}
 	
-	public void render(Graphics g, TileSet tiles) {
+	public void render(Graphics g) {
 		g.pushTransform();
-		translate(g, tiles);
-		rotate(g, tiles);
-		_tile.render(tiles);
+		translate(g);
+		rotate(g);
+		_tile.render();
 		g.popTransform();
 	}
 }

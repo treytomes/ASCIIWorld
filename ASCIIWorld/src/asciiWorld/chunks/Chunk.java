@@ -12,7 +12,6 @@ import asciiWorld.Camera;
 import asciiWorld.entities.Entity;
 import asciiWorld.math.RandomFactory;
 import asciiWorld.math.Vector3f;
-import asciiWorld.tiles.TileSet;
 
 public class Chunk {
 	
@@ -125,23 +124,23 @@ public class Chunk {
 		}
 	}
 	
-	public void render(Graphics g, Camera camera, TileSet tiles) {
+	public void render(Graphics g, Camera camera) {
 		Vector2f position = camera.getPosition().toVector2f();
 		float rangeOfVision = camera.getRangeOfVision();
 		
 		//tiles.startBatchDraw();
-		render(g, position, tiles, LAYER_GROUND, rangeOfVision);
-		render(g, position, tiles, LAYER_OBJECT, rangeOfVision);
-		render(g, position, tiles, LAYER_SKY, rangeOfVision);
+		render(g, position, LAYER_GROUND, rangeOfVision);
+		render(g, position, LAYER_OBJECT, rangeOfVision);
+		render(g, position, LAYER_SKY, rangeOfVision);
 		//tiles.endBatchDraw();
 	}
 	
-	private void render(Graphics g,Vector2f center, TileSet tiles, int layerIndex, float rangeOfVision) {
+	private void render(Graphics g, Vector2f center, int layerIndex, float rangeOfVision) {
 		for (Entity entity : getEntities()) {
 			Vector3f position = entity.getPosition();
 			if (position.z == layerIndex) {
 				if (position.getDistance(center) <= Entity.MOVEMENT_STEP * rangeOfVision) {
-					entity.render(g, tiles);
+					entity.render(g);
 				}
 			}
 		}

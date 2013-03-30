@@ -14,20 +14,12 @@ public class TileView extends FrameworkElement {
 	
 	private Vector2f _position;
 	private Object _tileBinding;
-	private TileSet _tiles;
 	private float _scale;
 	
 	public TileView(Vector2f position, Object tileBinding) {
 		_position = position;
 		setTile(tileBinding);
 		setScale(DEFAULT_SCALE);
-		
-		try {
-			_tiles = TileSetFactory.get().getDefaultTileSet();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Unable to load the tileset resource.");
-		}
 	}
 	
 	public TileView(Object tileBinding) {
@@ -48,10 +40,6 @@ public class TileView extends FrameworkElement {
 		_tileBinding = value;
 	}
 	
-	public TileSet getTileSet() {
-		return _tiles;
-	}
-	
 	public Vector2f getPosition() {
 		return _position;
 	}
@@ -62,6 +50,19 @@ public class TileView extends FrameworkElement {
 	
 	public void setScale(float value) {
 		_scale = value;
+	}
+	
+	private TileSet getTileSet() {
+		try {
+			if (getTile() == null) {
+				return TileSetFactory.get().getDefaultTileSet();
+			} else {
+				return getTile().getTileSet();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class TileView extends FrameworkElement {
 					g.scale(scale, scale);
 					
 					g.translate(centerX / scale - scale, centerY / scale - scale);
-					tile.render(getTileSet());
+					tile.render();
 					
 					g.resetTransform();
 				}
@@ -94,8 +95,13 @@ public class TileView extends FrameworkElement {
 
 	@Override
 	public Rectangle getBounds() {
-		Vector2f tileSize = _tiles.getSize();
-		return new Rectangle(_position.x, _position.y, tileSize.x, tileSize.y);
+		try {
+			Vector2f tileSize = getTileSet().getSize();
+			return new Rectangle(_position.x, _position.y, tileSize.x, tileSize.y);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override

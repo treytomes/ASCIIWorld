@@ -7,7 +7,7 @@ import org.jdom2.Element;
 
 public class TileSetFactory {
 	
-	private static final String DEFAULT_TILESET = "OEM437";
+	private static final String DEFAULT_TILESET = "OEM437_8";
 	
 	private static TileSetFactory _instance;
 	

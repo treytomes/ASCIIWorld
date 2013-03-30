@@ -35,6 +35,13 @@ public class TileSet implements IHasSize {
 		setRows(rows);
 		setColumns(columns);
 	}
+
+	public String getName() {
+		String path = getSourceImagePath();
+		path = path.substring(path.lastIndexOf("/") + 1);
+		path = path.substring(0, path.lastIndexOf("."));
+		return path;
+	}
 	
 	public String getSourceImagePath() {
 		return _sourceImagePath;

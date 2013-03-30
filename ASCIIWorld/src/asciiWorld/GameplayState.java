@@ -5,26 +5,16 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.chunks.Chunk;
-import asciiWorld.tiles.TileSet;
-import asciiWorld.tiles.TileSetFactory;
 import asciiWorld.ui.RootVisualPanel;
 
 public class GameplayState extends GameState {
 	
-	private TileSet _tiles;
 	private Chunk _chunk;
 	private Camera _camera;
 	
 	public GameplayState(Chunk chunk, Camera camera) {
 		_chunk = chunk;
 		_camera = camera;
-		
-		try {
-			_tiles = TileSetFactory.get().getDefaultTileSet();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Unable to load the tileset resource.");
-		}
 	}
 	
 	@Override
@@ -68,7 +58,7 @@ public class GameplayState extends GameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		_camera.apply(g);
-		_chunk.render(g, _camera, _tiles);
+		_chunk.render(g, _camera);
 		_camera.reset(g);
 		
 		try {

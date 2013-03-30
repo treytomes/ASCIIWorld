@@ -1,4 +1,4 @@
-﻿<Tile>
+﻿<Tile tileSet="OEM437_8">
 	<Frames framesPerSecond="1">
 		<Frame backgroundColor="FF685638" foregroundColor="FF483618" tileIndex="178" />
 	</Frames>

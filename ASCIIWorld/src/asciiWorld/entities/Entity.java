@@ -21,7 +21,6 @@ import asciiWorld.math.MathHelper;
 import asciiWorld.math.Vector3f;
 import asciiWorld.tiles.Tile;
 import asciiWorld.tiles.TileFactory;
-import asciiWorld.tiles.TileSet;
 
 public class Entity implements IHasPosition, IHasRangeOfVision {
 	
@@ -432,11 +431,11 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		}
 	}
 	
-	public void render(Graphics g, TileSet tiles) {
-		getTile().render(tiles, getPosition().toVector2f());
+	public void render(Graphics g) {
+		getTile().render(getPosition().toVector2f());
 		
 		for (TileSwingAnimation animation : _animations) {
-			animation.render(g, tiles);
+			animation.render(g);
 		}
 	}
 }

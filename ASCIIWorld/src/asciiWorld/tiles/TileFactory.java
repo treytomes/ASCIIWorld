@@ -32,6 +32,7 @@ public class TileFactory {
 				_resourceCache.put(name, Tile.load(getPathForResource(name)));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new Exception(String.format("The tile '%s' does not exist.", name), e);
 		}
 		return _resourceCache.get(name).clone();
