@@ -119,8 +119,15 @@ public class Frame implements ITile {
 	public static Frame fromXml(Element elem) {
 		Color backgroundColor = stringToColor(elem.getAttribute("backgroundColor").getValue());
 		Color foregroundColor = stringToColor(elem.getAttribute("foregroundColor").getValue());
-		int tileIndex = Integer.parseInt(elem.getAttribute("tileIndex").getValue());
-		return new Frame(tileIndex, foregroundColor, backgroundColor);
+		
+		String tileIndexText = elem.getAttribute("tileIndex").getValue();
+		if ((tileIndexText.charAt(0) == '\'') && (tileIndexText.length() == 3) && (tileIndexText.charAt(2) == '\'')) {
+			int tileIndex = (int)tileIndexText.charAt(1);
+			return new Frame(tileIndex, foregroundColor, backgroundColor);
+		} else {
+			int tileIndex = Integer.parseInt(elem.getAttribute("tileIndex").getValue());
+			return new Frame(tileIndex, foregroundColor, backgroundColor);
+		}
 	}
 	
 	public void save(String path) throws IOException {
