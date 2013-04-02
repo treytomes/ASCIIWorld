@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="player" name="Player">
+  <Components>
+    <!--<Component name="LightSource">
+      <Properties>
+        <Property name="Color" value="Goldenrod" />
+        <Property name="Range" value="64" />
+        <Property name="Flicker" value="true" />
+      </Properties>
+    </Component>
+    <Component name="Placeable" />
+    <Component name="CanBePickedUp" />-->
+	<!--<Component name="GeneratesChildren">
+      <Properties>
+        <Property name="SpawnRate" value="0.0001" />
+      </Properties>
+    </Component>-->
+  </Components>
+  
+  <!--<Properties>
+    <Property name="MaxHealth" value="10" />
+  </Properties>
+  <Inventory>
+    <Item name="WoodLog" />
+  </Inventory>-->
+</Entity>
