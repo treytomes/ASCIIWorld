@@ -12,7 +12,7 @@ import org.newdawn.slick.util.Bootstrap;
 import org.newdawn.slick.util.ResourceLoader;
 import org.newdawn.slick.util.pathfinding.Mover;
 import org.newdawn.slick.util.pathfinding.PathFindingContext;
-import org.newdawn.slick.util.pathfinding.TileBasedMap;
+import org.newdawn.slick.util.pathfinding.ITileBasedMap;
 import org.newdawn.slick.util.pathfinding.navmesh.Link;
 import org.newdawn.slick.util.pathfinding.navmesh.NavMesh;
 import org.newdawn.slick.util.pathfinding.navmesh.NavMeshBuilder;
@@ -189,7 +189,7 @@ public class NavMeshTest extends BasicGame implements PathFindingContext {
 	 * 
 	 * @author kevin
 	 */
-	private class DataMap implements TileBasedMap {
+	private class DataMap implements ITileBasedMap {
 		/** The map data */
 		private byte[] map = new byte[50*50];
 	

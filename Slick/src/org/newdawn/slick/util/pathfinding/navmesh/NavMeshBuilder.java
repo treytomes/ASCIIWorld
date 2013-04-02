@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.util.pathfinding.Mover;
 import org.newdawn.slick.util.pathfinding.PathFindingContext;
-import org.newdawn.slick.util.pathfinding.TileBasedMap;
+import org.newdawn.slick.util.pathfinding.ITileBasedMap;
 
 /**
  * The builder responsible for converting a tile based map into
@@ -29,7 +29,7 @@ public class NavMeshBuilder implements PathFindingContext {
 	 * 
 	 * @return The newly created navigation mesh 
 	 */
-	public NavMesh build(TileBasedMap map) {
+	public NavMesh build(ITileBasedMap map) {
 		return build(map, true);
 	}
 	
@@ -41,7 +41,7 @@ public class NavMeshBuilder implements PathFindingContext {
 	 * rather than quad spacing
 	 * @return The newly created navigation mesh 
 	 */
-	public NavMesh build(TileBasedMap map, boolean tileBased) {
+	public NavMesh build(ITileBasedMap map, boolean tileBased) {
 		this.tileBased = tileBased;
 		
 		ArrayList spaces = new ArrayList();
@@ -120,7 +120,7 @@ public class NavMeshBuilder implements PathFindingContext {
 	 * @param space The space to check
 	 * @return True if there are no blockages in the space
 	 */
-	public boolean clear(TileBasedMap map, Space space) {
+	public boolean clear(ITileBasedMap map, Space space) {
 		if (tileBased) {
 			return true;
 		}
@@ -166,7 +166,7 @@ public class NavMeshBuilder implements PathFindingContext {
 	 * @param space The space being sections
 	 * @param spaces The list of spaces that have been created
 	 */
-	private void subsection(TileBasedMap map, Space space, ArrayList spaces) {
+	private void subsection(ITileBasedMap map, Space space, ArrayList spaces) {
 		if (!clear(map, space)) {
 			float width2 = space.getWidth()/2;
 			float height2 = space.getHeight()/2;

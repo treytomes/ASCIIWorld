@@ -5,7 +5,7 @@ package org.newdawn.slick.util.pathfinding;
  * location on a tile map to another based on information provided
  * by that tile map.
  * 
- * @see TileBasedMap
+ * @see ITileBasedMap
  * @author Kevin Glass
  */
 public interface PathFinder {

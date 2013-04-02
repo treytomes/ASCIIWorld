@@ -18,6 +18,10 @@ public strictfp class Vector2f implements Serializable {
 	/** The y component of this vector */
 	public float y;
 	
+	public static Vector2f zero() {
+		return new Vector2f(0, 0);
+	}
+	
 	/**
 	 * Create an empty vector
 	 */

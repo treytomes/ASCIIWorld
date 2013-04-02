@@ -2,7 +2,7 @@ package org.newdawn.slick.util.pathfinding.heuristics;
 
 import org.newdawn.slick.util.pathfinding.AStarHeuristic;
 import org.newdawn.slick.util.pathfinding.Mover;
-import org.newdawn.slick.util.pathfinding.TileBasedMap;
+import org.newdawn.slick.util.pathfinding.ITileBasedMap;
 
 /**
  * A heuristic that drives the search based on the Manhattan distance
@@ -24,9 +24,9 @@ public class ManhattanHeuristic implements AStarHeuristic {
 	}
 	
 	/**
-	 * @see AStarHeuristic#getCost(TileBasedMap, Mover, int, int, int, int)
+	 * @see AStarHeuristic#getCost(ITileBasedMap, Mover, int, int, int, int)
 	 */
-	public float getCost(TileBasedMap map, Mover mover, int x, int y, int tx,
+	public float getCost(ITileBasedMap map, Mover mover, int x, int y, int tx,
 			int ty) {
 		return minimumCost * (Math.abs(x-tx) + Math.abs(y-ty));
 	}

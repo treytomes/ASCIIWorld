@@ -19,7 +19,7 @@ public class AStarPathFinder implements PathFinder, PathFindingContext {
 	private PriorityList open = new PriorityList();
 	
 	/** The map being searched */
-	private TileBasedMap map;
+	private ITileBasedMap map;
 	/** The maximum depth of search we're willing to accept before giving up */
 	private int maxSearchDistance;
 	
@@ -48,7 +48,7 @@ public class AStarPathFinder implements PathFinder, PathFindingContext {
 	 * @param maxSearchDistance The maximum depth we'll search before giving up
 	 * @param allowDiagMovement True if the search should try diaganol movement
 	 */
-	public AStarPathFinder(TileBasedMap map, int maxSearchDistance, boolean allowDiagMovement) {
+	public AStarPathFinder(ITileBasedMap map, int maxSearchDistance, boolean allowDiagMovement) {
 		this(map, maxSearchDistance, allowDiagMovement, new ClosestHeuristic());
 	}
 
@@ -60,7 +60,7 @@ public class AStarPathFinder implements PathFinder, PathFindingContext {
 	 * @param maxSearchDistance The maximum depth we'll search before giving up
 	 * @param allowDiagMovement True if the search should try diaganol movement
 	 */
-	public AStarPathFinder(TileBasedMap map, int maxSearchDistance, 
+	public AStarPathFinder(ITileBasedMap map, int maxSearchDistance, 
 						   boolean allowDiagMovement, AStarHeuristic heuristic) {
 		this.heuristic = heuristic;
 		this.map = map;

@@ -7,7 +7,7 @@ package org.newdawn.slick.util.pathfinding;
  * 
  * @author Kevin Glass
  */
-public interface TileBasedMap {
+public interface ITileBasedMap {
 	/**
 	 * Get the width of the tile map. The slightly odd name is used
 	 * to distiguish this method from commonly used names in game maps.
