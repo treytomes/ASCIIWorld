@@ -1,6 +1,7 @@
 package asciiWorld.entities;
 
 import java.io.File;
+import java.lang.reflect.Method;
 
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
@@ -22,11 +23,41 @@ public class EntityComponent {
 	public static EntityComponent fromXml(Entity entity, Element elem) throws Exception {
 		Class<?> componentClass = Class.forName(String.format(PACKAGE_PATH, elem.getAttributeValue("name")));
 		EntityComponent component = (EntityComponent)componentClass.getConstructor(Entity.class).newInstance(entity);
+		
+		Element propertiesElem = elem.getChild("Properties");
+		if (propertiesElem != null) {
+			for (Element propertyElem : propertiesElem.getChildren("Property")) {
+				String propertyName = propertyElem.getAttributeValue("name");
+				String propertyValue = propertyElem.getAttributeValue("value");
+				component.setProperty(propertyName, propertyValue);
+			}
+		}
+		
 		return component;
 	}
 	
 	public EntityComponent(Entity owner) {
 		_owner = owner;
+	}
+	
+	public void setProperty(String propertyName, Object propertyValue) throws Exception {
+		for (Method method : getClass().getDeclaredMethods()) { // TODO: Why isn't it finding the set* method? 
+			if (method.getName() == String.format("set%s", propertyName)) {
+				System.err.println(method.getName());
+				Class<?>[] parameterTypes = method.getParameterTypes();
+				if (parameterTypes.length != 1) {
+					throw new Exception("The property setter must have 1, and only 1, parameter.");
+				} else {
+					if (parameterTypes[0].isAssignableFrom(String.class)) {
+						method.invoke(this, String.class.cast(propertyValue));
+						return;
+					} else {
+						throw new Exception(String.format("I do no understand this parameter type: %s", parameterTypes[0].getName()));
+					}
+				}
+			}
+		}
+		throw new Exception(String.format("I do not understand this property name: %s", propertyName));
 	}
 	
 	public Entity getOwner() {

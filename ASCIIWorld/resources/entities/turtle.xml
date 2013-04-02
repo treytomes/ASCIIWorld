@@ -2,6 +2,8 @@
 <Entity tile="turtle" name="Turtle">
   <Components>
   	<Component name="RotateInFacingDirection" />
+  	<Component name="CanBePushed" />
+  	<Component name="SeekOutPlayer" />
   
     <!--<Component name="LightSource">
       <Properties>

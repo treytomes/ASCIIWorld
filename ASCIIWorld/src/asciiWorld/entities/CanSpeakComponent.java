@@ -4,26 +4,26 @@ import asciiWorld.ui.RootVisualPanel;
 
 public class CanSpeakComponent extends EntityComponent {
 	
-	private RootVisualPanel _uiRoot;
 	private String _text;
 	
-	public CanSpeakComponent(Entity owner, RootVisualPanel uiRoot, String text) {
+	public CanSpeakComponent(Entity owner) {
 		super(owner);
-
-		_uiRoot = uiRoot;
-		_text = text;
-	}
-	
-	public RootVisualPanel getUIRoot() {
-		return _uiRoot;
 	}
 	
 	public String getText() {
 		return _text;
 	}
 	
+	public void setText(String value) {
+		_text = value;
+	}
+	
 	@Override
 	public void touched(Entity touchedByEntity) {
-		_uiRoot.showMessageBox(true, getText(), getOwner().toString());
+		try {
+			RootVisualPanel.get().showMessageBox(true, getText(), getOwner().toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

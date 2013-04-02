@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity tile="giraffe" name="Giraffe">
   <Components>
-  
+  	<Component name="CanSpeak">
+  		<Properties>
+  			<Property name="Text" value="I'm a giraffe!" />
+  		</Properties>
+  	</Component>
     <!--<Component name="LightSource">
       <Properties>
         <Property name="Color" value="Goldenrod" />

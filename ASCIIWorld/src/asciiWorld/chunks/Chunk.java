@@ -90,6 +90,11 @@ public class Chunk {
 		return getEntityAt(chunkPoint.toVector2f(), chunkPoint.z) != null;
 	}
 
+	public Boolean isSpaceOccupied(Vector2f chunkPoint, int layer)
+	{
+		return getEntityAt(chunkPoint, layer) != null;
+	}
+
 	public Vector3f findSpawnPoint(int layer) throws Exception
 	{
 		for (int y = 0; y < Chunk.WIDTH; y++)

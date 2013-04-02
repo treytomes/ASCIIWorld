@@ -3,6 +3,7 @@ package asciiWorld.entities;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.Direction;
 import asciiWorld.tiles.TileTransform;
 import asciiWorld.tiles.TransformEffect;
 
@@ -13,6 +14,7 @@ public class RotateInFacingDirectionComponent extends EntityComponent {
 	private float _angleOffset;
 	private TileTransform _transform;
 	private Boolean _isInitialized;
+	private Direction _lastDirection;
 	
 	public RotateInFacingDirectionComponent(Entity owner) {
 		super(owner);
@@ -21,6 +23,7 @@ public class RotateInFacingDirectionComponent extends EntityComponent {
 		_transform.setRotation(180.0f);
 		_isInitialized = false;
 		setAngleOffset(DEFAULT_ANGLE_OFFSET);
+		_lastDirection = getOwner().getDirection();
 	}
 	
 	public float getAngleOffset() {
@@ -30,10 +33,9 @@ public class RotateInFacingDirectionComponent extends EntityComponent {
 	public void setAngleOffset(float value) {
 		_angleOffset = value;
 	}
-
-	@Override
-	public void collided(Entity collidedWithEntity) {
-		getOwner().move(collidedWithEntity.getDirection());
+	
+	private boolean hasDirectionChanged() {
+		return _lastDirection != getOwner().getDirection();
 	}
 	
 	@Override
@@ -42,7 +44,10 @@ public class RotateInFacingDirectionComponent extends EntityComponent {
 			getOwner().getTile().getTransformations().add(_transform);
 			_isInitialized = true;
 		}
-		_transform.setRotation(getAngleOffset() + (float)Math.toDegrees(getOwner().getDirection().toVector2f().getAngle()));
+		if (hasDirectionChanged()) {
+			_transform.setRotation(getAngleOffset() + (float)Math.toDegrees(getOwner().getDirection().toVector2f().getAngle()));
+			_lastDirection = getOwner().getDirection(); 
+		}
 		super.update(container, game, deltaTime);
 	}
 }

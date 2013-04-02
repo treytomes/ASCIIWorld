@@ -80,7 +80,7 @@ public class ChunkFactory {
 		entity.setName("Tree");
 		entity.setTile(TileFactory.get().getResource("tree"));
 		entity.moveTo(new Vector2f(10, 10), Chunk.LAYER_OBJECT);
-		entity.getComponents().add(new CanSpeakComponent(entity, uiRoot, "I've been touched!"));
+		entity.getComponents().add(new CanSpeakComponent(entity) {{ setText("I've been touched!"); }});
 		chunk.addEntity(entity);
 		
 		entity = new Entity();

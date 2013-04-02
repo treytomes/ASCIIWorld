@@ -10,9 +10,7 @@ import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityFactory;
 import asciiWorld.entities.HotKeyManager;
 import asciiWorld.entities.PlayerControlComponent;
-import asciiWorld.entities.RotateInFacingDirectionComponent;
 import asciiWorld.math.Vector3f;
-import asciiWorld.tiles.TileFactory;
 import asciiWorld.ui.HUDView;
 import asciiWorld.ui.RootVisualPanel;
 

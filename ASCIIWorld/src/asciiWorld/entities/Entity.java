@@ -354,6 +354,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	}
 	
 	public void move(Direction direction) {
+		if (direction == null) {
+			return;
+		}
+		
 		if (!isMoving()) {
 			Chunk cachedChunk = getChunk();
 			

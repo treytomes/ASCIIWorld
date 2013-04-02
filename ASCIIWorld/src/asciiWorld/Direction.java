@@ -2,6 +2,7 @@ package asciiWorld;
 
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.math.RandomFactory;
 import asciiWorld.math.Vector3f;
 
 public enum Direction {
@@ -11,7 +12,41 @@ public enum Direction {
 	East,
 	West;
 	
-	public Direction opposite() throws Exception {
+	public static Direction fromVector2f(Vector2f position) {
+		position = position.normalise();
+		if ((position.x == 0) && (position.y == -1)) {
+			return Direction.North;
+		} else if ((position.x == 0) && (position.y == 1)) {
+			return Direction.South;
+		} else if ((position.x == 1) && (position.y == 0)) {
+			return Direction.East;
+		} else if ((position.x == -1) && (position.y == 0)) {
+			return Direction.West;
+		} else {
+			return null;
+		}
+	}
+	
+	public static Direction fromVector3f(Vector3f position) throws Exception {
+		return fromVector2f(position.toVector2f());
+	}
+	
+	public static Direction random() {
+		switch (RandomFactory.get().nextInt(0, 4)) {
+		case 0:
+			return North;
+		case 1:
+			return South;
+		case 2:
+			return East;
+		case 3:
+			return West;
+		default:
+			return null;	
+		}
+	}
+	
+	public Direction opposite() {
 		switch (this) {
 		case North:
 			return South;
@@ -22,7 +57,7 @@ public enum Direction {
 		case West:
 			return East;
 		default:
-			throw new Exception("This shouldn't be possible.");
+			return null;	
 		}
 	}
 	
@@ -43,24 +78,5 @@ public enum Direction {
 	
 	public Vector3f toVector3f() {
 		return new Vector3f(toVector2f());
-	}
-	
-	public static Direction fromVector2f(Vector2f position) throws Exception {
-		position = position.normalise();
-		if ((position.x == 0) && (position.y == -1)) {
-			return Direction.North;
-		} else if ((position.x == 0) && (position.y == 1)) {
-			return Direction.South;
-		} else if ((position.x == 1) && (position.y == 0)) {
-			return Direction.East;
-		} else if ((position.x == -1) && (position.y == 0)) {
-			return Direction.West;
-		} else {
-			throw new Exception("The input vector is not a cardinal direction.");
-		}
-	}
-	
-	public static Direction fromVector3f(Vector3f position) throws Exception {
-		return fromVector2f(position.toVector2f());
 	}
 }
