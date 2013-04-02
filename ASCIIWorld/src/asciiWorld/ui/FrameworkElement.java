@@ -223,14 +223,21 @@ public abstract class FrameworkElement {
 	
 	public abstract void render(Graphics g);
 	
+	protected void updateContainsMouse(Input input) {
+		_containsMouse = contains(new Vector2f(input.getMouseX(), input.getMouseY()));
+	}
+	
 	public void update(GameContainer container, int delta) {
 		setInputHandled(false);
 		
 		Input input = container.getInput();
 		if (shouldHandleNewInput()) {
 			updateMouseEvents(input);
-		} else if (containsMouse()) {
-			releaseMouseHover(input);
+		} else {
+			if (containsMouse()) {
+				releaseMouseHover(input);
+			}
+			updateContainsMouse(input);
 		}
 	}
 	
@@ -253,7 +260,7 @@ public abstract class FrameworkElement {
 		Vector2f mousePosition = new Vector2f(input.getMouseX(), input.getMouseY());
 
 		Boolean lastFrameContainedMouse = _containsMouse;
-		_containsMouse = contains(mousePosition);
+		updateContainsMouse(input);
 
 		if (_containsMouse && !lastFrameContainedMouse) {
 			for (MousePositionEvent l : _mouseOverListeners) {

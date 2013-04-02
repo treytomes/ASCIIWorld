@@ -143,6 +143,16 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		_components = value;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <TComponent extends EntityComponent> TComponent findComponent(Class<TComponent> type) {
+		for (EntityComponent component : getComponents()) {
+			if (type.isAssignableFrom(component.getClass())) {
+				return (TComponent)component;
+			}
+		}
+		return null;
+	}
+	
 	public Chunk getChunk() {
 		return _chunk;
 	}

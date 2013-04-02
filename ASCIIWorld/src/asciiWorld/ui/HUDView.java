@@ -8,8 +8,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import asciiWorld.ASCIIWorldGame;
 import asciiWorld.Camera;
 import asciiWorld.entities.Entity;
+import asciiWorld.entities.EntityFactory;
 import asciiWorld.entities.HotKeyInfo;
 import asciiWorld.entities.HotKeyManager;
+import asciiWorld.entities.PlayerControlComponent;
 
 public class HUDView extends CanvasPanel {
 	
@@ -22,6 +24,7 @@ public class HUDView extends CanvasPanel {
 	
 	private Camera _camera;
 	private Entity _player;
+	private ImmediateWindow _scriptConsole;
 	
 	public HUDView(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
 		super(new Rectangle(0, 0, container.getWidth(), container.getHeight()));
@@ -42,6 +45,47 @@ public class HUDView extends CanvasPanel {
 	
 	public void setPlayer(Entity value) {
 		_player = value;
+		_scriptConsole.getContext().addObjectToContext(_player, "player");
+		assignHUDToPlayerControlComponent();
+	}
+	
+	@Override
+	public void setParent(FrameworkElement parent) throws Exception {
+		super.setParent(parent);
+		assignHUDToPlayerControlComponent();
+	}
+	
+	public void showConsole() {
+		if (!isConsoleOpen()) {
+			try {
+				addChild(_scriptConsole);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void hideConsole() {
+		if (isConsoleOpen()) {
+			try {
+				removeChild(_scriptConsole);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public boolean isConsoleOpen() {
+		return _scriptConsole.getParent() == this;
+	}
+	
+	private void assignHUDToPlayerControlComponent() {
+		if (getPlayer() != null) {
+			PlayerControlComponent playerControl = getPlayer().findComponent(PlayerControlComponent.class);
+			if (playerControl != null) {
+				playerControl.setHUD(this);
+			}
+		}
 	}
 	
 	private void generateUI(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
@@ -50,6 +94,16 @@ public class HUDView extends CanvasPanel {
 		addChild(createMenuPanel(container, game));
 		addChild(createZoomPanel());
 		//addChild(createPlayerPositionLabel());
+
+		_scriptConsole = new ImmediateWindow(container, new Rectangle(getBounds().getMinX(), getBounds().getMaxY() - 200, getBounds().getWidth(), 200));
+		_scriptConsole.hideButtonBar();
+		_scriptConsole.getContext().executeScript("Direction = Packages.asciiWorld.Direction");
+		_scriptConsole.getContext().executeScript("Chunk = Packages.asciiWorld.chunks.Chunk");
+		_scriptConsole.getContext().addObjectToContext(EntityFactory.get(), "EntityFactory");
+		_scriptConsole.getContext().executeScript("function getSpawnPoint() { return player.getChunk().findRandomSpawnPoint(Chunk.LAYER_OBJECT); }");
+		_scriptConsole.getContext().executeScript("function spawn(resource) { e = EntityFactory.getResource(resource); e.moveTo(getSpawnPoint()); player.getChunk().addEntity(e); }");
+		// Hide the script console by default.  It is opened by the PlayerControlComponent.
+		//addChild(_scriptConsole);
 	}
 	
 	private HotKeyPanel createInventoryHotKeys(HotKeyManager hotkeys) throws Exception {

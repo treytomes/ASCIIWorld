@@ -23,11 +23,13 @@ public class PlayerControlComponent extends InputAwareComponent {
 	private static final int KEY_MOVE_EAST = Input.KEY_D;
 	private static final int KEY_TOUCH = Input.KEY_SPACE;
 	private static final int KEY_INVENTORY = Input.KEY_ESCAPE;
+	private static final int KEY_CONSOLE = Input.KEY_GRAVE;
 	
 	private WindowPanel _inventoryUI;
 	private Direction _movingDirection;
 	private Camera _camera;
 	private HotKeyManager _hotkeys;
+	private HUDView _hud;
 
 	public PlayerControlComponent(Entity owner, Camera camera) {
 		super(owner);
@@ -39,6 +41,14 @@ public class PlayerControlComponent extends InputAwareComponent {
 	
 	public HotKeyManager getHotKeyManager() {
 		return _hotkeys;
+	}
+	
+	public HUDView getHUD() {
+		return _hud;
+	}
+
+	public void setHUD(HUDView value) {
+		_hud = value;
 	}
 	
 	@Override
@@ -107,37 +117,58 @@ public class PlayerControlComponent extends InputAwareComponent {
 		}
 	}
 	
+	private boolean isConsoleOpen() {
+		if (getHUD() != null) {
+			return getHUD().isConsoleOpen();
+		}
+		return false;
+	}
+	
+	private void toggleScriptingConsole() {
+		if (getHUD() != null) {
+			if (!getHUD().isConsoleOpen()) {
+				getHUD().showConsole();
+			} else {
+				getHUD().hideConsole();
+			}
+		}
+	}
+	
 	@Override
 	public void keyPressed(int key, char c) {
-		switch (key) {
-		case KEY_MOVE_NORTH:
-			_movingDirection = Direction.North;
-			break;
-		case KEY_MOVE_SOUTH:
-			_movingDirection = Direction.South;
-			break;
-		case KEY_MOVE_EAST:
-			_movingDirection = Direction.East;
-			break;
-		case KEY_MOVE_WEST:
-			_movingDirection = Direction.West;
-			break;
-		case KEY_TOUCH:
-			getOwner().touch();
-			break;
-		case KEY_INVENTORY:
-			openInventoryInterface();
-			break;
-		default:
-			for (HotKeyInfo info : getHotKeyManager()) {
-				if (info.getKeyboardKey() == key) {
-					try {
-						getOwner().setActiveItem(info.getItem());
-					} catch (Exception e) {
-						e.printStackTrace();
-						System.err.println("Unable to select the hot-key item.");
+		if (key == KEY_CONSOLE) {
+			toggleScriptingConsole();
+		} else if (!isConsoleOpen()) {		
+			switch (key) {
+			case KEY_MOVE_NORTH:
+				_movingDirection = Direction.North;
+				break;
+			case KEY_MOVE_SOUTH:
+				_movingDirection = Direction.South;
+				break;
+			case KEY_MOVE_EAST:
+				_movingDirection = Direction.East;
+				break;
+			case KEY_MOVE_WEST:
+				_movingDirection = Direction.West;
+				break;
+			case KEY_TOUCH:
+				getOwner().touch();
+				break;
+			case KEY_INVENTORY:
+				openInventoryInterface();
+				break;
+			default:
+				for (HotKeyInfo info : getHotKeyManager()) {
+					if (info.getKeyboardKey() == key) {
+						try {
+							getOwner().setActiveItem(info.getItem());
+						} catch (Exception e) {
+							e.printStackTrace();
+							System.err.println("Unable to select the hot-key item.");
+						}
+						break;
 					}
-					break;
 				}
 			}
 		}

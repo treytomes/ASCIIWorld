@@ -39,7 +39,9 @@ public class WindowPanel extends Border {
 		Vector2f titlePosition = new Vector2f(
 				bounds.getMinX() + (bounds.getWidth() - font.getWidth(title)) / 2,
 				bounds.getMinY() + 10);
-		windowCanvas.addChild(new Label(titlePosition, font, title, COLOR_TEXT_TITLE));
+		windowCanvas.addChild(new Label(titlePosition, font, title, COLOR_TEXT_TITLE) {{
+			setTextWrappingMode(TextWrappingMode.NoWrap);
+		}});
 		windowCanvas.addChild(getButtons(getBounds()));
 		windowCanvas.addChild(contentBorder);
 		

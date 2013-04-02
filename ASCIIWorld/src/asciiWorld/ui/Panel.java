@@ -126,6 +126,7 @@ public abstract class Panel extends FrameworkElement {
 		} else if (containsMouse()) {
 			releaseMouseHover(container.getInput());
 		}
+		updateContainsMouse(container.getInput());
 	}
 	
 	/**

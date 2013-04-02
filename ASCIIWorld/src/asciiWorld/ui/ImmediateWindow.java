@@ -33,6 +33,9 @@ public class ImmediateWindow extends Border implements KeyListener {
 	private static String TEXT_PROMPT = "> ";
 	
 	private Border _textContainer;
+	private StackPanel _buttonPanel;
+	private CanvasPanel _windowCanvas;
+	private Border _windowBorder;
 	
 	private String _allText;
 	private String _currentLine;
@@ -75,6 +78,10 @@ public class ImmediateWindow extends Border implements KeyListener {
 		this(container, new Rectangle(0, 0, container.getWidth(), container.getHeight()));
 	}
 	
+	public JavascriptContext getContext() {
+		return _context;
+	}
+	
 	public void clear() {
 		_allText = "";
 	}
@@ -91,6 +98,7 @@ public class ImmediateWindow extends Border implements KeyListener {
 	@Override
 	public void update(GameContainer container, int delta) {
 		_totalTime += delta;
+		
 		super.update(container, delta);
 	}
 	
@@ -145,6 +153,32 @@ public class ImmediateWindow extends Border implements KeyListener {
 		}
 	}
 	
+	public void showButtonBar() {
+		final RoundedRectangle windowBounds = (RoundedRectangle)getBounds();
+		_textContainer.getBounds().setHeight(windowBounds.getHeight() - 42 - 20);
+		_textContainer.resetBounds();
+		try {
+			if (!_windowCanvas.containsChild(_buttonPanel)) {
+				_windowCanvas.addChild(_buttonPanel);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void hideButtonBar() {
+		final RoundedRectangle windowBounds = (RoundedRectangle)getBounds();
+		_textContainer.getBounds().setHeight(windowBounds.getHeight() - 20);
+		_textContainer.resetBounds();
+		try {
+			if (_windowCanvas.containsChild(_buttonPanel)) {
+				_windowCanvas.removeChild(_buttonPanel);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void removeFirstLineOfText() {
 		int index = _allText.indexOf('\n');
 		_allText = _allText.substring(index + 1, _allText.length());
@@ -158,15 +192,17 @@ public class ImmediateWindow extends Border implements KeyListener {
 		_textContainer = new Border(new Rectangle(windowBounds.getX() + 10, windowBounds.getY() + 10, windowBounds.getWidth() - 20, windowBounds.getHeight() - 42 - 20), textContainerFillColor, true);
 		_textContainer.setContent(new Border(COLOR_BORDER_TEXT, false));
 		
-		CanvasPanel windowCanvas = new CanvasPanel();
-		windowCanvas.addChild(_textContainer);
-		windowCanvas.addChild(getButtons(windowBounds));
+		_buttonPanel = getButtons(windowBounds);
+		
+		_windowCanvas = new CanvasPanel();
+		_windowCanvas.addChild(_textContainer);
+		_windowCanvas.addChild(_buttonPanel);
 		
 		Color windowBorderColor = new Color(COLOR_BORDER_WINDOW_FILL);
 		windowBorderColor.a = 1.0f;
-		Border windowBorder = new Border(getBounds(), windowBorderColor, false);
-		windowBorder.setContent(windowCanvas);
-		setContent(windowBorder);
+		_windowBorder = new Border(getBounds(), windowBorderColor, false);
+		_windowBorder.setContent(_windowCanvas);
+		setContent(_windowBorder);
 	}
 	
 	protected StackPanel getButtons(RoundedRectangle dialogBounds) throws Exception {
@@ -291,7 +327,7 @@ public class ImmediateWindow extends Border implements KeyListener {
 
 	@Override
 	public boolean isAcceptingInput() {
-		return true;
+		return getParent() != null;
 	}
 
 	@Override
