@@ -103,9 +103,9 @@ public class GenerateChunkGameState extends GameState {
 	
 	private void generateChunk() {
 		try {
-			//PrintStream printStream = new PrintStream(_logStream, true);
-			//_chunk = ChunkFactory.generateOverworld(printStream);
-			_chunk = ChunkFactory.generateGrassyPlain();
+			PrintStream printStream = new PrintStream(_logStream, true);
+			_chunk = ChunkFactory.generateOverworld(printStream);
+			//_chunk = ChunkFactory.generateGrassyPlain();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to generate the chunk.");
