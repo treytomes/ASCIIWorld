@@ -43,6 +43,10 @@ public class FrameStack implements IRenderable {
 		render(tiles, position, 0);
 	}
 	
+	public void render(TileSet tiles) {
+		render(tiles, Vector2f.zero());
+	}
+	
 	private void addFrame(IRenderable frame) {
 		_frames.add(frame);
 	}

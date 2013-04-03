@@ -142,6 +142,20 @@ public class Tile {
 		return effect;
 	}
 	
+	public Vector2f getScale() {
+		switch (getEffect()) {
+		case FlipHorizontally:
+			return new Vector2f(-1, 1);
+		case FlipVertically:
+			return new Vector2f(1, -1);
+		case FlipBoth:
+			return Vector2f.one().scale(-1.0f);
+		case None:
+			return Vector2f.one();
+		}
+		return null;
+	}
+	
 	public IRenderable getCurrentFrame() {
 		return _frames[_animationIndex];
 	}
@@ -166,8 +180,14 @@ public class Tile {
 		
 		Vector2f tileSize = getTileSet().getSize();
 		g.pushTransform();
-		g.rotate(position.x + tileSize.x / 2.0f, position.y + tileSize.y / 2.0f, getRotation());
-		getCurrentFrame().render(getTileSet(), position);
+		
+		Vector2f scale = getScale();
+		g.translate(tileSize.x / 2.0f, tileSize.x / 2.0f);
+		g.scale(scale.x, scale.y);
+		g.rotate(tileSize.x / 2.0f, tileSize.y / 2.0f, getRotation());
+		g.translate(-tileSize.x / 2.0f, -tileSize.x / 2.0f);
+		g.translate(position.x, position.y);
+		getCurrentFrame().render(getTileSet());
 		g.popTransform();
 		
 		//getTileSet().draw(Frame.TILEINDEX_SOLID, position, getBackgroundColor(), getRotation(), getEffect());

@@ -95,6 +95,10 @@ public class Frame implements ITile, IRenderable {
 		render(tiles, position, 0);
 	}
 	
+	public void render(TileSet tiles) {
+		render(tiles, Vector2f.zero());
+	}
+	
 	public Frame clone() {
 		return new Frame(this);
 	}
