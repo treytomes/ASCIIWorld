@@ -8,6 +8,7 @@ import org.jdom2.input.SAXBuilder;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.MethodIterator;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.math.Vector3f;
 
@@ -41,9 +42,7 @@ public class EntityComponent {
 	}
 	
 	public void setProperty(String propertyName, Object propertyValue) throws Exception {
-		for (Method method : getClass().getDeclaredMethods()) { // TODO: Why isn't it finding the set* method? 
-			if (method.getName() == String.format("set%s", propertyName)) {
-				System.err.println(method.getName());
+		for (Method method : MethodIterator.getMethods(getClass()).withName(String.format("set%s", propertyName))) { 
 				Class<?>[] parameterTypes = method.getParameterTypes();
 				if (parameterTypes.length != 1) {
 					throw new Exception("The property setter must have 1, and only 1, parameter.");
@@ -55,7 +54,6 @@ public class EntityComponent {
 						throw new Exception(String.format("I do no understand this parameter type: %s", parameterTypes[0].getName()));
 					}
 				}
-			}
 		}
 		throw new Exception(String.format("I do not understand this property name: %s", propertyName));
 	}
