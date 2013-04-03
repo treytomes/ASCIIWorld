@@ -1,6 +1,7 @@
 package asciiWorld.entities;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +13,11 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Camera;
+import asciiWorld.Convert;
 import asciiWorld.Direction;
 import asciiWorld.IHasPosition;
 import asciiWorld.IHasRangeOfVision;
+import asciiWorld.MethodIterator;
 import asciiWorld.animations.TileSwingAnimation;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.math.MathHelper;
@@ -30,9 +33,14 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	private static final int DEFAULT_STRENGTH = 2;
 	private static final int DEFAULT_PERCEPTION = 10;
 	private static final float DEFAULT_WEIGHT = 1;
+	private static final int DEFAULT_MAX_HEALTH = 10;
 	
 	private static final float MODIFIER_AGILITY = 15.0f;
-	private static final float SPEED_TIME_DIVISOR = 20.0f;
+	private static final float SPEED_TIME_DIVISOR = 250f; // 20.0f;
+	private static final int HEALTH_REGEN_UPDATE_MS = 1000;
+	private static final float USE_COOLDOWN_FACTOR = 5000.0f;
+	
+	private int _totalTimeAlive;
 	
 	private Chunk _chunk;
 	
@@ -52,6 +60,11 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	private int _strength;
 	private float _weight;
 	
+	private int _health;
+	private int _maxHealth;
+	private int _healthRegenRate;
+	private int _lastHealthRegenTime;
+	
 	/**
 	 * The container that contains this entity.
 	 */
@@ -67,6 +80,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	 */
 	private Entity _activeItem;
 	
+	private boolean _ableToUseSomething;
+	private boolean _somethingIsBeingUsed;
+	private int _lastUseTime;
+	
 	private List<EntityComponent> _components;
 	
 	public static Entity load(String path) throws Exception {
@@ -78,18 +95,46 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		newEntity.setName(elem.getAttributeValue("name"));
 		newEntity.setTile(TileFactory.get().getResource(elem.getAttributeValue("tile")));
 		
-		Element componentsElem = elem.getChild("Components");
+		loadComponents(newEntity, elem.getChild("Components"));
+		loadInventory(newEntity, elem.getChild("Inventory"));
+		loadProperties(newEntity, elem.getChild("Properties"));
+		
+		return newEntity;
+	}
+	
+	private static void loadComponents(Entity newEntity, Element componentsElem) throws Exception {
 		if (componentsElem != null) {
 			List<Element> componentElems = componentsElem.getChildren("Component");
 			for (Element componentElem : componentElems) {
 				newEntity.getComponents().add(EntityComponent.fromXml(newEntity, componentElem));
 			}
 		}
-		
-		return newEntity;
+	}
+	
+	private static void loadInventory(Entity newEntity, Element inventoryElem) throws Exception {
+		if (inventoryElem != null) {
+			List<Element> itemElems = inventoryElem.getChildren("Item");
+			for (Element itemElem : itemElems) {
+				String itemName = itemElem.getAttributeValue("name");
+				newEntity.getInventory().add(EntityFactory.get().getResource(itemName));
+			}
+		}
+	}
+	
+	private static void loadProperties(Entity newEntity, Element propertiesElem) throws Exception {
+		if (propertiesElem != null) {
+			List<Element> propertyElems = propertiesElem.getChildren("Property");
+			for (Element propertyElem : propertyElems) {
+				String propertyName = propertyElem.getAttributeValue("name");
+				String propertyValue = propertyElem.getAttributeValue("value");
+				newEntity.setProperty(propertyName, propertyValue);
+			}
+		}
 	}
 	
 	public Entity() {
+		_totalTimeAlive = 0;
+		
 		_chunk = null;
 		_tile = null;
 		_animations = new ArrayList<TileSwingAnimation>();
@@ -100,6 +145,11 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		_direction = Direction.South;
 		
 		setName("");
+		
+		setMaxHealth(DEFAULT_MAX_HEALTH);
+		setHealth(getMaxHealth());
+		setHealthRegenRate(0); // no health regeneration by default
+		_lastHealthRegenTime = 0;
 		
 		setAgility(DEFAULT_AGILITY);
 		setStrength(DEFAULT_STRENGTH);
@@ -116,6 +166,26 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		setActiveItem(null);
 
 		setComponents(new ArrayList<EntityComponent>());
+		
+		_ableToUseSomething = true;
+		_somethingIsBeingUsed = false;
+		_lastUseTime = 0;
+	}
+	
+	public void setProperty(String propertyName, Object propertyValue) throws Exception {
+		Method method = MethodIterator.getMethods(getClass()).withName(String.format("set%s", propertyName)).first();
+		
+		if (method != null) {
+			Class<?>[] parameterTypes = method.getParameterTypes();
+			if (parameterTypes.length != 1) {
+				throw new Exception("The property setter must have 1, and only 1, parameter.");
+			} else {
+				method.invoke(this, Convert.changeType(propertyValue, parameterTypes[0]));
+				return;
+			}
+		} else {
+			throw new Exception(String.format("I do not understand this property name: %s", propertyName));
+		}
 	}
 	
 	@Override
@@ -230,7 +300,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		return _agility;
 	}
 	
-	public void setAgility(int value) {
+	public void setAgility(Integer value) {
 		_agility = value;
 	}
 	
@@ -238,19 +308,23 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		return _strength;
 	}
 	
-	public void setStrength(int value) {
+	public void setStrength(Integer value) {
 		_strength = value;
 	}
 	
 	public int getAttackSpeed() {
-		return getStrength() * getAgility();
+		int attackSpeed = getStrength() * getAgility();
+		if (hasActiveItem()) {
+			attackSpeed += getActiveItem().getAgility();
+		}
+		return attackSpeed;
 	}
 	
 	public int getPerception() {
 		return _perception;
 	}
 	
-	public void setPerception(int value) {
+	public void setPerception(Integer value) {
 		_perception = value;
 	}
 	
@@ -279,7 +353,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	}
 	
 	public float getBaseMovementSpeed() {
-		return getAgility() / MODIFIER_AGILITY;
+		return (float)getAgility() / MODIFIER_AGILITY;
 	}
 	
 	public float getMovementSpeed() {
@@ -304,6 +378,63 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	public float getRangeOfVision() {
 		return getBaseRangeOfVision();
+	}
+	
+	public boolean isAlive() {
+		return getHealth() > 0;
+	}
+	
+	public int getMaxHealth() {
+		return _maxHealth;
+	}
+	
+	public void setMaxHealth(Integer value) {
+		_maxHealth = value;
+		restoreHealth(this, value);
+	}
+	
+	public int getHealth() {
+		return _health;
+	}
+	
+	private void setHealth(int value) {
+		_health = value;
+	}
+	
+	/**
+	 * Measured in health points per second.
+	 * @return A negative value here may imply poisoning.
+	 */
+	public int getHealthRegenRate() {
+		return _healthRegenRate;
+	}
+	
+	/**
+	 * Measured in health points per second.
+	 * @param A negative value here may imply poisoning.
+	 */
+	public void setHealthRegenRate(Integer value) {
+		_healthRegenRate = value;
+	}
+	
+	public void takeDamage(Entity damagedByEntity, int amount) {
+		setHealth(getHealth() - amount);
+		if (getHealth() < 0) {
+			setHealth(0);
+		} else if (getHealth() > getMaxHealth()) {
+			setHealth(getMaxHealth());
+		}
+		// TODO: Show a "take damage" message.
+	}
+	
+	public void restoreHealth(Entity healedByEntity, int amount) {
+		setHealth(getHealth() + amount);
+		if (getHealth() < 0) {
+			setHealth(0);
+		} else if (getHealth() > getMaxHealth()) {
+			setHealth(getMaxHealth());
+		}
+		// TODO: Show a "restore health" message.
 	}
 	
 	public Entity getActiveItem() {
@@ -337,7 +468,12 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	}
 	
 	public void useActiveItem(Vector3f targetChunkPoint) {
+		if (!_ableToUseSomething) {
+			return;
+		}
+		
 		if (hasActiveItem()) {
+			_somethingIsBeingUsed = true;
 			addAnimation(TileSwingAnimation.createUseActiveItemAnimation(this, targetChunkPoint));
 			getActiveItem().use(targetChunkPoint);
 		}
@@ -415,6 +551,8 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
+		_totalTimeAlive += deltaTime;
+		
 		if (getContainer() == null) {
 			if (isMoving()) {
 				_position = MathHelper.smoothStep(_moveFromPosition, _moveToPosition, _movementWeight);
@@ -442,6 +580,35 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		
 		for (EntityComponent component : getComponents()) {
 			component.update(container, game, deltaTime);
+		}
+		
+		updateUseVariables();
+		
+		updateHealthRegeneration(deltaTime);
+	}
+	
+	private void updateUseVariables() {
+		if (_somethingIsBeingUsed)
+		{
+			_ableToUseSomething = false;
+			_somethingIsBeingUsed = false;
+			_lastUseTime = _totalTimeAlive;
+		}
+		if (!_ableToUseSomething)
+		{
+			if ((_totalTimeAlive - _lastUseTime) >= (USE_COOLDOWN_FACTOR / getAttackSpeed()))
+			{
+				_ableToUseSomething = true;
+			}
+		}
+	}
+	
+	private void updateHealthRegeneration(int deltaTime) {
+		if (getHealthRegenRate() != 0) {
+			if ((_totalTimeAlive - _lastHealthRegenTime) >= HEALTH_REGEN_UPDATE_MS) {
+				restoreHealth(this, getHealthRegenRate());
+				_lastHealthRegenTime = _totalTimeAlive;
+			}
 		}
 	}
 	
