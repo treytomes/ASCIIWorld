@@ -11,7 +11,7 @@ import asciiWorld.tiles.Tile;
 
 public class TileSwingAnimation {
 
-	private static final float ANGULAR_VELOCITY_MULTIPLIER = 0.01f;
+	private static final float ANGULAR_VELOCITY_MULTIPLIER = 0.00025f;
 	private static final float DEFAULT_ANGULAR_VELOCITY = 1.0f;
 	private static final float DEFAULT_ROTATIONAL_OFFSET = 90;
 	private static final float SPEED_TIME_DIVISOR = 20.0f;
