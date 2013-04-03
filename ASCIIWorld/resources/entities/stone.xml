@@ -6,6 +6,6 @@
     <Property name="MaxHealth" value="20" />
   </Properties>
   <Inventory>
-    <Item name="Boulder" />
+    <Item name="boulder" />
   </Inventory>
 </Entity>

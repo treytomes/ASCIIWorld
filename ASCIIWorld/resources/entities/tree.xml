@@ -1,13 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity tile="tree" name="Tree">
-  <Properties>
-    <Property name="MaxHealth" value="10" />
-  </Properties>
-  
-  <Inventory>
-    <Item name="WoodLog" />
-  </Inventory>
-  
   <Components>
     <!--<Component name="LightSource">
       <Properties>
@@ -26,4 +18,12 @@
   	<Component name="CanBePickedUp" />
   	<Component name="Placeable" />
   </Components>
+  
+  <Properties>
+    <Property name="MaxHealth" value="10" />
+  </Properties>
+  
+  <Inventory>
+    <Item name="woodLog" />
+  </Inventory>
 </Entity>

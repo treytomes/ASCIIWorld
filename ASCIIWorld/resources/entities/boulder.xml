@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="boulder" name="Boulder">
+	<Components>
+		<Component name="Placeable" />
+		<Component name="CanBePushed" />
+		<Component name="CanBePickedUp" />
+	</Components>
+	<Properties>
+		<Property name="MaxHealth" value="40" />
+	</Properties>
+	<Inventory>
+		<Item name="stoneRubble" />
+		<Item name="stoneRubble" />
+		<Item name="stoneRubble" />
+		<Item name="stoneRubble" />
+	</Inventory>
+</Entity>

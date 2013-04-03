@@ -4,6 +4,11 @@
   	<Component name="RotateInFacingDirection" />
   	<Component name="CanBePushed" />
   	<Component name="SeekOutPlayer" />
+  	<Component name="CanSpeak">
+  		<Properties>
+  			<Property name="Text" value="I'm a turtle" />
+  		</Properties>
+  	</Component>
   
     <!--<Component name="LightSource">
       <Properties>

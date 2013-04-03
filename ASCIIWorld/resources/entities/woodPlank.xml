@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Entity tile="woodenSword" name="Wooden Sword">
+<Entity tile="woodPlank" name="Wood Plank">
 	<Components>
+		<Component name="Placeable" />
 		<Component name="CanBePickedUp" />
 	</Components>
-
 	<Properties>
-		<Property name="Agility" value="15" />
+		<Property name="MaxHealth" value="40" />
 	</Properties>
- 
 	<Inventory>
-		<Item name="woodPlank" />
-		<Item name="woodPlank" />
+		<Item name="woodStick" />
+		<Item name="woodStick" />
+		<Item name="woodStick" />
 		<Item name="woodStick" />
 	</Inventory>
 </Entity>

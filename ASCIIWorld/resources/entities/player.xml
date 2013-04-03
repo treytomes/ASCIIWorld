@@ -1,26 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity tile="player" name="Player">
   <Components>
-    <!--<Component name="LightSource">
+    <!--
+    <Component name="LightSource">
       <Properties>
         <Property name="Color" value="Goldenrod" />
         <Property name="Range" value="64" />
         <Property name="Flicker" value="true" />
       </Properties>
     </Component>
-    <Component name="Placeable" />
-    <Component name="CanBePickedUp" />-->
-	<!--<Component name="GeneratesChildren">
-      <Properties>
-        <Property name="SpawnRate" value="0.0001" />
-      </Properties>
-    </Component>-->
+    -->
   </Components>
   
-  <!--<Properties>
-    <Property name="MaxHealth" value="10" />
+  <Properties>
+    <Property name="MaxHealth" value="30" />
+    <Property name="HealthRegenRate" value="2" />
+    <Property name="Agility" value="15" />
+    <Property name="Strength" value="5" />
   </Properties>
+  
   <Inventory>
-    <Item name="WoodLog" />
-  </Inventory>-->
+    <Item name="woodenSword" />
+    <Item name="tree" />
+    <Item name="tree" />
+    <Item name="tree" />
+    <Item name="tree" />
+    <Item name="tree" />
+    <Item name="turtle" />
+    <Item name="giraffe" />
+	<!--
+	<Item name="ironSword" />
+	<Item name="healingPotion" />
+	<Item name="bauble" />
+	<Item name="debugDeathStick" />
+	<Item name="woodStick" />
+	<Item name="woodStick" />
+	<Item name="woodStick" />
+	<Item name="woodStick" />
+	<Item name="woodStick" />
+	<Item name="woodStick" />
+    -->
+  </Inventory>
 </Entity>
