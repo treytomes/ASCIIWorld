@@ -12,7 +12,6 @@ public class SeekOutPlayerComponent extends EntityComponent {
 	private static final String DEFAULT_TARGET_ENTITY_NAME = "Player";
 
 	private String _targetEntityName;
-	private Entity _player;
 	
 	public SeekOutPlayerComponent(Entity owner) {
 		super(owner);

@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class QueryableList<T> implements List<T> {
+public class QueryableList<T> implements List<T>, IQueryable<T> {
 	
 	private List<T> _baseList;
 	

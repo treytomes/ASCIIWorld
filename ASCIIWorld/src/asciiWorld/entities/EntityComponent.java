@@ -8,6 +8,7 @@ import org.jdom2.input.SAXBuilder;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.Convert;
 import asciiWorld.MethodIterator;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.math.Vector3f;
@@ -42,20 +43,19 @@ public class EntityComponent {
 	}
 	
 	public void setProperty(String propertyName, Object propertyValue) throws Exception {
-		for (Method method : MethodIterator.getMethods(getClass()).withName(String.format("set%s", propertyName))) { 
-				Class<?>[] parameterTypes = method.getParameterTypes();
-				if (parameterTypes.length != 1) {
-					throw new Exception("The property setter must have 1, and only 1, parameter.");
-				} else {
-					if (parameterTypes[0].isAssignableFrom(String.class)) {
-						method.invoke(this, String.class.cast(propertyValue));
-						return;
-					} else {
-						throw new Exception(String.format("I do no understand this parameter type: %s", parameterTypes[0].getName()));
-					}
-				}
+		Method method = MethodIterator.getMethods(getClass()).withName(String.format("set%s", propertyName)).first();
+		
+		if (method != null) {
+			Class<?>[] parameterTypes = method.getParameterTypes();
+			if (parameterTypes.length != 1) {
+				throw new Exception("The property setter must have 1, and only 1, parameter.");
+			} else {
+				method.invoke(this, Convert.changeType(propertyValue, parameterTypes[0]));
+				return;
+			}
+		} else {
+			throw new Exception(String.format("I do not understand this property name: %s", propertyName));
 		}
-		throw new Exception(String.format("I do not understand this property name: %s", propertyName));
 	}
 	
 	public Entity getOwner() {
