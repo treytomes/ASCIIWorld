@@ -18,8 +18,18 @@ public strictfp class Vector2f implements Serializable {
 	/** The y component of this vector */
 	public float y;
 	
+	/**
+	 * @return A zero vector.
+	 */
 	public static Vector2f zero() {
 		return new Vector2f(0, 0);
+	}
+
+	/**
+	 * @return A one vector.
+	 */
+	public static Vector2f one() {
+		return new Vector2f(1, 1);
 	}
 	
 	/**
