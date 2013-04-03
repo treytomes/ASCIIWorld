@@ -410,6 +410,16 @@ public abstract class Shape implements Serializable {
     /**
      * Check if this polygon contains the given point
      * 
+     * @param pnt The position of the point to check
+     * @return True if the point is contained in the polygon
+     */
+    public boolean contains(Vector2f pnt) {
+    	return contains(pnt.x, pnt.y);
+    }
+   
+    /**
+     * Check if this polygon contains the given point
+     * 
      * @param x The x position of the point to check
      * @param y The y position of the point to check
      * @return True if the point is contained in the polygon
