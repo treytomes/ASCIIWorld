@@ -41,10 +41,14 @@ public class MethodNameIterator implements Iterable<Method>, Iterator<Method>, I
 
 	@Override
 	public Method next() {
-		while (!currentMethod().getName().equals(_methodName)) {
+		while (hasNext() && !currentMethod().getName().equals(_methodName)) {
 			_methods.next();
 		}
-		return _methods.next();
+		if (!hasNext()) {
+			return null;
+		} else {
+			return _methods.next();
+		}
 	}
 
 	@Override
