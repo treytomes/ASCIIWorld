@@ -1,12 +1,12 @@
 package asciiWorld.entities;
 
-import java.io.File;
+//import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jdom2.Element;
-import org.jdom2.input.SAXBuilder;
+//import org.jdom2.Element;
+//import org.jdom2.input.SAXBuilder;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
@@ -23,7 +23,7 @@ import asciiWorld.chunks.Chunk;
 import asciiWorld.math.MathHelper;
 import asciiWorld.math.Vector3f;
 import asciiWorld.tiles.Tile;
-import asciiWorld.tiles.TileFactory;
+//import asciiWorld.tiles.TileFactory;
 
 public class Entity implements IHasPosition, IHasRangeOfVision {
 	
@@ -86,10 +86,13 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 	
 	private List<EntityComponent> _components;
 	
+	/*
 	public static Entity load(String path) throws Exception {
 		return fromXml((Element)new SAXBuilder().build(new File(path)).getRootElement());
 	}
+	*/
 	
+	/*
 	public static Entity fromXml(Element elem) throws Exception {
 		Entity newEntity = new Entity();
 		newEntity.setName(elem.getAttributeValue("name"));
@@ -101,16 +104,20 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		
 		return newEntity;
 	}
+	*/
 	
+	/*
 	private static void loadComponents(Entity newEntity, Element componentsElem) throws Exception {
 		if (componentsElem != null) {
 			List<Element> componentElems = componentsElem.getChildren("Component");
 			for (Element componentElem : componentElems) {
-				newEntity.getComponents().add(EntityComponent.fromXml(newEntity, componentElem));
+				newEntity.getComponents().add(new EntityComponentTemplate(componentElem).createInstance(newEntity));
 			}
 		}
 	}
+	*/
 	
+	/*
 	private static void loadInventory(Entity newEntity, Element inventoryElem) throws Exception {
 		if (inventoryElem != null) {
 			List<Element> itemElems = inventoryElem.getChildren("Item");
@@ -120,7 +127,9 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 			}
 		}
 	}
+	*/
 	
+	/*
 	private static void loadProperties(Entity newEntity, Element propertiesElem) throws Exception {
 		if (propertiesElem != null) {
 			List<Element> propertyElems = propertiesElem.getChildren("Property");
@@ -131,6 +140,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 			}
 		}
 	}
+	*/
 	
 	public Entity() {
 		_totalTimeAlive = 0;

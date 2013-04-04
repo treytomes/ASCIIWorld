@@ -1,10 +1,10 @@
 package asciiWorld.entities;
 
-import java.io.File;
+//import java.io.File;
 import java.lang.reflect.Method;
 
-import org.jdom2.Element;
-import org.jdom2.input.SAXBuilder;
+//import org.jdom2.Element;
+//import org.jdom2.input.SAXBuilder;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -15,13 +15,16 @@ import asciiWorld.math.Vector3f;
 
 public class EntityComponent {
 	
-	private static final String PACKAGE_PATH = "asciiWorld.entities.%sComponent";
+	//private static final String PACKAGE_PATH = "asciiWorld.entities.%sComponent";
 	private Entity _owner;
 	
+	/*
 	public static EntityComponent load(Entity entity, String path) throws Exception {
 		return fromXml(entity, (Element)new SAXBuilder().build(new File(path)).getRootElement());
 	}
+	*/
 	
+	/*
 	public static EntityComponent fromXml(Entity entity, Element elem) throws Exception {
 		Class<?> componentClass = Class.forName(String.format(PACKAGE_PATH, elem.getAttributeValue("name")));
 		EntityComponent component = (EntityComponent)componentClass.getConstructor(Entity.class).newInstance(entity);
@@ -37,6 +40,7 @@ public class EntityComponent {
 		
 		return component;
 	}
+	*/
 	
 	public EntityComponent(Entity owner) {
 		_owner = owner;
