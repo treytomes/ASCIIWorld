@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="TreasureChest">
+	<Components>
+		<Component name="Placeable" />
+		<!--
+		<Component name="TreasureChest" />
+		-->
+		<!--
+		<Component name="LightSource">
+			<Properties>
+				<Property name="Color" value="Orange" />
+				<Property name="Range" value="16" />
+			</Properties>
+		</Component>
+		-->
+	</Components>
+	<Properties>
+		<Property name="MaxHealth" value="100" />
+	</Properties>
+	<Inventory>
+		<Item name="WoodPlank" />
+		<Item name="WoodPlank" />
+		<Item name="WoodPlank" />
+		<Item name="WoodPlank" />
+	</Inventory>
+</Entity>
