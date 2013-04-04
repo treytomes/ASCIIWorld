@@ -99,4 +99,10 @@ public class ChunkFactory {
 		long seed = RandomFactory.get().nextInt(0, Integer.MAX_VALUE);
 		return new PerlinOverworldChunkGenerator().generate(chunk, seed, logStream);
 	}
+	
+	public static Chunk generateDungeon(PrintStream logStream) throws Exception {
+		Chunk chunk = new Chunk();
+		long seed = RandomFactory.get().nextInt(0, Integer.MAX_VALUE);
+		return new DungeonChunkGenerator().generate(chunk, seed, logStream);
+	}
 }
