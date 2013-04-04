@@ -3,10 +3,12 @@ package asciiWorld.ui;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.ASCIIWorldGame;
 import asciiWorld.Camera;
+import asciiWorld.DateTime;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityFactory;
 import asciiWorld.entities.HotKeyInfo;
@@ -25,10 +27,12 @@ public class HUDView extends CanvasPanel {
 	private Camera _camera;
 	private Entity _player;
 	private ImmediateWindow _scriptConsole;
+	private DateTime _worldTime;
 	
 	public HUDView(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
 		super(new Rectangle(0, 0, container.getWidth(), container.getHeight()));
 		generateUI(container, game, hotkeys);
+		_worldTime = new DateTime();
 	}
 	
 	public Camera getCamera() {
@@ -55,6 +59,16 @@ public class HUDView extends CanvasPanel {
 		assignHUDToPlayerControlComponent();
 	}
 	
+	@Override
+	public void update(GameContainer container, int delta) {
+		super.update(container, delta);
+		getWorldTime().update(delta);
+	}
+	
+	public DateTime getWorldTime() {
+		return _worldTime;
+	}
+	
 	public void showConsole() {
 		if (!isConsoleOpen()) {
 			try {
@@ -79,6 +93,18 @@ public class HUDView extends CanvasPanel {
 		return _scriptConsole.getParent() == this;
 	}
 	
+	public void zoomIn() {
+		if (getCamera() != null) {
+			getCamera().setScale(getCamera().getScale() + ZOOM_INCREMENT);
+		}
+	}
+	
+	public void zoomOut() {
+		if (getCamera() != null) {
+			getCamera().setScale(getCamera().getScale() - ZOOM_INCREMENT);
+		}
+	}
+	
 	private void assignHUDToPlayerControlComponent() {
 		if (getPlayer() != null) {
 			PlayerControlComponent playerControl = getPlayer().findComponent(PlayerControlComponent.class);
@@ -91,6 +117,7 @@ public class HUDView extends CanvasPanel {
 	private void generateUI(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
 		//addChild(createTitleLabel());
 		addChild(createInventoryHotKeys(hotkeys));
+		addChild(new Label(new Vector2f(200, 200), new MethodBinding(this, "getWorldTime"), Color.white) {{ setTextWrappingMode(TextWrappingMode.NoWrap); }});
 		addChild(createMenuPanel(container, game));
 		addChild(createZoomPanel());
 		//addChild(createPlayerPositionLabel());
@@ -156,16 +183,4 @@ public class HUDView extends CanvasPanel {
 		playerPositionLabel.getBounds().setWidth(600);
 		return playerPositionLabel;
 	}*/
-	
-	public void zoomIn() {
-		if (getCamera() != null) {
-			getCamera().setScale(getCamera().getScale() + ZOOM_INCREMENT);
-		}
-	}
-	
-	public void zoomOut() {
-		if (getCamera() != null) {
-			getCamera().setScale(getCamera().getScale() - ZOOM_INCREMENT);
-		}
-	}
 }
