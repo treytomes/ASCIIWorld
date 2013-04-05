@@ -3,6 +3,8 @@ package asciiWorld.chunks;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
@@ -10,6 +12,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Camera;
 import asciiWorld.entities.Entity;
+import asciiWorld.lighting.FrameBufferObject;
+import asciiWorld.lighting.Light;
 import asciiWorld.math.RandomFactory;
 import asciiWorld.math.Vector3f;
 
@@ -21,11 +25,21 @@ public class Chunk {
 	
 	public static final int WIDTH = 128;
 	public static final int HEIGHT = 128;
-	
+
+	private static final Color AMBIENT_LIGHT_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+
 	private List<Entity> _entities;
+	private List<Light> _lights;
+	private Color _ambientLightColor;
 	
 	public Chunk() {
 		_entities = new ArrayList<Entity>();
+		_lights = new ArrayList<Light>();
+		_ambientLightColor = AMBIENT_LIGHT_COLOR;
+		
+		_framebuffer = null;
+		_lights.add(new Light(Vector2f.zero(), 100.0f, 1.0f, new Color(1.0f, 1.0f, 1.0f, 0.5f)));
+		_lights.add(new Light(new Vector2f(200, 200), 200.0f, 1.0f, new Color(0.0f, 0.0f, 1.0f, 0.5f)));
 	}
 
 	public void clearEntities() {
@@ -129,25 +143,159 @@ public class Chunk {
 		}
 	}
 	
+	private FrameBufferObject _framebuffer;
 	public void render(Graphics g, Camera camera) {
-		Vector2f position = camera.getPosition().toVector2f();
-		float rangeOfVision = camera.getRangeOfVision();
-		
-		//tiles.startBatchDraw();
-		render(g, position, LAYER_GROUND, rangeOfVision);
-		render(g, position, LAYER_OBJECT, rangeOfVision);
-		render(g, position, LAYER_SKY, rangeOfVision);
-		//tiles.endBatchDraw();
-	}
-	
-	private void render(Graphics g, Vector2f center, int layerIndex, float rangeOfVision) {
-		for (Entity entity : getEntities()) {
-			Vector3f position = entity.getPosition();
-			if (position.z == layerIndex) {
-				if (position.getDistance(center) <= Entity.MOVEMENT_STEP * rangeOfVision) {
-					entity.render(g);
-				}
+		if (_framebuffer == null) {
+			try {
+				_framebuffer = new FrameBufferObject((int)camera.getViewport().getBounds().getWidth(), (int)camera.getViewport().getBounds().getHeight());
+			    GL11.glDepthFunc(GL11.GL_LEQUAL); // use less-than or equal depth testing
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
+		
+		// Position our light.
+		Vector2f lightPosition = camera.getPosition().toVector2f();
+		Vector2f tileSize = getEntities().get(0).getTile().getTileSet().getSize();
+		lightPosition.x += tileSize.x / 2.0f;
+		lightPosition.y += tileSize.y / 2.0f;
+		_lights.get(0).setPosition(lightPosition);
+		
+		Vector2f position = camera.getPosition().toVector2f();
+		float rangeOfVision = camera.getRangeOfVision();
+		List<Entity> entitiesInRange = getEntitiesInRange(position, rangeOfVision);
+		
+		//camera.reset(g);
+		_framebuffer.enable();
+		//camera.apply(g);
+		
+		// Clear the display.
+		GL11.glClearDepth(1.1);
+		
+		// Render the ambient lighting.
+		GL11.glClearColor(_ambientLightColor.r, _ambientLightColor.g, _ambientLightColor.b, _ambientLightColor.a);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
+		
+		for (Light light : _lights) {
+			// Clear the alpha channel of the framebuffer to 0.0.
+			
+			GL11.glColorMask(false, false, false, true);
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		    
+			// Write new framebuffer alpha.
+			GL11.glDisable(GL11.GL_BLEND);
+		    GL11.glEnable(GL11.GL_DEPTH_TEST);
+		    GL11.glColorMask(false, false, false, true);
+			light.render(g);
+			
+		    // Draw shadow geometry.
+			GL11.glEnable(GL11.GL_BLEND);
+		    GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
+		    drawShadowGeometry(light, entitiesInRange, LAYER_OBJECT);
+			
+		    // Draw light color.
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+		    GL11.glEnable(GL11.GL_BLEND);
+		    GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
+		    GL11.glColorMask(true, true, true, true);
+			
+			//render(g, entitiesInRange, LAYER_GROUND);
+			//render(g, entitiesInRange, LAYER_OBJECT);
+			//render(g, entitiesInRange, LAYER_SKY);
+		    
+		    //for (Light light2 : _lights) {
+			//	light2.render(g);
+			//}
+		    light.render(g);
+		}
+		
+		//camera.reset(g);
+		_framebuffer.disable();
+		//camera.apply(g);
+		
+		// Render the scene.
+		GL11.glColorMask(true, true, true, false);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+	    GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		//tiles.startBatchDraw();
+		render(g, entitiesInRange, LAYER_GROUND);
+		render(g, entitiesInRange, LAYER_OBJECT);
+		render(g, entitiesInRange, LAYER_SKY);
+		//tiles.endBatchDraw();
+
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_DST_COLOR);
+		camera.reset(g);
+		_framebuffer.render(g);
+		camera.apply(g);
+		
+		//render(g, entitiesInRange, LAYER_GROUND);
+		//render(g, entitiesInRange, LAYER_OBJECT);
+		//render(g, entitiesInRange, LAYER_SKY);
+
+		//_framebuffer.disable();
+		//GL11.glDisable(GL11.GL_DEPTH_TEST);
+		//GL11.glDisable(GL11.GL_BLEND);
+		//_framebuffer.render(g);
+		
+		// Reset OpenGL settings for Slick.
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+	    GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	}
+	
+	private void drawShadowGeometry(Light light, List<Entity> entities, int layerIndex) {
+		for (Entity entity : entities) {
+			Vector3f position = entity.getPosition();
+			if (position.z == layerIndex) {
+				//if (getMaxZ(whereChunkPointEquals(entities, entity.getOccupiedChunkPoint())) == layerIndex) {
+					entity.drawShadowGeometry(light);
+				//}
+			}
+		}
+	}
+	
+	private void render(Graphics g, List<Entity> entities, int layerIndex) {
+		for (Entity entity : entities) {
+			Vector3f position = entity.getPosition();
+			if (position.z == layerIndex) {
+				entity.render(g);
+			}
+		}
+	}
+	
+	private float getMaxZ(List<Entity> entities) {
+		float maxZ = 0;
+		for (Entity entity : entities) {
+			float z = entity.getPosition().z;
+			if (z > maxZ) {
+				maxZ = z;
+			}
+		}
+		return maxZ;
+	}
+	
+	private List<Entity> whereChunkPointEquals(List<Entity> entities, Vector2f chunkPoint) {
+		List<Entity> results = new ArrayList<Entity>();
+		for (Entity entity : entities) {
+			Vector2f occupiedPoint = entity.getOccupiedChunkPoint();
+			if (chunkPoint.equals(occupiedPoint)) {
+				results.add(entity);
+			}
+		}
+		return results;
+	}
+	
+	private List<Entity> getEntitiesInRange(Vector2f focus, float rangeOfVision) {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (Entity entity : getEntities()) {
+			Vector3f position = entity.getPosition();
+			if (position.getDistance(focus) <= Entity.MOVEMENT_STEP * rangeOfVision) {
+				entities.add(entity);
+			}
+		}
+		return entities;
 	}
 }

@@ -20,12 +20,15 @@ import asciiWorld.IHasRangeOfVision;
 import asciiWorld.MethodIterator;
 import asciiWorld.animations.TileSwingAnimation;
 import asciiWorld.chunks.Chunk;
+import asciiWorld.lighting.ConvexHull;
+import asciiWorld.lighting.IConvexHull;
+import asciiWorld.lighting.Light;
 import asciiWorld.math.MathHelper;
 import asciiWorld.math.Vector3f;
 import asciiWorld.tiles.Tile;
 //import asciiWorld.tiles.TileFactory;
 
-public class Entity implements IHasPosition, IHasRangeOfVision {
+public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	public static final float MOVEMENT_STEP = 8.0f;
 	
@@ -628,5 +631,21 @@ public class Entity implements IHasPosition, IHasRangeOfVision {
 		for (TileSwingAnimation animation : _animations) {
 			animation.render(g);
 		}
+	}
+
+	@Override
+	public void drawShadowGeometry(Light light) {
+		ConvexHull.drawShadowGeometry(getPoints(), light);
+	}
+	
+	private Vector2f[] getPoints() {
+		Vector3f position = getPosition();
+		Vector2f size = getTile().getTileSet().getSize();
+		return new Vector2f[] {
+			new Vector2f(position.x, position.y),
+			new Vector2f(position.x + size.x - 1, position.y),
+			new Vector2f(position.x + size.x - 1, position.y + size.y - 1),
+			new Vector2f(position.x, position.y + size.y - 1)
+		};
 	}
 }

@@ -20,16 +20,19 @@ import asciiWorld.math.RandomFactory;
 public class LightTestGame extends BasicGame {
 	
 	private static final boolean USE_FRAMEBUFFER = false;
+	private static final Color AMBIENT_LIGHT_COLOR = new Color(0, 0, 0, 0.6f);
 	
-	private List<ConvexHull> _hulls;
+	private List<IConvexHull> _hulls;
 	private List<Light> _lights;
 	private FrameBufferObject _framebuffer;
 	private Image _bg;
+	
+	private Color _ambientLightColor;
 
 	public LightTestGame() {
 		super("Light Test");
 		
-		_hulls = new ArrayList<ConvexHull>();
+		_hulls = new ArrayList<IConvexHull>();
 		_hulls.add(new ConvexHull(new Vector2f(150, 200), new Polygon(new float[] { 0, 0, 50, -75, 100, -75, 150, 0, 100, 75, 50, 75 })));
 		
 		_lights = new ArrayList<Light>();
@@ -38,6 +41,8 @@ public class LightTestGame extends BasicGame {
 		for (int x = 0; x < 16; x++) {
 			_hulls.add(new ConvexHull(new Vector2f(100 + x * 40, 500), new Polygon(new float[] { 0, 0, 20, 0, 20, 20, 0, 20 })));
 		}
+		
+		_ambientLightColor = AMBIENT_LIGHT_COLOR;
 	}
 
 	@Override
@@ -88,11 +93,11 @@ public class LightTestGame extends BasicGame {
 		
 		_bg.draw(100, 100);
 		
-		for (ConvexHull hull : _hulls) {
+		for (IConvexHull hull : _hulls) {
 			hull.render(g);
 		}
 		
-		g.setColor(new Color(0, 0, 0, 0.6f)); // ambient light
+		g.setColor(_ambientLightColor); // ambient light
 		g.fillRect(0, 0, container.getWidth(), container.getHeight());
 		
 		for (Light light : _lights) {
@@ -109,7 +114,7 @@ public class LightTestGame extends BasicGame {
 			GL11.glEnable(GL11.GL_BLEND);
 	        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
 	        // Draw shadow geometry.
-			for (ConvexHull hull : _hulls) {
+			for (IConvexHull hull : _hulls) {
 				hull.drawShadowGeometry(light);
 			}
 

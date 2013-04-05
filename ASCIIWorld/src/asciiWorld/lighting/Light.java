@@ -8,6 +8,7 @@ import asciiWorld.math.RandomFactory;
 
 public class Light {
 
+	private static final boolean RENDER_SOURCE = false;
 	private static final float DEFAULT_SOURCE_RADIUS = 5.0f;
 	private static final float DEFAULT_RADIUS = 600.0f;
 	private static final float DEFAULT_DEPTH = 0.0f;
@@ -100,6 +101,10 @@ public class Light {
 		return new Vector2f(edge.x - (_position.x + perpVec.x), edge.y - (_position.y + perpVec.y)).normalise().scale(_radius * 10.0f);
 	}
 	
+	/**
+	 * Draw a circle representing the light's position.
+	 * @param g
+	 */
 	private void renderSource(Graphics g) {
 		g.setColor(_color);
 		g.fillOval(_position.x - _sourceRadius, _position.y - _sourceRadius, _sourceRadius * 2, _sourceRadius * 2);
@@ -118,7 +123,9 @@ public class Light {
         
 		shader.disable();
 
-		renderSource(g); // Remove this! (I think it draws a circle indicating the light's area.)
+		if (RENDER_SOURCE) {
+			renderSource(g);
+		}
 	}
 	
 	private static Vector2f rotate(Vector2f vector, float angle) {
