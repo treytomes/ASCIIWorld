@@ -7,6 +7,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.chunks.Chunk;
 import asciiWorld.entities.Entity;
+import asciiWorld.entities.EntityCamera;
 import asciiWorld.entities.EntityFactory;
 import asciiWorld.entities.HotKeyManager;
 import asciiWorld.entities.PlayerControlComponent;
@@ -120,7 +121,7 @@ public class LoadGraphicsGameState extends GameState {
 	}
 	
 	private void createCamera(final GameContainer container) {
-		_camera = new Camera(new IHasBounds() {
+		_camera = new EntityCamera(new IHasBounds() {
 			@Override
 			public Rectangle getBounds() {
 				return new Rectangle(0, 0, container.getWidth(), container.getHeight());

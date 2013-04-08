@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Camera;
 import asciiWorld.entities.Entity;
+import asciiWorld.entities.EntityCamera;
 import asciiWorld.lighting.FrameBufferObject;
 import asciiWorld.lighting.Light;
 import asciiWorld.math.RandomFactory;
@@ -22,15 +23,19 @@ public class Chunk {
 	public static final int LAYER_GROUND = 0;
 	public static final int LAYER_OBJECT = 1;
 	public static final int LAYER_SKY = 2;
+	public static final int LAYERS_COUNT = 3;
 	
 	public static final int WIDTH = 128;
 	public static final int HEIGHT = 128;
 
-	private static final Color AMBIENT_LIGHT_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+	private static final Color AMBIENT_LIGHT_COLOR = new Color(0.0f, 0.0f, 0.0f, 1.0f);
 
 	private List<Entity> _entities;
 	private List<Light> _lights;
 	private Color _ambientLightColor;
+	private FrameBufferObject _framebuffer;
+	
+	private Entity[][][] _searchIndex;
 	
 	public Chunk() {
 		_entities = new ArrayList<Entity>();
@@ -38,8 +43,10 @@ public class Chunk {
 		_ambientLightColor = AMBIENT_LIGHT_COLOR;
 		
 		_framebuffer = null;
-		_lights.add(new Light(Vector2f.zero(), 100.0f, 1.0f, new Color(1.0f, 1.0f, 1.0f, 0.5f)));
-		_lights.add(new Light(new Vector2f(200, 200), 200.0f, 1.0f, new Color(0.0f, 0.0f, 1.0f, 0.5f)));
+		_lights.add(new Light(Vector2f.zero(), 100.0f, 1.0f, new Color(1.0f, 1.0f, 1.0f, 1.0f)));
+		//_lights.add(new Light(new Vector2f(200, 200), 200.0f, 1.0f, new Color(0.0f, 0.0f, 1.0f, 0.5f)));
+		
+		resetSearchIndex();
 	}
 
 	public void clearEntities() {
@@ -53,8 +60,7 @@ public class Chunk {
 		return _entities;
 	}
 	
-	public List<Entity> getEntities(float layer) {
-		layer = (float)Math.floor(layer);
+	public List<Entity> getEntities(int layer) {
 		List<Entity> zEntities = new ArrayList<Entity>();
 		for (Entity entity : _entities) {
 			if (entity.getPosition().z == layer) {
@@ -64,7 +70,8 @@ public class Chunk {
 		return zEntities;
 	}
 
-	public Entity getEntityAt(Vector2f chunkPoint, float layer) {
+	public Entity getEntityAt(Vector2f chunkPoint, int layer) {
+		/*
 		Vector2f searchPoint = new Vector2f((int)chunkPoint.x, (int)chunkPoint.y);
 		for (Entity entity : _entities) {
 			if (entity.getPosition().z == layer) {
@@ -75,6 +82,13 @@ public class Chunk {
 			}
 		}
 		return null;
+		*/
+		
+		if (containsPoint(chunkPoint, layer)) {
+			return _searchIndex[layer][(int)chunkPoint.y][(int)chunkPoint.x];
+		} else {
+			return null;
+		}
 	}
 	
 	public Boolean containsEntity(Entity entity) {
@@ -89,6 +103,8 @@ public class Chunk {
 			
 			_entities.add(entity);
 			entity.setChunk(this);
+			
+			_searchIndex[entity.getLayer()][(int)entity.getOccupiedChunkPoint().y][(int)entity.getOccupiedChunkPoint().x] = entity;
 		}
 	}
 	
@@ -96,21 +112,20 @@ public class Chunk {
 		if (containsEntity(entity)) {
 			_entities.remove(entity);
 			entity.setChunk(null);
+			
+			_searchIndex[entity.getLayer()][(int)entity.getOccupiedChunkPoint().y][(int)entity.getOccupiedChunkPoint().x] = null;
 		}
 	}
 
-	public Boolean isSpaceOccupied(Vector3f chunkPoint)
-	{
-		return getEntityAt(chunkPoint.toVector2f(), chunkPoint.z) != null;
+	public Boolean isSpaceOccupied(Vector3f chunkPoint) {
+		return getEntityAt(chunkPoint.toVector2f(), (int)chunkPoint.z) != null;
 	}
 
-	public Boolean isSpaceOccupied(Vector2f chunkPoint, int layer)
-	{
+	public Boolean isSpaceOccupied(Vector2f chunkPoint, int layer) {
 		return getEntityAt(chunkPoint, layer) != null;
 	}
 
-	public Vector3f findSpawnPoint(int layer) throws Exception
-	{
+	public Vector3f findSpawnPoint(int layer) throws Exception {
 		for (int y = 0; y < Chunk.WIDTH; y++)
 		{
 			for (int x = 0; x < Chunk.HEIGHT; x++)
@@ -138,12 +153,38 @@ public class Chunk {
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
-		for (int index = 0; index < getEntities().size(); index++) {
-			getEntities().get(index).update(container, game, deltaTime);
+		List<Entity> entities = getEntities();
+		
+		for (int index = 0; index < entities.size(); index++) {
+			Entity entity = entities.get(index);
+			entity.update(container, game, deltaTime);
+		}
+		
+		updateSearchIndex();
+	}
+	
+	private void updateSearchIndex() {
+		List<Entity> entities = getEntities();
+		resetSearchIndex();
+		
+		for (int index = 0; index < entities.size(); index++) {
+			Entity entity = entities.get(index);
+			Vector2f chunkPoint = entity.getOccupiedChunkPoint();
+			int layer = entity.getLayer();
+			if (containsPoint(chunkPoint, layer)) {
+				_searchIndex[layer][(int)chunkPoint.y][(int)chunkPoint.x] = entity;
+			}
 		}
 	}
 	
-	private FrameBufferObject _framebuffer;
+	public boolean containsPoint(Vector2f chunkPoint, int layer) {
+		return (layer >= 0) && (layer < LAYERS_COUNT) && containsPoint(chunkPoint);
+	}
+	
+	public boolean containsPoint(Vector2f chunkPoint) {
+		return (chunkPoint.x >= 0) && (chunkPoint.x < WIDTH) && (chunkPoint.y >= 0) && (chunkPoint.y < HEIGHT);
+	}
+	
 	public void render(Graphics g, Camera camera) {
 		if (_framebuffer == null) {
 			try {
@@ -153,7 +194,7 @@ public class Chunk {
 				e.printStackTrace();
 			}
 		}
-		
+
 		// Position our light.
 		Vector2f lightPosition = camera.getPosition().toVector2f();
 		Vector2f tileSize = getEntities().get(0).getTile().getTileSet().getSize();
@@ -161,9 +202,10 @@ public class Chunk {
 		lightPosition.y += tileSize.y / 2.0f;
 		_lights.get(0).setPosition(lightPosition);
 		
-		Vector2f position = camera.getPosition().toVector2f();
-		float rangeOfVision = camera.getRangeOfVision();
-		List<Entity> entitiesInRange = getEntitiesInRange(position, rangeOfVision);
+		Vector2f focusChunkPoint = Camera.translatePositionToPoint(lightPosition);
+		Entity focusEntity = (camera instanceof EntityCamera) ? ((EntityCamera)camera).getFocusEntity() : getEntityAt(focusChunkPoint, Chunk.LAYER_OBJECT);
+		
+		List<Entity> entitiesInRange = getEntitiesInRange(camera);
 		
 		//camera.reset(g);
 		_framebuffer.enable();
@@ -176,28 +218,27 @@ public class Chunk {
 		GL11.glClearColor(_ambientLightColor.r, _ambientLightColor.g, _ambientLightColor.b, _ambientLightColor.a);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		
+		// Clear the alpha channel of the framebuffer to 0.
+		GL11.glColorMask(false, false, false, true);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+	    
 		for (Light light : _lights) {
-			// Clear the alpha channel of the framebuffer to 0.0.
-			
-			GL11.glColorMask(false, false, false, true);
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-		    
 			// Write new framebuffer alpha.
+			GL11.glColorMask(false, false, false, true);
 			GL11.glDisable(GL11.GL_BLEND);
 		    GL11.glEnable(GL11.GL_DEPTH_TEST);
-		    GL11.glColorMask(false, false, false, true);
 			light.render(g);
 			
 		    // Draw shadow geometry.
 			GL11.glEnable(GL11.GL_BLEND);
 		    GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
-		    drawShadowGeometry(light, entitiesInRange, LAYER_OBJECT);
+		    drawShadowGeometry(focusEntity, light, entitiesInRange, LAYER_OBJECT);
 			
 		    // Draw light color.
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 		    GL11.glEnable(GL11.GL_BLEND);
 		    GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
-		    GL11.glColorMask(true, true, true, true);
+		    GL11.glColorMask(true, true, true, false);
 			
 			//render(g, entitiesInRange, LAYER_GROUND);
 			//render(g, entitiesInRange, LAYER_OBJECT);
@@ -214,7 +255,7 @@ public class Chunk {
 		//camera.apply(g);
 		
 		// Render the scene.
-		GL11.glColorMask(true, true, true, false);
+		GL11.glColorMask(true, true, true, true);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	    GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -226,7 +267,14 @@ public class Chunk {
 
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_DST_COLOR);
+		
+		//GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_DST_COLOR);
+		
+		//GL20.glBlendEquationSeparate(GL14.GL_FUNC_ADD, GL14.GL_FUNC_ADD);
+		//GL14.glBlendFuncSeparate(GL11.GL_SRC_COLOR, GL11.GL_DST_COLOR, GL11.GL_ONE, GL11.GL_ZERO);
+		
+		GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_ZERO);
+		
 		camera.reset(g);
 		_framebuffer.render(g);
 		camera.apply(g);
@@ -246,13 +294,15 @@ public class Chunk {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private void drawShadowGeometry(Light light, List<Entity> entities, int layerIndex) {
+	private void drawShadowGeometry(Entity focusEntity, Light light, List<Entity> entities, int layerIndex) {
 		for (Entity entity : entities) {
-			Vector3f position = entity.getPosition();
-			if (position.z == layerIndex) {
-				//if (getMaxZ(whereChunkPointEquals(entities, entity.getOccupiedChunkPoint())) == layerIndex) {
+			if (entity.getLayer() == layerIndex) {
+				if (entity == focusEntity) {
+					continue;
+				}
+				if (!entity.getOccupiedChunkPoint().equals(Camera.translatePositionToPoint(light.getPosition()))) {
 					entity.drawShadowGeometry(light);
-				//}
+				}
 			}
 		}
 	}
@@ -266,6 +316,7 @@ public class Chunk {
 		}
 	}
 	
+	/*
 	private float getMaxZ(List<Entity> entities) {
 		float maxZ = 0;
 		for (Entity entity : entities) {
@@ -287,15 +338,80 @@ public class Chunk {
 		}
 		return results;
 	}
+	*/
 	
-	private List<Entity> getEntitiesInRange(Vector2f focus, float rangeOfVision) {
+	/*
+	private Entity getPlayer() {
+		for (Entity entity : getEntities()) {
+			if (entity.findComponent(asciiWorld.entities.PlayerControlComponent.class) != null) {
+				return entity;
+			}
+		}
+		return null;
+	}
+	*/
+	
+	private List<Entity> getEntitiesInRange(Camera camera) {
+		float rangeOfVision = camera.getRangeOfVision();
+
+		Vector2f focusPosition = camera.getPosition().toVector2f();
+		Vector2f tileSize = getEntities().get(0).getTile().getTileSet().getSize();
+		focusPosition.x += tileSize.x / 2.0f;
+		focusPosition.y += tileSize.y / 2.0f;
+		
+		Vector2f focusChunkPoint = Camera.translatePositionToPoint(focusPosition);
+		//focusChunkPoint.x += 0.5f;
+		//focusChunkPoint.y += 0.5f;
+
+		Entity focusEntity = (camera instanceof EntityCamera) ? ((EntityCamera)camera).getFocusEntity() : getEntityAt(focusChunkPoint, Chunk.LAYER_OBJECT);
+		
 		List<Entity> entities = new ArrayList<Entity>();
+		
+		for (float angle = 0; angle < 360; angle++) {
+			for (float distance = 0; distance <= rangeOfVision; distance++) {
+				Vector2f chunkPoint = new Vector2f(
+						(float)Math.floor(focusChunkPoint.x + distance * Math.cos(angle * Math.PI / 180)),
+						(float)Math.floor(focusChunkPoint.y + distance * Math.sin(angle * Math.PI / 180))
+						);
+				
+				if (!containsPoint(chunkPoint)) {
+					break;
+				}
+				
+				Entity groundEntity = getEntityAt(chunkPoint, LAYER_GROUND);
+				Entity objectEntity = getEntityAt(chunkPoint, LAYER_OBJECT);
+				Entity skyEntity = getEntityAt(chunkPoint, LAYER_SKY);
+				
+				if ((groundEntity != null) && !entities.contains(groundEntity)) {
+					entities.add(groundEntity);
+				}
+				if (objectEntity != null) {
+					if (!entities.contains(objectEntity)) {
+						entities.add(objectEntity);
+					}
+					if (objectEntity != focusEntity) { // the entity at the camera focus cannot obstruct it's own vision
+						break; // break on obstruction of vision
+					}
+				}
+				if ((skyEntity != null) && !entities.contains(skyEntity)) {
+					entities.add(skyEntity);
+				}
+			}
+		}
+		
+		/*
 		for (Entity entity : getEntities()) {
 			Vector3f position = entity.getPosition();
 			if (position.getDistance(focus) <= Entity.MOVEMENT_STEP * rangeOfVision) {
 				entities.add(entity);
 			}
 		}
+		*/
+		
 		return entities;
+	}
+	
+	private void resetSearchIndex() {
+		_searchIndex = new Entity[LAYERS_COUNT][HEIGHT][WIDTH];
 	}
 }

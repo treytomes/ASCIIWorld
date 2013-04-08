@@ -1,12 +1,9 @@
 package asciiWorld.entities;
 
-//import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-//import org.jdom2.Element;
-//import org.jdom2.input.SAXBuilder;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
@@ -26,7 +23,6 @@ import asciiWorld.lighting.Light;
 import asciiWorld.math.MathHelper;
 import asciiWorld.math.Vector3f;
 import asciiWorld.tiles.Tile;
-//import asciiWorld.tiles.TileFactory;
 
 public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
@@ -290,7 +286,11 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	}
 	
 	public Vector2f getOccupiedChunkPoint() {
-		return Camera.translatePositionToPoint(_moveToPosition); // getPosition());
+		return Camera.translatePositionToPoint(_moveToPosition);
+	}
+	
+	public int getLayer() {
+		return (int)getPosition().z;
 	}
 	
 	public Boolean isMoving() {
@@ -372,11 +372,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	public float getMovementSpeed() {
 		float movementSpeed = getBaseMovementSpeed();
 		Chunk myChunk = getChunk();
-		float myLayer = getPosition().z;
 		
 		if (myChunk != null) {
 			Vector2f chunkPoint = getOccupiedChunkPoint();
-			Entity entity = myChunk.getEntityAt(chunkPoint, myLayer - 1);
+			Entity entity = myChunk.getEntityAt(chunkPoint, getLayer() - 1);
 			if (entity != null) {
 				movementSpeed *= entity.getTile().getFriction();
 			}
@@ -518,7 +517,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 			if (cachedChunk != null) {
 				Vector2f pendingChunkPoint = Camera.translatePositionToPoint(pendingMoveToPosition);
 				
-				Entity entity = getChunk().getEntityAt(pendingChunkPoint, getPosition().z);
+				Entity entity = getChunk().getEntityAt(pendingChunkPoint, getLayer());
 				if (entity != null) {
 					entity.collidedWith(this);
 					pendingMoveToPosition = _moveToPosition;
@@ -551,7 +550,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		chunkPoint.x += directionVector.x;
 		chunkPoint.y += directionVector.y;
 		
-		Entity entity = getChunk().getEntityAt(chunkPoint, getPosition().z);
+		Entity entity = getChunk().getEntityAt(chunkPoint, getLayer());
 		if (entity != null) {
 			entity.touched(this);
 		}
@@ -626,6 +625,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	}
 	
 	public void render(Graphics g) {
+		/*if (isBlockedInAllDirections()) {
+			return;
+		}*/
+		
 		getTile().render(g, getPosition().toVector2f());
 		
 		for (TileSwingAnimation animation : _animations) {
@@ -635,17 +638,119 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 
 	@Override
 	public void drawShadowGeometry(Light light) {
-		ConvexHull.drawShadowGeometry(getPoints(), light);
+		Vector2f lightPoint = Camera.translatePositionToPoint(light.getPosition());
+		ConvexHull.drawShadowGeometry(getPointsForShadow(lightPoint), light);
 	}
 	
-	private Vector2f[] getPoints() {
+	private Vector2f[] getPointsForShadow(Vector2f lightPoint) {
+		float degAngle = (float)Math.atan2(getOccupiedChunkPoint().y - lightPoint.y, getOccupiedChunkPoint().x - lightPoint.x) * 360 / (float)Math.PI;
+		while (degAngle < 0) {
+			degAngle += 360;
+		}
+		degAngle = degAngle % 360;
+		
+		boolean eastWest = false;
+		if (((45 > degAngle) && (degAngle > 315)) ||
+			((135 < degAngle) && (degAngle < 225))) {
+			//System.err.println(String.format("false: %d", (int)degAngle));
+			eastWest = true;
+		} else {
+			//System.err.println(String.format("true: %d", (int)degAngle));
+		}
+		
 		Vector3f position = getPosition();
 		Vector2f size = getTile().getTileSet().getSize();
-		return new Vector2f[] {
-			new Vector2f(position.x, position.y),
-			new Vector2f(position.x + size.x - 1, position.y),
-			new Vector2f(position.x + size.x - 1, position.y + size.y - 1),
-			new Vector2f(position.x, position.y + size.y - 1)
-		};
+		
+		float minX = position.x;
+		float minY = position.y;
+		float maxX = position.x + size.x;
+		float maxY = position.y + size.y;
+
+		int layer = getLayer();
+
+		if (eastWest) {
+			Vector2f chunkPoint = getOccupiedChunkPoint();
+			chunkPoint.x--;
+			while (chunkPoint.x >= 0) {
+				Entity occupyingEntity = getChunk().getEntityAt(chunkPoint, layer);
+				if (occupyingEntity == null) {
+					break;
+				}
+				if (!occupyingEntity.getName().equals(getName())) {
+					break;
+				}
+				/*if (chunkPoint.equals(lightPoint)) {
+					break;
+				}*/
+				minX -= size.x;
+				chunkPoint.x--;
+			}
+	
+			chunkPoint = getOccupiedChunkPoint();
+			chunkPoint.x++;
+			while (chunkPoint.x < Chunk.WIDTH) {
+				Entity occupyingEntity = getChunk().getEntityAt(chunkPoint, layer);
+				if (occupyingEntity == null) {
+					break;
+				}
+				if (!occupyingEntity.getName().equals(getName())) {
+					break;
+				}
+				maxX += size.x;
+				chunkPoint.x++;
+			}
+		} else {
+			Vector2f chunkPoint = getOccupiedChunkPoint();
+			chunkPoint.y--;
+			while (chunkPoint.y >= 0) {
+				Entity occupyingEntity = getChunk().getEntityAt(chunkPoint, layer);
+				if (occupyingEntity == null) {
+					break;
+				}
+				if (!occupyingEntity.getName().equals(getName())) {
+					break;
+				}
+				minY -= size.y;
+				chunkPoint.y--;
+			}
+	
+			chunkPoint = getOccupiedChunkPoint();
+			chunkPoint.y++;
+			while (chunkPoint.y < Chunk.HEIGHT) {
+				Entity occupyingEntity = getChunk().getEntityAt(chunkPoint, layer);
+				if (occupyingEntity == null) {
+					break;
+				}
+				maxY += size.y;
+				chunkPoint.y++;
+			}
+		}
+		
+		Vector2f[] points = new Vector2f[4];
+		points[0] = new Vector2f(minX, minY);
+		points[1] = new Vector2f(maxX, minY);
+		points[2] = new Vector2f(maxX, maxY);
+		points[3] = new Vector2f(minX, maxY);
+		
+		return points;
 	}
+	
+	/*
+	private boolean isBlockedInAllDirections() {
+		return
+				isChunkOccupiedInDirection(Direction.North, Chunk.LAYER_OBJECT) &&
+				isChunkOccupiedInDirection(Direction.South, Chunk.LAYER_OBJECT) &&
+				isChunkOccupiedInDirection(Direction.East, Chunk.LAYER_OBJECT) &&
+				isChunkOccupiedInDirection(Direction.West, Chunk.LAYER_OBJECT);
+	}
+	
+	private boolean isChunkOccupiedInDirection(Direction dir) {
+		return isChunkOccupiedInDirection(dir, getLayer());
+	}
+	
+	private boolean isChunkOccupiedInDirection(Direction dir, int layer) {
+		Vector2f chunkPoint = getOccupiedChunkPoint().copy().add(dir.toVector2f());
+		return getChunk().isSpaceOccupied(chunkPoint, layer);
+	}
+	*/
 }

@@ -52,8 +52,8 @@ public class ConvexHull implements IConvexHull {
 		
 		Vector2f lightPosition = light.getPosition();
 		int shapePointCount = points.length;
-        for (int x = -1; x < shapePointCount; x++) {
-        	int index1 = (x + shapePointCount) % shapePointCount;
+        for (int index = -1; index < shapePointCount; index++) {
+        	int index1 = (index + shapePointCount) % shapePointCount;
             Vector2f current_point = points[index1];
             
     		int index2 = ((index1 - 1) + shapePointCount) % shapePointCount;
@@ -211,7 +211,7 @@ public class ConvexHull implements IConvexHull {
                 done = false;
             }
 
-            shadowfins.add(0, shadowfin);
+           	shadowfins.add(0, shadowfin);
 
             if (done) {
                 break;
