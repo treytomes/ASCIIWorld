@@ -11,6 +11,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.Drawable;
 import org.lwjgl.opengl.Pbuffer;
 import org.lwjgl.opengl.PixelFormat;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.gui.GUIContext;
 import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.opengl.CursorLoader;
@@ -27,7 +28,7 @@ import org.newdawn.slick.util.ResourceLoader;
  *
  * @author kevin
  */
-public abstract class GameContainer implements GUIContext {
+public abstract class GameContainer implements GUIContext, IHasBounds {
 	/** The renderer to use for all GL operations */
 	protected static SGL GL = Renderer.get();
 	/** The shared drawable if any */
@@ -107,6 +108,10 @@ public abstract class GameContainer implements GUIContext {
 
 	public static void enableStencil() {
 		stencil = true;
+	}
+	
+	public Rectangle getBounds() {
+		return new Rectangle(0, 0, getWidth(), getHeight());
 	}
 	
 	/**

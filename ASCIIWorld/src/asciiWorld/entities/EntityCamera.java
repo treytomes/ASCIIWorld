@@ -1,7 +1,8 @@
 package asciiWorld.entities;
 
+import org.newdawn.slick.IHasBounds;
+
 import asciiWorld.Camera;
-import asciiWorld.IHasBounds;
 
 public class EntityCamera extends Camera {
 

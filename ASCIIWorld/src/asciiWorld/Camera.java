@@ -1,6 +1,7 @@
 package asciiWorld;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.IHasBounds;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
