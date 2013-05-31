@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.ShapeRenderer;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureImpl;
 import org.newdawn.slick.opengl.renderer.LineStripRenderer;
@@ -404,6 +405,16 @@ public class Graphics {
 		predraw();
 		GL.glTranslatef(x, y, 0);
 		postdraw();
+	}
+	
+	/**
+	 * Apply a translation to everything drawn to the context
+	 * 
+	 * @param position
+	 *            The amount to translate by.
+	 */
+	public void translate(Vector2f position) {
+		translate(position.x, position.y);
 	}
 	
 	/**
