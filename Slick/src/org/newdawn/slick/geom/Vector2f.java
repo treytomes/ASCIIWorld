@@ -288,6 +288,21 @@ public strictfp class Vector2f implements Serializable {
 	}
 
 	/**
+	 * Scale this vector by a value
+	 * 
+	 * @param xa The value to scale the x component by
+	 * @param ya The value to scale the y component by
+	 * @return This vector - useful for chaining operations
+	 */
+	public Vector2f scale(float xa, float ya)
+	{
+		x *= xa; 
+		y *= ya;
+		
+		return this;
+	}
+
+	/**
 	 * Normalise the vector
 	 * 
 	 * @return This vector - useful for chaning operations
