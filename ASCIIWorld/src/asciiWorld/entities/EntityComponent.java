@@ -9,8 +9,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Convert;
-import asciiWorld.MethodIterator;
 import asciiWorld.chunks.Chunk;
+import asciiWorld.collections.MethodIterator;
 import asciiWorld.math.Vector3f;
 
 public class EntityComponent {
