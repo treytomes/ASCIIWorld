@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.io;
 
 import java.io.File;
 import java.io.IOException;

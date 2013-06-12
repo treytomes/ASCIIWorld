@@ -3,7 +3,7 @@ package asciiWorld.ui;
 import org.jdom2.Element;
 import org.newdawn.slick.geom.Rectangle;
 
-import asciiWorld.XmlHelper;
+import asciiWorld.io.XmlHelper;
 
 public class StackPanel extends Panel {
 	

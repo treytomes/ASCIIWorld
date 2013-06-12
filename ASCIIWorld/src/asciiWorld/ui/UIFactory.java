@@ -2,7 +2,7 @@ package asciiWorld.ui;
 
 import org.jdom2.Element;
 
-import asciiWorld.XmlHelper;
+import asciiWorld.io.XmlHelper;
 
 public class UIFactory {
 	

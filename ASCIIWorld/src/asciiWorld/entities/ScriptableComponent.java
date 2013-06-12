@@ -5,9 +5,9 @@ import org.mozilla.javascript.Scriptable;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.FileHelper;
 import asciiWorld.JavascriptContext;
 import asciiWorld.chunks.Chunk;
+import asciiWorld.io.FileHelper;
 import asciiWorld.math.Vector3f;
 
 public class ScriptableComponent extends EntityComponent {

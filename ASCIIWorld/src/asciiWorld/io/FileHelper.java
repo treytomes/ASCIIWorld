@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.io;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

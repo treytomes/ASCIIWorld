@@ -6,6 +6,8 @@ import java.util.Map;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import asciiWorld.io.FileHelper;
+
 /**
  * Use this to load text resources.
  * 

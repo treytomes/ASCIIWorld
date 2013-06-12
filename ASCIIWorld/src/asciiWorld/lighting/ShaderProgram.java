@@ -6,7 +6,7 @@ import org.lwjgl.opengl.ARBVertexShader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import asciiWorld.FileHelper;
+import asciiWorld.io.FileHelper;
 
 public class ShaderProgram {
 

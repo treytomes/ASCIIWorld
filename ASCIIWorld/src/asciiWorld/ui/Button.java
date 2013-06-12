@@ -17,7 +17,7 @@ import asciiWorld.CreateColor;
 import asciiWorld.FontFactory;
 import asciiWorld.JavascriptContext;
 import asciiWorld.TextHelper;
-import asciiWorld.XmlHelper;
+import asciiWorld.io.XmlHelper;
 
 public class Button extends ContentControl {
 	
