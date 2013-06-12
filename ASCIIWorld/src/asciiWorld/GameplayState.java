@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.chunks.Chunk;
+import asciiWorld.stateManager.GameState;
 import asciiWorld.ui.RootVisualPanel;
 
 public class GameplayState extends GameState {

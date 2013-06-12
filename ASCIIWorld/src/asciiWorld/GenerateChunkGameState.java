@@ -10,6 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.chunks.Chunk;
 import asciiWorld.chunks.ChunkFactory;
+import asciiWorld.stateManager.GameState;
 import asciiWorld.ui.MessageBox;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.TextWrappingMode;

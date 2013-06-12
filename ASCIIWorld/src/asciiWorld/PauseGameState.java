@@ -7,6 +7,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.stateManager.GameState;
+
 public class PauseGameState extends GameState {
 	
 	private static final Color COLOR_BACKGROUND = new Color(0, 0, 0, 0.5f);

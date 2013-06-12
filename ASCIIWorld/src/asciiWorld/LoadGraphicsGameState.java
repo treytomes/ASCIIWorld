@@ -13,6 +13,7 @@ import asciiWorld.entities.EntityFactory;
 import asciiWorld.entities.HotKeyManager;
 import asciiWorld.entities.PlayerControlComponent;
 import asciiWorld.math.Vector3f;
+import asciiWorld.stateManager.GameState;
 import asciiWorld.ui.HUDView;
 import asciiWorld.ui.RootVisualPanel;
 
