@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.stateManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.List;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
+
+import asciiWorld.Require;
 
 public class GameStateManager {
 	

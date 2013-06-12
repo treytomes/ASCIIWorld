@@ -1,8 +1,9 @@
-package asciiWorld;
+package asciiWorld.stateManager;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
+
 
 public class GameState {
 	
