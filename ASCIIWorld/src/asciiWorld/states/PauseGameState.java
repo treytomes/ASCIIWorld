@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.states;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.FontFactory;
 import asciiWorld.stateManager.GameState;
 
 public class PauseGameState extends GameState {

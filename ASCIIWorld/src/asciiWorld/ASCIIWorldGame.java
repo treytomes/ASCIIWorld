@@ -10,6 +10,10 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.states.ConsoleState;
+import asciiWorld.states.MainMenuState;
+import asciiWorld.states.SlickGameplayState;
+import asciiWorld.states.TextEditorState;
 import asciiWorld.ui.RootVisualPanel;
 
 public class ASCIIWorldGame extends StateBasedGame {

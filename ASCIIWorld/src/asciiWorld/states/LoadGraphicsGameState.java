@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.states;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -6,6 +6,7 @@ import org.newdawn.slick.IHasBounds;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.Camera;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityCamera;

@@ -1,4 +1,4 @@
-package asciiWorld;
+package asciiWorld.states;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
