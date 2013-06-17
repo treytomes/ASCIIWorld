@@ -30,7 +30,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	private static final int DEFAULT_AGILITY = 1;
 	private static final int DEFAULT_STRENGTH = 2;
-	private static final int DEFAULT_PERCEPTION = 20;
+	private static final int DEFAULT_PERCEPTION = 10;
 	private static final float DEFAULT_WEIGHT = 1;
 	private static final int DEFAULT_MAX_HEALTH = 10;
 	
@@ -397,7 +397,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	}
 	
 	public float getBaseRangeOfVision() {
-		return getPerception();
+		return getPerception() * 3;
 	}
 	
 	public float getRangeOfVision() {

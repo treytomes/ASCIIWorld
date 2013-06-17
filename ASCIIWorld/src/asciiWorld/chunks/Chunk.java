@@ -43,7 +43,7 @@ public class Chunk {
 		_ambientLightColor = AMBIENT_LIGHT_COLOR;
 		
 		_framebuffer = null;
-		_lights.add(new Light(Vector2f.zero(), 200.0f, 1.0f, new Color(1.0f, 1.0f, 1.0f, 1.0f)));
+		_lights.add(new Light(Vector2f.zero(), 300.0f, 1.0f, new Color(1.0f, 1.0f, 1.0f, 1.0f)));
 		//_lights.add(new Light(new Vector2f(200, 200), 200.0f, 1.0f, new Color(0.0f, 0.0f, 1.0f, 0.5f)));
 		
 		resetSearchIndex();
