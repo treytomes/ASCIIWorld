@@ -37,7 +37,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	private static final float MODIFIER_AGILITY = 15.0f;
 	private static final float SPEED_TIME_DIVISOR = 250f; // 20.0f;
 	private static final int HEALTH_REGEN_UPDATE_MS = 1000;
-	private static final float USE_COOLDOWN_FACTOR = 5000.0f;
+	private static final float USE_COOLDOWN_FACTOR = 15000.0f;
 	
 	private int _totalTimeAlive;
 	
@@ -498,8 +498,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	public void useActiveItem(Vector3f targetChunkPoint) {
 		if (!_ableToUseSomething) {
+			System.out.println("No can use.");
 			return;
 		}
+		System.out.println("Can use.");
 		
 		if (hasActiveItem()) {
 			_somethingIsBeingUsed = true;
