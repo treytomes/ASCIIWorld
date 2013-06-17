@@ -30,7 +30,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	private static final int DEFAULT_AGILITY = 1;
 	private static final int DEFAULT_STRENGTH = 2;
-	private static final int DEFAULT_PERCEPTION = 10;
+	private static final int DEFAULT_PERCEPTION = 20;
 	private static final float DEFAULT_WEIGHT = 1;
 	private static final int DEFAULT_MAX_HEALTH = 10;
 	
@@ -281,6 +281,14 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		_animations.add(value);
 	}
 	
+	public double getDistanceFromEntity(Entity otherEntity) {
+		return getDistanceFromPoint(otherEntity.getOccupiedChunkPoint());
+	}
+	
+	public double getDistanceFromPoint(Vector2f chunkPoint) {
+		return Math.abs(chunkPoint.distance(getOccupiedChunkPoint()));
+	}
+	
 	public Vector3f getPosition() {
 		return _position;
 	}
@@ -323,6 +331,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	public void setStrength(Integer value) {
 		_strength = value;
+	}
+	
+	public int getAttackStrength() {
+		return getStrength() / 15;
 	}
 	
 	public int getAttackSpeed() {
@@ -437,6 +449,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 			setHealth(getMaxHealth());
 		}
 		// TODO: Show a "take damage" message.
+		System.out.println(String.format("[%s] Health = %d/%d", getName(), getHealth(), getMaxHealth()));
 	}
 	
 	public void restoreHealth(Entity healedByEntity, int amount) {
@@ -486,7 +499,6 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		
 		if (hasActiveItem()) {
 			_somethingIsBeingUsed = true;
-			addAnimation(TileSwingAnimation.createUseActiveItemAnimation(this, targetChunkPoint));
 			getActiveItem().use(targetChunkPoint);
 		}
 	}

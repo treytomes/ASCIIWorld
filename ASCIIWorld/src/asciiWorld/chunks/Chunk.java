@@ -43,7 +43,7 @@ public class Chunk {
 		_ambientLightColor = AMBIENT_LIGHT_COLOR;
 		
 		_framebuffer = null;
-		_lights.add(new Light(Vector2f.zero(), 100.0f, 1.0f, new Color(1.0f, 1.0f, 1.0f, 1.0f)));
+		_lights.add(new Light(Vector2f.zero(), 200.0f, 1.0f, new Color(1.0f, 1.0f, 1.0f, 1.0f)));
 		//_lights.add(new Light(new Vector2f(200, 200), 200.0f, 1.0f, new Color(0.0f, 0.0f, 1.0f, 0.5f)));
 		
 		resetSearchIndex();
@@ -125,6 +125,23 @@ public class Chunk {
 		return getEntityAt(chunkPoint, layer) != null;
 	}
 
+	public Entity findClosestEntity(Vector3f chunkPoint, double range) {
+		Entity targetEntity = null;
+		double closestRange = range;
+		Vector2f targetChunkPoint = chunkPoint.toVector2f();
+		for (Entity entity : getEntities((int)chunkPoint.z)) {
+			double distance = entity.getDistanceFromPoint(targetChunkPoint);
+			if (distance <= closestRange) {
+				targetEntity = entity;
+				closestRange = distance;
+				if (closestRange == 0) {
+					break;
+				}
+			}
+		}
+		return targetEntity;
+	}
+	
 	public Vector3f findSpawnPoint(int layer) throws Exception {
 		for (int y = 0; y < Chunk.WIDTH; y++)
 		{

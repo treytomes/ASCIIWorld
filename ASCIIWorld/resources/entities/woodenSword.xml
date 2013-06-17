@@ -2,6 +2,12 @@
 <Entity tile="woodenSword" name="Wooden Sword">
 	<Components>
 		<Component name="CanBePickedUp" />
+		<Component name="Attack">
+			<Properties>
+				<Property name="DamageModifier" value="1" />
+				<Property name="Range" value="2" />
+			</Properties>
+		</Component>
 	</Components>
 
 	<Properties>
