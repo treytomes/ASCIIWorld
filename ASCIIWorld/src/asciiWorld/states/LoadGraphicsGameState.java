@@ -6,8 +6,8 @@ import org.newdawn.slick.IHasBounds;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.World;
 import asciiWorld.chunks.Chunk;
-import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityCamera;
 import asciiWorld.entities.EntityFactory;
 import asciiWorld.entities.HotKeyManager;
@@ -28,14 +28,14 @@ public class LoadGraphicsGameState extends GameState {
 	private static final float DEFAULT_ZOOM = 4.0f;
 	private static final String DEFAULT_PLAYER_RESOURCE = "player";
 	
-	private Entity _player;
+	private World _world;
 	private EntityCamera _camera;
-	private Chunk _chunk;
 	private PlayerControlComponent _playerControl;
 	private Boolean _isComplete;
 	
 	public LoadGraphicsGameState(Chunk chunk) {
-		_chunk = chunk;
+		_world = new World();
+		_world.setChunk(chunk);
 		_isComplete = false;
 	}
 	
@@ -43,16 +43,8 @@ public class LoadGraphicsGameState extends GameState {
 		return _isComplete;
 	}
 	
-	public Entity getPlayer() {
-		return _player;
-	}
-	
 	public EntityCamera getCamera() {
 		return _camera;
-	}
-	
-	public Chunk getChunk() {
-		return _chunk;
 	}
 	
 	@Override
@@ -65,7 +57,7 @@ public class LoadGraphicsGameState extends GameState {
 		
 		if (isComplete()) {
 			try {
-				getManager().switchTo(new GameplayState(getChunk(), getCamera()));
+				getManager().switchTo(new GameplayState(_world, getCamera()));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -97,19 +89,19 @@ public class LoadGraphicsGameState extends GameState {
 	
 	private void createPlayer(GameContainer container) {
 		try {
-			_player = EntityFactory.get().getResource(DEFAULT_PLAYER_RESOURCE);
+			_world.setPlayer(EntityFactory.get().getResource(DEFAULT_PLAYER_RESOURCE));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		createCamera(container);
-		_playerControl = new PlayerControlComponent(_player, _camera);
-		_player.getComponents().add(_playerControl);
+		_playerControl = new PlayerControlComponent(_world.getPlayer(), _camera);
+		_world.getPlayer().getComponents().add(_playerControl);
 	}
 	
 	private Vector3f getSpawnPoint() {
 		try {
-			return _chunk.findRandomSpawnPoint(Chunk.LAYER_OBJECT);
+			return _world.getChunk().findRandomSpawnPoint(Chunk.LAYER_OBJECT);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to find a spawn point for the player.");
@@ -118,8 +110,8 @@ public class LoadGraphicsGameState extends GameState {
 	}
 	
 	private void spawnPlayer() {
-		_player.moveTo(getSpawnPoint());
-		_chunk.addEntity(_player);
+		_world.getPlayer().moveTo(getSpawnPoint());
+		_world.getChunk().addEntity(_world.getPlayer());
 	}
 	
 	private void createCamera(final GameContainer container) {
@@ -128,14 +120,14 @@ public class LoadGraphicsGameState extends GameState {
 			public Rectangle getBounds() {
 				return new Rectangle(0, 0, container.getWidth(), container.getHeight());
 			}
-		}, _player, DEFAULT_ZOOM);
+		}, _world.getPlayer(), DEFAULT_ZOOM);
 	}
 	
 	private void generateUI(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) {
 		try {
 		HUDView hud = new HUDView(container, game, hotkeys);
 		hud.setCamera(_camera);
-		hud.setPlayer(_player);
+		hud.setWorld(_world);
 		RootVisualPanel.get().addChild(hud);
 		} catch (Exception e) {
 			e.printStackTrace();

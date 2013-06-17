@@ -3,13 +3,11 @@ package asciiWorld.ui;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.ASCIIWorldGame;
 import asciiWorld.Camera;
-import asciiWorld.DateTime;
-import asciiWorld.entities.Entity;
+import asciiWorld.World;
 import asciiWorld.entities.EntityFactory;
 import asciiWorld.entities.HotKeyInfo;
 import asciiWorld.entities.HotKeyManager;
@@ -25,14 +23,12 @@ public class HUDView extends CanvasPanel {
 	private static final int BUTTON_HEIGHT = 42;
 	
 	private Camera _camera;
-	private Entity _player;
+	private World _world;
 	private ImmediateWindow _scriptConsole;
-	private DateTime _worldTime;
 	
 	public HUDView(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
 		super(new Rectangle(0, 0, container.getWidth(), container.getHeight()));
 		generateUI(container, game, hotkeys);
-		_worldTime = new DateTime();
 	}
 	
 	public Camera getCamera() {
@@ -43,13 +39,14 @@ public class HUDView extends CanvasPanel {
 		_camera = value;
 	}
 	
-	public Entity getPlayer() {
-		return _player;
+	public World getWorld() {
+		return _world;
 	}
 	
-	public void setPlayer(Entity value) {
-		_player = value;
-		_scriptConsole.getContext().addObjectToContext(_player, "player");
+	public void setWorld(World value) {
+		_world = value;
+		_scriptConsole.getContext().addObjectToContext(_world, "world");
+		_scriptConsole.getContext().addObjectToContext(_world.getPlayer(), "player");
 		assignHUDToPlayerControlComponent();
 	}
 	
@@ -62,11 +59,6 @@ public class HUDView extends CanvasPanel {
 	@Override
 	public void update(GameContainer container, int delta) {
 		super.update(container, delta);
-		getWorldTime().update(delta);
-	}
-	
-	public DateTime getWorldTime() {
-		return _worldTime;
 	}
 	
 	public void showConsole() {
@@ -106,8 +98,8 @@ public class HUDView extends CanvasPanel {
 	}
 	
 	private void assignHUDToPlayerControlComponent() {
-		if (getPlayer() != null) {
-			PlayerControlComponent playerControl = getPlayer().findComponent(PlayerControlComponent.class);
+		if (getWorld().getPlayer() != null) {
+			PlayerControlComponent playerControl = getWorld().getPlayer().findComponent(PlayerControlComponent.class);
 			if (playerControl != null) {
 				playerControl.setHUD(this);
 			}
@@ -116,8 +108,17 @@ public class HUDView extends CanvasPanel {
 	
 	private void generateUI(GameContainer container, StateBasedGame game, HotKeyManager hotkeys) throws Exception {
 		//addChild(createTitleLabel());
-		addChild(createInventoryHotKeys(hotkeys));
-		addChild(new Label(new Vector2f(200, 200), new MethodBinding(this, "getWorldTime"), Color.white) {{ setTextWrappingMode(TextWrappingMode.NoWrap); }});
+		HotKeyPanel hotKeyPanel = createInventoryHotKeys(hotkeys);
+		addChild(hotKeyPanel);
+		
+		final MethodBinding worldTime = new MethodBinding(new MethodBinding(this, "getWorld"), "getWorldTime");
+		addChild(new StackPanel(new Rectangle(hotKeyPanel.getBounds().getMaxX(), 0, 400, 32)) {{
+			addChild(new Label(worldTime, Color.white) {{
+				setHorizontalContentAlignment(HorizontalAlignment.Left);
+				setTextWrappingMode(TextWrappingMode.NoWrap);
+			}});
+		}});
+
 		addChild(createMenuPanel(container, game));
 		addChild(createZoomPanel());
 		//addChild(createPlayerPositionLabel());
@@ -140,7 +141,7 @@ public class HUDView extends CanvasPanel {
 			@Override
 			public void selected(HotKeyPanel sender, HotKeyInfo info) {
 				try {
-					getPlayer().setActiveItem(info.getItem());
+					getWorld().getPlayer().setActiveItem(info.getItem());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

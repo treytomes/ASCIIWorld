@@ -11,10 +11,12 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Camera;
+import asciiWorld.DateTime;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityCamera;
 import asciiWorld.lighting.FrameBufferObject;
 import asciiWorld.lighting.Light;
+import asciiWorld.math.MathHelper;
 import asciiWorld.math.RandomFactory;
 import asciiWorld.math.Vector3f;
 
@@ -29,7 +31,6 @@ public class Chunk {
 	public static final int ROWS = 64;
 
 	private static final boolean ENABLE_SHADOWS = false;
-	private static final Color AMBIENT_LIGHT_COLOR = new Color(0.0f, 0.0f, 0.0f, 1.0f);
 	private static final double RAD = Math.PI / 180;
 
 	private List<Entity> _entities;
@@ -44,7 +45,6 @@ public class Chunk {
 	public Chunk() {
 		_entities = new ArrayList<Entity>();
 		_lights = new ArrayList<Light>();
-		_ambientLightColor = AMBIENT_LIGHT_COLOR;
 		
 		_framebuffer = null;
 		
@@ -181,7 +181,7 @@ public class Chunk {
 		}
 	}
 	
-	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
+	public void update(GameContainer container, StateBasedGame game, int deltaTime, DateTime worldTime) {
 		List<Entity> entities = getEntities();
 		
 		for (int index = 0; index < entities.size(); index++) {
@@ -190,6 +190,14 @@ public class Chunk {
 		}
 		
 		updateSearchIndex();
+		updateAmbientLighting(worldTime);
+	}
+	
+	public void updateAmbientLighting(DateTime worldTime) {
+		float hour = (float)((worldTime.getHour() - 6) + (float)worldTime.getMinute() / 60.0f);
+		float hourRatio = hour / 24.0f;
+		float ambientLightWeight = (float)(Math.sin(2 * Math.PI * hourRatio) + 1.0f) / 2.0f;
+		_ambientLightColor = MathHelper.lerp(Color.black, Color.white, ambientLightWeight);
 	}
 	
 	private void updateSearchIndex() {
@@ -274,6 +282,8 @@ public class Chunk {
 	    GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
+		GL11.glClearColor(0, 0, 0, 1.0f);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		render(g, _entitiesInRange, LAYER_GROUND);
 		render(g, _entitiesInRange, LAYER_OBJECT);
 		render(g, _entitiesInRange, LAYER_SKY);

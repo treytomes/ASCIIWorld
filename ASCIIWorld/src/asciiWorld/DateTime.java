@@ -15,13 +15,41 @@ public class DateTime {
 	private int _minute;
 	private int _second;
 	
-	public DateTime() {
+	public DateTime(int hour, int minute, int second) {
 		_year = 0;
 		_month = 0;
 		_day = 0;
-		_hour = 0;
-		_minute = 0;
-		_second = 0;
+		_hour = hour;
+		_minute = minute;
+		_second = second;
+	}
+	
+	public DateTime() {
+		this(0, 0, 0);
+	}
+	
+	public int getYear() {
+		return _year;
+	}
+	
+	public int getMonth() {
+		return _month;
+	}
+	
+	public int getDay() {
+		return _day;
+	}
+	
+	public int getHour() {
+		return _hour;
+	}
+	
+	public int getMinute() {
+		return _minute;
+	}
+	
+	public int getSecond() {
+		return _second;
 	}
 	
 	public void update(int deltaTimeMS) {

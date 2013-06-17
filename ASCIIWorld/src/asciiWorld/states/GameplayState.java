@@ -4,25 +4,24 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.chunks.Chunk;
+import asciiWorld.World;
 import asciiWorld.entities.EntityCamera;
 import asciiWorld.stateManager.GameState;
 import asciiWorld.ui.RootVisualPanel;
 
 public class GameplayState extends GameState {
 	
-	private Chunk _chunk;
+	private World _world;
 	private EntityCamera _camera;
 	
-	public GameplayState(Chunk chunk, EntityCamera camera) {
-		_chunk = chunk;
+	public GameplayState(World world, EntityCamera camera) {
+		_world = world;
 		_camera = camera;
 	}
 	
 	@Override
 	public void leave() {
-		// Destroy the chunk.
-		_chunk.clearEntities();
+		_world.leave();
 		
 		// Clear the user interface.
 		try {
@@ -40,7 +39,7 @@ public class GameplayState extends GameState {
 				RootVisualPanel.get().update(container, delta);
 				try {
 					if (!RootVisualPanel.get().isModalWindowOpen()) {
-						_chunk.update(container, game, delta);
+						_world.update(container, game, delta);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -60,7 +59,7 @@ public class GameplayState extends GameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		_camera.apply(g);
-		_chunk.render(g, _camera);
+		_world.render(g, _camera);
 		_camera.reset(g);
 		
 		try {

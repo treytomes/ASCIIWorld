@@ -1,5 +1,6 @@
 package asciiWorld.math;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Vector2f;
 
 
@@ -36,5 +37,14 @@ public class MathHelper {
 
 	public static float lerp(float from, float to, float weight) {
 		return from + ((to - from) * weight);
+	}
+
+	public static Color lerp(Color from, Color to, float weight) {
+		Color color = new Color(0, 0, 0, 0);
+		color.a = from.a + ((to.a - from.a) * weight);
+		color.r = from.r + ((to.r - from.r) * weight);
+		color.g = from.g + ((to.g - from.g) * weight);
+		color.b = from.b + ((to.b - from.b) * weight);
+		return color;
 	}
 }
