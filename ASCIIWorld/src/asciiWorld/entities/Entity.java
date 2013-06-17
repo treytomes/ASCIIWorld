@@ -448,8 +448,6 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	public void takeDamage(Entity damagedByEntity, int amount) {
 		int originalHealth = _health;
-
-		addAnimation(new FadingTextAnimation(this, "Urrgh!", Color.blue));
 		
 		setHealth(getHealth() - amount);
 		if (getHealth() < 0) {
