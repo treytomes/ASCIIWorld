@@ -197,10 +197,11 @@ public class Tile {
 			Vector2f scale = getScale();
 			g.scale(scale.x, scale.y);
 		}
-		g.rotate(_tileCenter.x, _tileCenter.y, getRotation());
 		
 		g.translate(x - _tileCenter.x, y - _tileCenter.y);
 		
+		g.rotate(_tileCenter.x, _tileCenter.y, getRotation());
+
 		getCurrentFrame().render(getTileSet());
 		g.popTransform();
 	}

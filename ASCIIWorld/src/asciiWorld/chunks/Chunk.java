@@ -169,13 +169,27 @@ public class Chunk {
 		throw new Exception("Unable to find a valid spawn point.");
 	}
 
-	public Vector3f findRandomSpawnPoint(int layer) throws Exception
-	{
-		while (true)
-		{
+	public Vector3f findSpawnPoint(Vector2f searchStart, int layer) {
+		final double ANGLE_INCREMENT = Math.PI / 180.0;
+		double distance = 0.0;
+		while (true) {
+			for (double angle = 0.0f; angle < 2 * Math.PI; angle += ANGLE_INCREMENT) {
+				Vector3f checkPoint = new Vector3f(
+						(int)(searchStart.x + distance * Math.cos(angle)),
+						(int)(searchStart.y + distance * Math.sin(angle)),
+						layer);
+				if (!isSpaceOccupied(checkPoint)) {
+					return checkPoint;
+				}
+			}
+			distance += 1.0;
+		}
+	}
+
+	public Vector3f findRandomSpawnPoint(int layer) throws Exception {
+		while (true) {
 			Vector3f chunkPoint = new Vector3f(RandomFactory.get().nextInt(0, COLUMNS), RandomFactory.get().nextInt(0, ROWS), layer);
-			if (!isSpaceOccupied(chunkPoint))
-			{
+			if (!isSpaceOccupied(chunkPoint)) {
 				return chunkPoint;
 			}
 		}
@@ -187,6 +201,9 @@ public class Chunk {
 		for (int index = 0; index < entities.size(); index++) {
 			Entity entity = entities.get(index);
 			entity.update(container, game, deltaTime);
+			if (!entity.isAlive()) {
+				entity.die();
+			}
 		}
 		
 		updateSearchIndex();

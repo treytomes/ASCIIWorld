@@ -578,6 +578,26 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		}
 	}
 	
+	public void die() {
+		Vector2f chunkPoint = getOccupiedChunkPoint();
+		Chunk cachedChunk = getChunk();
+		_chunk.removeEntity(this);
+		
+		// Drop inventory into the chunk.
+		while (_inventory.getItemCount() > 0) {
+			Entity item = _inventory.getItemAt(0);
+			try {
+				_inventory.remove(item);
+			} catch (Exception e) {
+				System.err.println("Unable to clear the inventory.");
+				e.printStackTrace();
+				break;
+			}
+			item.moveTo(cachedChunk.findSpawnPoint(chunkPoint, getLayer()));
+			cachedChunk.addEntity(item);
+		}
+	}
+	
 	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
 		_totalTimeAlive += deltaTime;
 		
