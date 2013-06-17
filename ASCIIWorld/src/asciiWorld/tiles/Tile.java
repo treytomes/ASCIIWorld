@@ -169,15 +169,6 @@ public class Tile {
 	}
 	
 	public void render(Graphics g, Vector2f position) {
-		/*if (tile.getBackgroundColor().getAlpha() > 0) {
-			Vector2f tileSize = getTileSize();
-			Shape backFill = new Rectangle(0, 0, tileSize.x + 1, tileSize.y + 1)
-				.transform(Transform.createRotateTransform((float)Math.toRadians(rotation), tileSize.x / 2.0f, tileSize.y / 2.0f))
-				.transform(Transform.createTranslateTransform(position.x, position.y));
-			g.setColor(tile.getBackgroundColor());
-			g.fill(backFill);
-		}*/
-		
 		Vector2f tileSize = getTileSet().getSize();
 		g.pushTransform();
 		
@@ -189,9 +180,6 @@ public class Tile {
 		g.translate(position.x, position.y);
 		getCurrentFrame().render(getTileSet());
 		g.popTransform();
-		
-		//getTileSet().draw(Frame.TILEINDEX_SOLID, position, getBackgroundColor(), getRotation(), getEffect());
-		//getTileSet().draw(getTileIndex(), position, getForegroundColor(), getRotation(), getEffect());
 	}
 	
 	public void render(Graphics g) {

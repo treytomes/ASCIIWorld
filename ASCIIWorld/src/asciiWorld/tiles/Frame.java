@@ -11,7 +11,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.geom.Vector2f;
 
 public class Frame implements ITile, IRenderable {
 	
@@ -74,29 +73,14 @@ public class Frame implements ITile, IRenderable {
 		_tileIndex = value;
 	}
 	
-	public void render(TileSet tiles, Vector2f position, float rotation, TransformEffect transform) {
-		/*if (tile.getBackgroundColor().getAlpha() > 0) {
-			Vector2f tileSize = getTileSize();
-			Shape backFill = new Rectangle(0, 0, tileSize.x + 1, tileSize.y + 1)
-				.transform(Transform.createRotateTransform((float)Math.toRadians(rotation), tileSize.x / 2.0f, tileSize.y / 2.0f))
-				.transform(Transform.createTranslateTransform(position.x, position.y));
-			g.setColor(tile.getBackgroundColor());
-			g.fill(backFill);
-		}*/
-		tiles.draw(TILEINDEX_SOLID, position, getBackgroundColor(), rotation, transform);
-		tiles.draw(getTileIndex(), position, getForegroundColor(), rotation, transform);
-	}
-	
-	public void render(TileSet tiles, Vector2f position, float rotation) {
-		render(tiles, position, rotation, TransformEffect.None);
-	}
-	
-	public void render(TileSet tiles, Vector2f position) {
-		render(tiles, position, 0);
-	}
-	
-	public void render(TileSet tiles) {
-		render(tiles, Vector2f.zero());
+	public void render(TileSet tiles) { 
+		if (_backgroundColor.a > 0) {
+			tiles.draw(TILEINDEX_SOLID, _backgroundColor);
+		}
+		
+		if (_foregroundColor.a > 0) {
+			tiles.draw(getTileIndex(), _foregroundColor);
+		}
 	}
 	
 	public Frame clone() {
