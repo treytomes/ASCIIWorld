@@ -24,6 +24,12 @@ public class MathHelper {
 		vector.y = from.y + ((to.y - from.y) * weight);
 		return vector;
 	}
+	
+	public static float smoothStep(final float from, final float to, float weight) {
+		weight = (weight > 1) ? 1 : ((weight < 0) ? 0 : weight);
+		weight = (weight * weight) * (3 - (2 * weight));
+		return from + ((to - from) * weight);
+	}
 
 	public static float clamp(float value, float lowerBound, float upperBound) {
 		if (value < lowerBound) {

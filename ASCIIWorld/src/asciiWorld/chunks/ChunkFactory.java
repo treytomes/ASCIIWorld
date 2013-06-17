@@ -100,9 +100,12 @@ public class ChunkFactory {
 		return new PerlinOverworldChunkGenerator().generate(chunk, seed, logStream);
 	}
 	
-	public static Chunk generateDungeon(PrintStream logStream) throws Exception {
+	public static Chunk generateDungeon(PrintStream logStream, long seed) throws Exception {
 		Chunk chunk = new Chunk();
-		long seed = RandomFactory.get().nextInt(0, Integer.MAX_VALUE);
 		return new DungeonChunkGenerator().generate(chunk, seed, logStream);
+	}
+	
+	public static Chunk generateDungeon(PrintStream logStream) throws Exception {
+		return generateDungeon(logStream, RandomFactory.get().nextInt(0, Integer.MAX_VALUE));
 	}
 }

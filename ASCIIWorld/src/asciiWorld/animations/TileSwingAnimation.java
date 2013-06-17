@@ -9,7 +9,7 @@ import asciiWorld.math.MathHelper;
 import asciiWorld.math.Vector3f;
 import asciiWorld.tiles.Tile;
 
-public class TileSwingAnimation {
+public class TileSwingAnimation implements IAnimation {
 
 	private static final float ANGULAR_VELOCITY_MULTIPLIER = 0.00025f;
 	private static final float DEFAULT_ANGULAR_VELOCITY = 1.0f;

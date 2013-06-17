@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
@@ -14,7 +15,8 @@ import asciiWorld.Convert;
 import asciiWorld.Direction;
 import asciiWorld.IHasPosition;
 import asciiWorld.IHasRangeOfVision;
-import asciiWorld.animations.TileSwingAnimation;
+import asciiWorld.animations.FadingTextAnimation;
+import asciiWorld.animations.IAnimation;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.collections.MethodIterator;
 import asciiWorld.lighting.ConvexHull;
@@ -44,7 +46,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	private Chunk _chunk;
 	
 	private Tile _tile;
-	private List<TileSwingAnimation> _animations;
+	private List<IAnimation> _animations;
 	
 	private Direction _direction;
 	private Vector3f _position;
@@ -146,7 +148,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		
 		_chunk = null;
 		_tile = null;
-		_animations = new ArrayList<TileSwingAnimation>();
+		_animations = new ArrayList<IAnimation>();
 		_position = new Vector3f();
 		_moveFromPosition = new Vector3f();
 		_moveToPosition = new Vector3f();
@@ -277,7 +279,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		_tile = value;
 	}
 	
-	public void addAnimation(TileSwingAnimation value) {
+	public void addAnimation(IAnimation value) {
 		_animations.add(value);
 	}
 	
@@ -418,7 +420,6 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	public void setMaxHealth(Integer value) {
 		_maxHealth = value;
-		restoreHealth(this, value);
 	}
 	
 	public int getHealth() {
@@ -446,24 +447,35 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	}
 	
 	public void takeDamage(Entity damagedByEntity, int amount) {
+		int originalHealth = _health;
+
+		addAnimation(new FadingTextAnimation(this, "Urrgh!", Color.blue));
+		
 		setHealth(getHealth() - amount);
 		if (getHealth() < 0) {
 			setHealth(0);
 		} else if (getHealth() > getMaxHealth()) {
 			setHealth(getMaxHealth());
 		}
-		// TODO: Show a "take damage" message.
-		System.out.println(String.format("[%s] Health = %d/%d", getName(), getHealth(), getMaxHealth()));
+		
+		if (originalHealth != _health) {
+			addAnimation(FadingTextAnimation.createDamageNotification(this, amount));
+		}
 	}
 	
 	public void restoreHealth(Entity healedByEntity, int amount) {
+		int originalHealth = _health;
+		
 		setHealth(getHealth() + amount);
 		if (getHealth() < 0) {
 			setHealth(0);
 		} else if (getHealth() > getMaxHealth()) {
 			setHealth(getMaxHealth());
 		}
-		// TODO: Show a "restore health" message.
+		
+		if (originalHealth != _health) {
+			addAnimation(FadingTextAnimation.createRestoreNotification(this, amount));
+		}
 	}
 	
 	public Entity getActiveItem() {
@@ -498,10 +510,8 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	public void useActiveItem(Vector3f targetChunkPoint) {
 		if (!_ableToUseSomething) {
-			System.out.println("No can use.");
 			return;
 		}
-		System.out.println("Can use.");
 		
 		if (hasActiveItem()) {
 			_somethingIsBeingUsed = true;
@@ -547,8 +557,9 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	}
 	
 	public void use(Vector3f targetChunkPoint) {
+		Entity owner = getContainer().getOwner();
 		for (EntityComponent component : getComponents()) {
-			component.use(getContainer().getOwner(), targetChunkPoint);
+			component.use(owner, targetChunkPoint);
 		}
 	}
 	
@@ -617,8 +628,8 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		
 		_tile.update(deltaTime);
 		
-		List<TileSwingAnimation> deadAnimations = new ArrayList<TileSwingAnimation>();
-		for (TileSwingAnimation animation : _animations) {
+		List<IAnimation> deadAnimations = new ArrayList<IAnimation>();
+		for (IAnimation animation : _animations) {
 			animation.update(deltaTime);
 			if (!animation.isAlive()) {
 				deadAnimations.add(animation);
@@ -669,7 +680,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		
 		_tile.render(g, _position.x, _position.y);
 		
-		for (TileSwingAnimation animation : _animations) {
+		for (IAnimation animation : _animations) {
 			animation.render(g);
 		}
 	}
