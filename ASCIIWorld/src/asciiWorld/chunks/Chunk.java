@@ -25,9 +25,10 @@ public class Chunk {
 	public static final int LAYER_SKY = 2;
 	public static final int LAYERS_COUNT = 3;
 	
-	public static final int WIDTH = 128;
-	public static final int HEIGHT = 128;
+	public static final int COLUMNS = 128;
+	public static final int ROWS = 128;
 
+	private static final boolean ENABLE_SHADOWS = false;
 	private static final Color AMBIENT_LIGHT_COLOR = new Color(0.0f, 0.0f, 0.0f, 1.0f);
 
 	private List<Entity> _entities;
@@ -36,6 +37,8 @@ public class Chunk {
 	private FrameBufferObject _framebuffer;
 	
 	private Entity[][][] _searchIndex;
+	private Vector2f _focusEntityChunkPoint;
+	private List<Entity> _entitiesInRange;
 	
 	public Chunk() {
 		_entities = new ArrayList<Entity>();
@@ -46,6 +49,8 @@ public class Chunk {
 		_lights.add(new Light(Vector2f.zero(), 300.0f, 1.0f, new Color(1.0f, 1.0f, 1.0f, 1.0f)));
 		//_lights.add(new Light(new Vector2f(200, 200), 200.0f, 1.0f, new Color(0.0f, 0.0f, 1.0f, 0.5f)));
 		
+		_entitiesInRange = new ArrayList<Entity>();
+		_focusEntityChunkPoint = null;
 		resetSearchIndex();
 	}
 
@@ -143,9 +148,9 @@ public class Chunk {
 	}
 	
 	public Vector3f findSpawnPoint(int layer) throws Exception {
-		for (int y = 0; y < Chunk.WIDTH; y++)
+		for (int y = 0; y < Chunk.COLUMNS; y++)
 		{
-			for (int x = 0; x < Chunk.HEIGHT; x++)
+			for (int x = 0; x < Chunk.ROWS; x++)
 			{
 				Vector3f chunkPoint = new Vector3f(x, y, layer);
 				if (!isSpaceOccupied(chunkPoint))
@@ -161,7 +166,7 @@ public class Chunk {
 	{
 		while (true)
 		{
-			Vector3f chunkPoint = new Vector3f(RandomFactory.get().nextInt(0, WIDTH), RandomFactory.get().nextInt(0, HEIGHT), layer);
+			Vector3f chunkPoint = new Vector3f(RandomFactory.get().nextInt(0, COLUMNS), RandomFactory.get().nextInt(0, ROWS), layer);
 			if (!isSpaceOccupied(chunkPoint))
 			{
 				return chunkPoint;
@@ -199,7 +204,7 @@ public class Chunk {
 	}
 	
 	public boolean containsPoint(Vector2f chunkPoint) {
-		return (chunkPoint.x >= 0) && (chunkPoint.x < WIDTH) && (chunkPoint.y >= 0) && (chunkPoint.y < HEIGHT);
+		return (chunkPoint.x >= 0) && (chunkPoint.x < COLUMNS) && (chunkPoint.y >= 0) && (chunkPoint.y < ROWS);
 	}
 	
 	public void render(Graphics g, Camera camera) {
@@ -222,11 +227,12 @@ public class Chunk {
 		Vector2f focusChunkPoint = Camera.translatePositionToPoint(lightPosition);
 		Entity focusEntity = (camera instanceof EntityCamera) ? ((EntityCamera)camera).getFocusEntity() : getEntityAt(focusChunkPoint, Chunk.LAYER_OBJECT);
 		
-		List<Entity> entitiesInRange = getEntitiesInRange(camera);
+		if (!focusEntity.getOccupiedChunkPoint().equals(_focusEntityChunkPoint)) {
+			_entitiesInRange = getEntitiesInRange(camera);
+			_focusEntityChunkPoint = focusEntity.getOccupiedChunkPoint().copy();
+		}
 		
-		//camera.reset(g);
 		_framebuffer.enable();
-		//camera.apply(g);
 		
 		// Clear the display.
 		GL11.glClearDepth(1.1);
@@ -246,30 +252,23 @@ public class Chunk {
 		    GL11.glEnable(GL11.GL_DEPTH_TEST);
 			light.render(g);
 			
-		    // Draw shadow geometry.
-			GL11.glEnable(GL11.GL_BLEND);
-		    GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
-		    drawShadowGeometry(focusEntity, light, entitiesInRange, LAYER_OBJECT);
+			if (ENABLE_SHADOWS) {
+			    // Draw shadow geometry.
+				GL11.glEnable(GL11.GL_BLEND);
+			    GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
+			    drawShadowGeometry(focusEntity, light, _entitiesInRange, LAYER_OBJECT);
+			}
 			
 		    // Draw light color.
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 		    GL11.glEnable(GL11.GL_BLEND);
 		    GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
 		    GL11.glColorMask(true, true, true, false);
-			
-			//render(g, entitiesInRange, LAYER_GROUND);
-			//render(g, entitiesInRange, LAYER_OBJECT);
-			//render(g, entitiesInRange, LAYER_SKY);
-		    
-		    //for (Light light2 : _lights) {
-			//	light2.render(g);
-			//}
+
 		    light.render(g);
 		}
 		
-		//camera.reset(g);
 		_framebuffer.disable();
-		//camera.apply(g);
 		
 		// Render the scene.
 		GL11.glColorMask(true, true, true, true);
@@ -277,32 +276,18 @@ public class Chunk {
 	    GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
-		render(g, entitiesInRange, LAYER_GROUND);
-		render(g, entitiesInRange, LAYER_OBJECT);
-		render(g, entitiesInRange, LAYER_SKY);
+		render(g, _entitiesInRange, LAYER_GROUND);
+		render(g, _entitiesInRange, LAYER_OBJECT);
+		render(g, _entitiesInRange, LAYER_SKY);
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
-		
-		//GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_DST_COLOR);
-		
-		//GL20.glBlendEquationSeparate(GL14.GL_FUNC_ADD, GL14.GL_FUNC_ADD);
-		//GL14.glBlendFuncSeparate(GL11.GL_SRC_COLOR, GL11.GL_DST_COLOR, GL11.GL_ONE, GL11.GL_ZERO);
 		
 		GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_ZERO);
 		
 		camera.reset(g);
 		_framebuffer.render(g);
 		camera.apply(g);
-		
-		//render(g, entitiesInRange, LAYER_GROUND);
-		//render(g, entitiesInRange, LAYER_OBJECT);
-		//render(g, entitiesInRange, LAYER_SKY);
-
-		//_framebuffer.disable();
-		//GL11.glDisable(GL11.GL_DEPTH_TEST);
-		//GL11.glDisable(GL11.GL_BLEND);
-		//_framebuffer.render(g);
 		
 		// Reset OpenGL settings for Slick.
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -325,47 +310,11 @@ public class Chunk {
 	
 	private void render(Graphics g, List<Entity> entities, int layerIndex) {
 		for (Entity entity : entities) {
-			Vector3f position = entity.getPosition();
-			if (position.z == layerIndex) {
+			if (entity.getLayer() == layerIndex) {
 				entity.render(g);
 			}
 		}
 	}
-	
-	/*
-	private float getMaxZ(List<Entity> entities) {
-		float maxZ = 0;
-		for (Entity entity : entities) {
-			float z = entity.getPosition().z;
-			if (z > maxZ) {
-				maxZ = z;
-			}
-		}
-		return maxZ;
-	}
-	
-	private List<Entity> whereChunkPointEquals(List<Entity> entities, Vector2f chunkPoint) {
-		List<Entity> results = new ArrayList<Entity>();
-		for (Entity entity : entities) {
-			Vector2f occupiedPoint = entity.getOccupiedChunkPoint();
-			if (chunkPoint.equals(occupiedPoint)) {
-				results.add(entity);
-			}
-		}
-		return results;
-	}
-	*/
-	
-	/*
-	private Entity getPlayer() {
-		for (Entity entity : getEntities()) {
-			if (entity.findComponent(asciiWorld.entities.PlayerControlComponent.class) != null) {
-				return entity;
-			}
-		}
-		return null;
-	}
-	*/
 	
 	private List<Entity> getEntitiesInRange(Camera camera) {
 		float rangeOfVision = camera.getRangeOfVision();
@@ -401,6 +350,9 @@ public class Chunk {
 				if ((groundEntity != null) && !entities.contains(groundEntity)) {
 					entities.add(groundEntity);
 				}
+				if ((skyEntity != null) && !entities.contains(skyEntity)) {
+					entities.add(skyEntity);
+				}
 				if (objectEntity != null) {
 					if (!entities.contains(objectEntity)) {
 						entities.add(objectEntity);
@@ -408,9 +360,6 @@ public class Chunk {
 					if (objectEntity != focusEntity) { // the entity at the camera focus cannot obstruct it's own vision
 						break; // break on obstruction of vision
 					}
-				}
-				if ((skyEntity != null) && !entities.contains(skyEntity)) {
-					entities.add(skyEntity);
 				}
 			}
 		}
@@ -428,6 +377,6 @@ public class Chunk {
 	}
 	
 	private void resetSearchIndex() {
-		_searchIndex = new Entity[LAYERS_COUNT][HEIGHT][WIDTH];
+		_searchIndex = new Entity[LAYERS_COUNT][ROWS][COLUMNS];
 	}
 }

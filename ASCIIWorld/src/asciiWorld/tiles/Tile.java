@@ -167,23 +167,33 @@ public class Tile {
 			_lastUpdateTime = _currentTime;
 		}
 	}
-	
+
 	public void render(Graphics g, Vector2f position) {
+		render(g, position.x, position.y);
+	}
+
+	public void render(Graphics g, float x, float y) {
 		Vector2f tileSize = getTileSet().getSize();
 		g.pushTransform();
 		
-		Vector2f scale = getScale();
-		g.translate(tileSize.x / 2.0f, tileSize.x / 2.0f);
-		g.scale(scale.x, scale.y);
-		g.rotate(tileSize.x / 2.0f, tileSize.y / 2.0f, getRotation());
-		g.translate(-tileSize.x / 2.0f, -tileSize.x / 2.0f);
-		g.translate(position.x, position.y);
+		float centerX = tileSize.x / 2.0f;
+		float centerY = tileSize.y / 2.0f;
+		
+		g.translate(centerX, centerY);
+		if (getEffect() != TransformEffect.None) {
+			Vector2f scale = getScale();
+			g.scale(scale.x, scale.y);
+		}
+		g.rotate(centerX, centerY, getRotation());
+		
+		g.translate(x - centerX, y - centerY);
+		
 		getCurrentFrame().render(getTileSet());
 		g.popTransform();
 	}
 	
 	public void render(Graphics g) {
-		render(g, new Vector2f(0, 0));
+		render(g, 0, 0);
 	}
 	
 	public Tile clone() {

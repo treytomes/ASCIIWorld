@@ -59,8 +59,8 @@ public class DungeonChunkGenerator implements IChunkGenerator {
 
 	private Chunk generateRockyChunk(Chunk chunk) {
 		// Initialize the tile array to rock.
-		for (int row = 0; row < Chunk.HEIGHT; row++) {
-			for (int column = 0; column < Chunk.WIDTH; column++) {
+		for (int row = 0; row < Chunk.ROWS; row++) {
+			for (int column = 0; column < Chunk.COLUMNS; column++) {
                 EntityFactory.get().createEntity(TILETYPE_WALL, chunk, column, row, Chunk.LAYER_OBJECT);
                 EntityFactory.get().createEntity(TILETYPE_FLOOR, chunk, column, row, Chunk.LAYER_GROUND);
 			}
@@ -215,8 +215,8 @@ public class DungeonChunkGenerator implements IChunkGenerator {
 	
 	private IDungeonGenerator createDungeonGenerator(IRandom random) {
 		DungeonGenerator generator = new DungeonGenerator(random, createRoomGenerator(random));
-		generator.setRows((Chunk.HEIGHT - 1) / 2);
-		generator.setColumns((Chunk.WIDTH - 1) / 2);
+		generator.setRows((Chunk.ROWS - 1) / 2);
+		generator.setColumns((Chunk.COLUMNS - 1) / 2);
 		generator.setChangeDirectionModifier(random.nextDouble());
 		generator.setSparsenessFactor(random.nextDouble());
 		generator.setDeadEndRemovalModifier(random.nextDouble());

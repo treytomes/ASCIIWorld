@@ -50,9 +50,9 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
     	
 		// This will generate weird grainy landscapes with random seeds > 25000.  Don't know why.
 		ITerrainGenerator generator = new PerlinTerrainGenerator(PERSISTENCE, FREQUENCY, AMPLITUDE, OCTAVES, RandomFactory.get().nextInt(0, 25000));
-		double[][] terrain = generator.generate(Chunk.WIDTH, Chunk.HEIGHT);
-		for (int y = 0; y < Chunk.HEIGHT; y++) {
-			for (int x = 0; x < Chunk.WIDTH; x++) {
+		double[][] terrain = generator.generate(Chunk.COLUMNS, Chunk.ROWS);
+		for (int y = 0; y < Chunk.ROWS; y++) {
+			for (int x = 0; x < Chunk.COLUMNS; x++) {
 				int value = (int)terrain[y][x];
 				if (value > 1) {
 					EntityFactory.get().createDirtEntity(chunk, x, y);
@@ -79,12 +79,12 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
     	_logStream.print("Locating water...");
     	
     	Vector2f point = new Vector2f(
-    			RandomFactory.get().nextInt(0, Chunk.WIDTH),
-    			RandomFactory.get().nextInt(0, Chunk.HEIGHT));
+    			RandomFactory.get().nextInt(0, Chunk.COLUMNS),
+    			RandomFactory.get().nextInt(0, Chunk.ROWS));
     	int attempt = 0;
     	while (!chunk.getEntityAt(point, Chunk.LAYER_GROUND).getName().equals("Water")) {
-        	point.x = RandomFactory.get().nextInt(0, Chunk.WIDTH);
-        	point.y = RandomFactory.get().nextInt(0, Chunk.HEIGHT);
+        	point.x = RandomFactory.get().nextInt(0, Chunk.COLUMNS);
+        	point.y = RandomFactory.get().nextInt(0, Chunk.ROWS);
         	
         	_logStream.print(".");
         	
@@ -246,8 +246,8 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 				return null;
 			}
 
-			int x = RandomFactory.get().nextInt(0, Chunk.WIDTH);
-			int y = RandomFactory.get().nextInt(0, Chunk.HEIGHT);
+			int x = RandomFactory.get().nextInt(0, Chunk.COLUMNS);
+			int y = RandomFactory.get().nextInt(0, Chunk.ROWS);
 			
 			Entity entity = chunk.getEntityAt(new Vector2f(x, y), Chunk.LAYER_OBJECT);
 			if (entity == null) {

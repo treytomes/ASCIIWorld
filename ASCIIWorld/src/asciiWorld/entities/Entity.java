@@ -641,7 +641,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 			return;
 		}*/
 		
-		getTile().render(g, getPosition().toVector2f());
+		_tile.render(g, _position.x, _position.y);
 		
 		for (TileSwingAnimation animation : _animations) {
 			animation.render(g);
@@ -691,6 +691,9 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 				if (!occupyingEntity.getName().equals(getName())) {
 					break;
 				}
+				if (occupyingEntity.getName().equals("Player")) { // players don't cast shadows
+					break;
+				}
 				/*if (chunkPoint.equals(lightPoint)) {
 					break;
 				}*/
@@ -700,12 +703,15 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 			chunkPoint = getOccupiedChunkPoint();
 			chunkPoint.x++;
-			while (chunkPoint.x < Chunk.WIDTH) {
+			while (chunkPoint.x < Chunk.COLUMNS) {
 				Entity occupyingEntity = getChunk().getEntityAt(chunkPoint, layer);
 				if (occupyingEntity == null) {
 					break;
 				}
 				if (!occupyingEntity.getName().equals(getName())) {
+					break;
+				}
+				if (occupyingEntity.getName().equals("Player")) { // players don't cast shadows
 					break;
 				}
 				maxX += size.x;
@@ -722,15 +728,21 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 				if (!occupyingEntity.getName().equals(getName())) {
 					break;
 				}
+				if (occupyingEntity.getName().equals("Player")) { // players don't cast shadows
+					break;
+				}
 				minY -= size.y;
 				chunkPoint.y--;
 			}
 	
 			chunkPoint = getOccupiedChunkPoint();
 			chunkPoint.y++;
-			while (chunkPoint.y < Chunk.HEIGHT) {
+			while (chunkPoint.y < Chunk.ROWS) {
 				Entity occupyingEntity = getChunk().getEntityAt(chunkPoint, layer);
 				if (occupyingEntity == null) {
+					break;
+				}
+				if (occupyingEntity.getName().equals("Player")) { // players don't cast shadows
 					break;
 				}
 				maxY += size.y;
@@ -738,13 +750,12 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 			}
 		}
 		
-		Vector2f[] points = new Vector2f[4];
-		points[0] = new Vector2f(minX, minY);
-		points[1] = new Vector2f(maxX, minY);
-		points[2] = new Vector2f(maxX, maxY);
-		points[3] = new Vector2f(minX, maxY);
-		
-		return points;
+		return new Vector2f[] {
+			new Vector2f(minX, minY),
+			new Vector2f(maxX, minY),
+			new Vector2f(maxX, maxY),
+			new Vector2f(minX, maxY)
+		};
 	}
 	
 	/*

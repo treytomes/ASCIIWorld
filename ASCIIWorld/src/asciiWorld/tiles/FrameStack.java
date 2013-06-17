@@ -29,9 +29,12 @@ public class FrameStack implements IRenderable {
 	}
 	
 	public void render(TileSet tiles) {
-		for (int index = 0; index < _frames.size(); index++) {
-			_frames.get(index).render(tiles);
+		for (IRenderable frame : _frames) {
+			frame.render(tiles);
 		}
+		/*for (int index = 0; index < _frames.size(); index++) {
+			_frames.get(index).render(tiles);
+		}*/
 	}
 	
 	private void addFrame(IRenderable frame) {

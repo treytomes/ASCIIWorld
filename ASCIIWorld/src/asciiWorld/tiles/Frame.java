@@ -79,7 +79,7 @@ public class Frame implements ITile, IRenderable {
 		}
 		
 		if (_foregroundColor.a > 0) {
-			tiles.draw(getTileIndex(), _foregroundColor);
+			tiles.draw(_tileIndex, _foregroundColor);
 		}
 	}
 	

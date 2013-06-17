@@ -135,53 +135,17 @@ public class TileSet implements IHasSize {
 		reset();
 	}
 	
-	public void draw(int tileIndex, Color color) { //, Vector2f position, Color color, float rotation, TransformEffect transform) {
+	public void draw(int tileIndex, Color color) {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		color.bind();
 		GL11.glCallList(_displayLists[tileIndex]);
-		
-		/*_sourceImage.setRotation(rotation);
-
-		Rectangle destinationRectangle = getDestinationRectangle(position);
-		Rectangle sourceRectangle = getSourceRectangle(tileIndex);
-		
-		Boolean hFlip = (transform == TransformEffect.FlipHorizontally) || (transform == TransformEffect.FlipBoth);
-		Boolean vFlip = (transform == TransformEffect.FlipVertically) || (transform == TransformEffect.FlipBoth);
-		
-		float destX1 = destinationRectangle.getMinX();
-		float destX2 = destinationRectangle.getMaxX();
-		float destY1 = destinationRectangle.getMinY();
-		float destY2 = destinationRectangle.getMaxY();
-		
-		float srcX1 = hFlip ? sourceRectangle.getMaxX() : sourceRectangle.getMinX();
-		float srcX2 = hFlip ? (sourceRectangle.getMinX()) : (sourceRectangle.getMaxX());
-		float srcY1 = vFlip ? sourceRectangle.getMaxY() : sourceRectangle.getMinY();
-		float srcY2 = vFlip ? (sourceRectangle.getMinY()) : (sourceRectangle.getMaxY());
-		
-		_sourceImage.draw(destX1, destY1, destX2, destY2, srcX1, srcY1, srcX2, srcY2, color);
-
-		_sourceImage.setRotation(0);*/
 	}
-	
-	/*public void draw(int tileIndex, Vector2f position, Color color, float rotation) {
-		draw(tileIndex, position, color, rotation, TransformEffect.None);
-	}
-	
-	/*public void draw(int tileIndex, Vector2f position, Color color) {
-		draw(tileIndex, position, color, 0.0f);
-	}
-	
-	public void draw(int tileIndex, Vector2f position) {
-		draw(tileIndex, position, Color.white);
-	}*/
 	
 	public void drawString(String text, Vector2f position, Color color) {
 		GL11.glPushMatrix();
-		//Vector2f copy = position.copy();
 		for (int index = 0; index < text.length(); index++) {
 			draw((int)text.charAt(index), color);
 			GL11.glTranslated(_size.x, 0, 0);
-			//copy.x += _size.x;
 		}
 		GL11.glPopMatrix();
 	}
