@@ -15,7 +15,6 @@
       </Properties>
     </Component>-->
     
-  	<Component name="CanBePickedUp" />
   	<Component name="Placeable" />
   </Components>
   
