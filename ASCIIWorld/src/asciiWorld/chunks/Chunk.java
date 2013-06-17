@@ -25,11 +25,12 @@ public class Chunk {
 	public static final int LAYER_SKY = 2;
 	public static final int LAYERS_COUNT = 3;
 	
-	public static final int COLUMNS = 128;
-	public static final int ROWS = 128;
+	public static final int COLUMNS = 64;
+	public static final int ROWS = 64;
 
 	private static final boolean ENABLE_SHADOWS = false;
 	private static final Color AMBIENT_LIGHT_COLOR = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+	private static final double RAD = Math.PI / 180;
 
 	private List<Entity> _entities;
 	private List<Light> _lights;
@@ -228,7 +229,7 @@ public class Chunk {
 		Entity focusEntity = (camera instanceof EntityCamera) ? ((EntityCamera)camera).getFocusEntity() : getEntityAt(focusChunkPoint, Chunk.LAYER_OBJECT);
 		
 		if (!focusEntity.getOccupiedChunkPoint().equals(_focusEntityChunkPoint)) {
-			_entitiesInRange = getEntitiesInRange(camera);
+			_entitiesInRange = getEntitiesInRange(focusEntity);
 			_focusEntityChunkPoint = focusEntity.getOccupiedChunkPoint().copy();
 		}
 		
@@ -316,28 +317,17 @@ public class Chunk {
 		}
 	}
 	
-	private List<Entity> getEntitiesInRange(Camera camera) {
-		float rangeOfVision = camera.getRangeOfVision();
-
-		Vector2f focusPosition = camera.getPosition().toVector2f();
-		Vector2f tileSize = getEntities().get(0).getTile().getTileSet().getSize();
-		focusPosition.x += tileSize.x / 2.0f;
-		focusPosition.y += tileSize.y / 2.0f;
-		
-		Vector2f focusChunkPoint = Camera.translatePositionToPoint(focusPosition);
-		//focusChunkPoint.x += 0.5f;
-		//focusChunkPoint.y += 0.5f;
-
-		Entity focusEntity = (camera instanceof EntityCamera) ? ((EntityCamera)camera).getFocusEntity() : getEntityAt(focusChunkPoint, Chunk.LAYER_OBJECT);
-		
+	private List<Entity> getEntitiesInRange(Entity focusEntity) {
+		float rangeOfVision = focusEntity.getRangeOfVision();
+		Vector2f focusChunkPoint = focusEntity.getOccupiedChunkPoint();
 		List<Entity> entities = new ArrayList<Entity>();
 		
-		for (float angle = 0; angle < 360; angle++) {
+		for (float angle = 0; angle <= 360; angle++) {
 			for (float distance = 0; distance <= rangeOfVision; distance++) {
 				Vector2f chunkPoint = new Vector2f(
-						(float)Math.floor(focusChunkPoint.x + distance * Math.cos(angle * Math.PI / 180)),
-						(float)Math.floor(focusChunkPoint.y + distance * Math.sin(angle * Math.PI / 180))
-						);
+						(float)Math.floor(focusChunkPoint.x + distance * Math.cos(angle * RAD)),
+						(float)Math.floor(focusChunkPoint.y + distance * Math.sin(angle * RAD))
+					);
 				
 				if (!containsPoint(chunkPoint)) {
 					break;
