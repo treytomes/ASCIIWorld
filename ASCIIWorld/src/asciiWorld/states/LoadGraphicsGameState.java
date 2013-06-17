@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.World;
 import asciiWorld.chunks.Chunk;
+import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityCamera;
 import asciiWorld.entities.EntityFactory;
 import asciiWorld.entities.HotKeyManager;
@@ -29,13 +30,14 @@ public class LoadGraphicsGameState extends GameState {
 	private static final String DEFAULT_PLAYER_RESOURCE = "player";
 	
 	private World _world;
+	private Chunk _chunk;
 	private EntityCamera _camera;
 	private PlayerControlComponent _playerControl;
 	private Boolean _isComplete;
 	
 	public LoadGraphicsGameState(Chunk chunk) {
 		_world = new World();
-		_world.setChunk(chunk);
+		_chunk = chunk;
 		_isComplete = false;
 	}
 	
@@ -50,7 +52,6 @@ public class LoadGraphicsGameState extends GameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		createPlayer(container);
-		spawnPlayer();
 		generateUI(container, game, _playerControl.getHotKeyManager());
 		generateGreeting();
 		_isComplete = true;
@@ -89,7 +90,10 @@ public class LoadGraphicsGameState extends GameState {
 	
 	private void createPlayer(GameContainer container) {
 		try {
-			_world.setPlayer(EntityFactory.get().getResource(DEFAULT_PLAYER_RESOURCE));
+			Entity player = EntityFactory.get().getResource(DEFAULT_PLAYER_RESOURCE);
+			player.moveTo(_chunk.findRandomSpawnPoint(Chunk.LAYER_OBJECT));
+			_chunk.addEntity(player);
+			_world.setPlayer(player);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -97,21 +101,6 @@ public class LoadGraphicsGameState extends GameState {
 		createCamera(container);
 		_playerControl = new PlayerControlComponent(_world.getPlayer(), _camera);
 		_world.getPlayer().getComponents().add(_playerControl);
-	}
-	
-	private Vector3f getSpawnPoint() {
-		try {
-			return _world.getChunk().findRandomSpawnPoint(Chunk.LAYER_OBJECT);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Unable to find a spawn point for the player.");
-			return new Vector3f();
-		}
-	}
-	
-	private void spawnPlayer() {
-		_world.getPlayer().moveTo(getSpawnPoint());
-		_world.getChunk().addEntity(_world.getPlayer());
 	}
 	
 	private void createCamera(final GameContainer container) {

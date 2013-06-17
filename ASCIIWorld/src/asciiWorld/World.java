@@ -12,7 +12,6 @@ public class World {
 	
 	private DateTime _worldTime;
 	private Entity _player;
-	private Chunk _chunk;
 
 	public World() {
 		_worldTime = new DateTime(12, 0, 0);
@@ -28,28 +27,24 @@ public class World {
 	
 	public void setPlayer(Entity value) {
 		_player = value;
+		_player.getChunk().updateAmbientLighting(_worldTime);
 	}
 	
 	public Chunk getChunk() {
-		return _chunk;
-	}
-	
-	public void setChunk(Chunk value) {
-		_chunk = value;
-		_chunk.updateAmbientLighting(_worldTime);
+		return _player.getChunk();
 	}
 	
 	public void leave() {
 		// Destroy the chunk.
-		_chunk.clearEntities();
+		_player.getChunk().clearEntities();
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		_worldTime.update(delta / 14); //
-		_chunk.update(container, game, delta, _worldTime);
+		_player.getChunk().update(container, game, delta, _worldTime);
 	}
 	
 	public void render(Graphics g, EntityCamera camera) {
-		_chunk.render(g, camera);
+		_player.getChunk().render(g, camera);
 	}
 }
