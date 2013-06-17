@@ -6,7 +6,6 @@ import org.newdawn.slick.IHasBounds;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.Camera;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityCamera;
@@ -30,7 +29,7 @@ public class LoadGraphicsGameState extends GameState {
 	private static final String DEFAULT_PLAYER_RESOURCE = "player";
 	
 	private Entity _player;
-	private Camera _camera;
+	private EntityCamera _camera;
 	private Chunk _chunk;
 	private PlayerControlComponent _playerControl;
 	private Boolean _isComplete;
@@ -48,7 +47,7 @@ public class LoadGraphicsGameState extends GameState {
 		return _player;
 	}
 	
-	public Camera getCamera() {
+	public EntityCamera getCamera() {
 		return _camera;
 	}
 	

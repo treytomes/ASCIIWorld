@@ -1,15 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity tile="player" name="Player">
   <Components>
-    <!--
     <Component name="LightSource">
       <Properties>
-        <Property name="Color" value="Goldenrod" />
-        <Property name="Range" value="64" />
-        <Property name="Flicker" value="true" />
+        <Property name="Color" value="FFFFFFFF" />
+        <Property name="Range" value="32" />
       </Properties>
     </Component>
-    -->
   </Components>
   
   <Properties>
@@ -22,7 +19,10 @@
   
   <Inventory>
     <Item name="woodenSword" />
-    <Item name="tree" />
+    <Item name="torch" />
+    <Item name="torch" />
+    <Item name="torch" />
+    <Item name="torch" />
     <Item name="tree" />
     <Item name="tree" />
     <Item name="tree" />

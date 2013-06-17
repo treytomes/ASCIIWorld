@@ -23,7 +23,7 @@ public class Light {
 	private float _sourceRadius;
 	
 	public Light(Vector2f position, float radius, float depth, Color color) {
-		_position = position;
+		setPosition(position);
 		_radius = radius;
 		//_depth = depth;
 		_color = color;
@@ -51,6 +51,14 @@ public class Light {
 		_position = value;
 	}
 	
+	public Color getColor() {
+		return _color;
+	}
+	
+	public void setColor(Color value) {
+		_color = value;
+	}
+	
 	public float getIntensity() {
 		return _color.a;
 	}
@@ -59,9 +67,17 @@ public class Light {
 		_color.a = value;
 	}
 	
+	public float getRadius() {
+		return _radius;
+	}
+	
+	public void setRadius(float value) {
+		_radius = value;
+	}
+	
 	public Vector2f outerVector(Vector2f edge, int step) {
-		boolean useNegative = (_position.x < edge.x);
-		Vector2f perpVec = new Vector2f(_position.x - edge.x, _position.y - edge.y).normalise();
+		boolean useNegative = (getPosition().x < edge.x);
+		Vector2f perpVec = new Vector2f(getPosition().x - edge.x, getPosition().y - edge.y).normalise();
 		
 		if (step == 1) {
 			if (useNegative) {
@@ -77,12 +93,12 @@ public class Light {
 			}
 		}
 		
-		return new Vector2f(edge.x - (_position.x + perpVec.x), edge.y - (_position.y + perpVec.y)).normalise().scale(_radius * 10.0f);
+		return new Vector2f(edge.x - (getPosition().x + perpVec.x), edge.y - (getPosition().y + perpVec.y)).normalise().scale(_radius * 10.0f);
 	}
 	
 	public Vector2f innerVector(Vector2f edge, int step) {
-		boolean useNegative = (_position.x < edge.x);
-		Vector2f perpVec = new Vector2f(_position.x - edge.x, _position.y - edge.y).normalise();
+		boolean useNegative = (getPosition().x < edge.x);
+		Vector2f perpVec = new Vector2f(getPosition().x - edge.x, getPosition().y - edge.y).normalise();
 		
 		if (step == 1) {
 			if (useNegative) {
@@ -98,7 +114,7 @@ public class Light {
 			}
 		}
 		
-		return new Vector2f(edge.x - (_position.x + perpVec.x), edge.y - (_position.y + perpVec.y)).normalise().scale(_radius * 10.0f);
+		return new Vector2f(edge.x - (getPosition().x + perpVec.x), edge.y - (getPosition().y + perpVec.y)).normalise().scale(_radius * 10.0f);
 	}
 	
 	/**
@@ -107,7 +123,7 @@ public class Light {
 	 */
 	private void renderSource(Graphics g) {
 		g.setColor(_color);
-		g.fillOval(_position.x - _sourceRadius, _position.y - _sourceRadius, _sourceRadius * 2, _sourceRadius * 2);
+		g.fillOval(getPosition().x - _sourceRadius, getPosition().y - _sourceRadius, _sourceRadius * 2, _sourceRadius * 2);
 	}
 	
 	public void render(Graphics g) {
@@ -116,7 +132,7 @@ public class Light {
 		shader.setState(_color);
 
 		g.pushTransform();
-		g.translate(_position.x, _position.y);
+		g.translate(getPosition().x, getPosition().y);
 		g.scale(_radius, _radius);
 		g.fillRect(-1, -1, 2, 2);
 		g.popTransform();

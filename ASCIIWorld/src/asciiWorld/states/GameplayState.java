@@ -4,17 +4,17 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.Camera;
 import asciiWorld.chunks.Chunk;
+import asciiWorld.entities.EntityCamera;
 import asciiWorld.stateManager.GameState;
 import asciiWorld.ui.RootVisualPanel;
 
 public class GameplayState extends GameState {
 	
 	private Chunk _chunk;
-	private Camera _camera;
+	private EntityCamera _camera;
 	
-	public GameplayState(Chunk chunk, Camera camera) {
+	public GameplayState(Chunk chunk, EntityCamera camera) {
 		_chunk = chunk;
 		_camera = camera;
 	}

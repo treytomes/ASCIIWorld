@@ -293,6 +293,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		return _position;
 	}
 	
+	public Vector2f getCenterPosition() {
+		return new Vector2f(_position.x, _position.y).add(_tile.getCenter());
+	}
+	
 	public Vector2f getOccupiedChunkPoint() {
 		return Camera.translatePositionToPoint(_moveToPosition);
 	}

@@ -21,6 +21,7 @@ public class Tile {
 	private float _friction;
 	private List<TileTransform> _transformations = null;
 	private TileSet _tileSet;
+	private Vector2f _tileCenter;
 	
 	private int _currentTime;
 	private int _lastUpdateTime;
@@ -32,6 +33,7 @@ public class Tile {
 		_lastUpdateTime = 0;
 		_tileSet = null;
 		_tileSetName = null;
+		_tileCenter = null;
 		_transformations = new ArrayList<TileTransform>();
 	}
 	
@@ -47,11 +49,18 @@ public class Tile {
 		_tileSetName = clone._tileSetName;
 	}
 	
+	public Vector2f getCenter() {
+		if (_tileCenter == null) {
+			getTileSet();
+		}
+		return _tileCenter;
+	}
+	
 	public TileSet getTileSet() {
 		if (_tileSet == null) {
 			if (_tileSetName != null) {
 				try {
-					_tileSet = TileSetFactory.get().getResource(_tileSetName);
+					setTileSet(TileSetFactory.get().getResource(_tileSetName));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -62,6 +71,10 @@ public class Tile {
 	
 	public void setTileSet(TileSet value) {
 		_tileSet = value;
+
+		Vector2f tileSize = getTileSet().getSize();
+		_tileCenter = new Vector2f(tileSize.x / 2.0f, tileSize.x / 2.0f);
+
 		if (_tileSet != null) {
 			_tileSetName = _tileSet.getName();
 		} else {
@@ -173,20 +186,20 @@ public class Tile {
 	}
 
 	public void render(Graphics g, float x, float y) {
-		Vector2f tileSize = getTileSet().getSize();
+		if (_tileCenter == null) {
+			getTileSet();
+		}
+		
 		g.pushTransform();
 		
-		float centerX = tileSize.x / 2.0f;
-		float centerY = tileSize.y / 2.0f;
-		
-		g.translate(centerX, centerY);
+		g.translate(_tileCenter.x, _tileCenter.y);
 		if (getEffect() != TransformEffect.None) {
 			Vector2f scale = getScale();
 			g.scale(scale.x, scale.y);
 		}
-		g.rotate(centerX, centerY, getRotation());
+		g.rotate(_tileCenter.x, _tileCenter.y, getRotation());
 		
-		g.translate(x - centerX, y - centerY);
+		g.translate(x - _tileCenter.x, y - _tileCenter.y);
 		
 		getCurrentFrame().render(getTileSet());
 		g.popTransform();

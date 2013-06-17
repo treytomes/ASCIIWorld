@@ -38,7 +38,7 @@ public class Chunk {
 	private FrameBufferObject _framebuffer;
 	
 	private Entity[][][] _searchIndex;
-	private Vector2f _focusEntityChunkPoint;
+	private Vector3f _cameraPosition;
 	private List<Entity> _entitiesInRange;
 	
 	public Chunk() {
@@ -47,12 +47,14 @@ public class Chunk {
 		_ambientLightColor = AMBIENT_LIGHT_COLOR;
 		
 		_framebuffer = null;
-		_lights.add(new Light(Vector2f.zero(), 300.0f, 1.0f, new Color(1.0f, 1.0f, 1.0f, 1.0f)));
-		//_lights.add(new Light(new Vector2f(200, 200), 200.0f, 1.0f, new Color(0.0f, 0.0f, 1.0f, 0.5f)));
 		
 		_entitiesInRange = new ArrayList<Entity>();
-		_focusEntityChunkPoint = null;
+		_cameraPosition = null;
 		resetSearchIndex();
+	}
+	
+	public List<Light> getLights() {
+		return _lights;
 	}
 
 	public void clearEntities() {
@@ -111,6 +113,8 @@ public class Chunk {
 			entity.setChunk(this);
 			
 			_searchIndex[entity.getLayer()][(int)entity.getOccupiedChunkPoint().y][(int)entity.getOccupiedChunkPoint().x] = entity;
+			
+			cacheEntitiesInRange();
 		}
 	}
 	
@@ -120,6 +124,8 @@ public class Chunk {
 			entity.setChunk(null);
 			
 			_searchIndex[entity.getLayer()][(int)entity.getOccupiedChunkPoint().y][(int)entity.getOccupiedChunkPoint().x] = null;
+			
+			cacheEntitiesInRange();
 		}
 	}
 
@@ -208,7 +214,7 @@ public class Chunk {
 		return (chunkPoint.x >= 0) && (chunkPoint.x < COLUMNS) && (chunkPoint.y >= 0) && (chunkPoint.y < ROWS);
 	}
 	
-	public void render(Graphics g, Camera camera) {
+	public void render(Graphics g, EntityCamera camera) {
 		if (_framebuffer == null) {
 			try {
 				_framebuffer = new FrameBufferObject((int)camera.getViewport().getBounds().getWidth(), (int)camera.getViewport().getBounds().getHeight());
@@ -217,20 +223,11 @@ public class Chunk {
 				e.printStackTrace();
 			}
 		}
-
-		// Position our light.
-		Vector2f lightPosition = camera.getPosition().toVector2f();
-		Vector2f tileSize = getEntities().get(0).getTile().getTileSet().getSize();
-		lightPosition.x += tileSize.x / 2.0f;
-		lightPosition.y += tileSize.y / 2.0f;
-		_lights.get(0).setPosition(lightPosition);
 		
-		Vector2f focusChunkPoint = Camera.translatePositionToPoint(lightPosition);
-		Entity focusEntity = (camera instanceof EntityCamera) ? ((EntityCamera)camera).getFocusEntity() : getEntityAt(focusChunkPoint, Chunk.LAYER_OBJECT);
-		
-		if (!focusEntity.getOccupiedChunkPoint().equals(_focusEntityChunkPoint)) {
+		Entity focusEntity = camera.getFocusEntity();
+		if (!camera.getPosition().equals(_cameraPosition)) {
 			_entitiesInRange = getEntitiesInRange(focusEntity);
-			_focusEntityChunkPoint = focusEntity.getOccupiedChunkPoint().copy();
+			_cameraPosition = camera.getPosition().clone();
 		}
 		
 		_framebuffer.enable();
@@ -315,6 +312,11 @@ public class Chunk {
 				entity.render(g);
 			}
 		}
+	}
+	
+	private void cacheEntitiesInRange() {
+		// This will trigger the render method to cache the entities in range.
+		_cameraPosition = null;
 	}
 	
 	private List<Entity> getEntitiesInRange(Entity focusEntity) {

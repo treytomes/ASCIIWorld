@@ -12,6 +12,8 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.newdawn.slick.Color;
 
+import asciiWorld.Convert;
+
 public class Frame implements ITile, IRenderable {
 	
 	public static final int TILEINDEX_SOLID = 219;
@@ -105,8 +107,8 @@ public class Frame implements ITile, IRenderable {
 	}
 	
 	public static Frame fromXml(Element elem) {
-		Color backgroundColor = stringToColor(elem.getAttribute("backgroundColor").getValue());
-		Color foregroundColor = stringToColor(elem.getAttribute("foregroundColor").getValue());
+		Color backgroundColor = Convert.stringToColor(elem.getAttribute("backgroundColor").getValue());
+		Color foregroundColor = Convert.stringToColor(elem.getAttribute("foregroundColor").getValue());
 		
 		String tileIndexText = elem.getAttribute("tileIndex").getValue();
 		if ((tileIndexText.charAt(0) == '\'') && (tileIndexText.length() == 3) && (tileIndexText.charAt(2) == '\'')) {
@@ -132,25 +134,9 @@ public class Frame implements ITile, IRenderable {
 	
 	public Element toXml() {
 		Element elem = new Element("Frame");
-		elem.setAttribute("backgroundColor", colorToString(getBackgroundColor()));
-		elem.setAttribute("foregroundColor", colorToString(getForegroundColor()));
+		elem.setAttribute("backgroundColor", Convert.colorToString(getBackgroundColor()));
+		elem.setAttribute("foregroundColor", Convert.colorToString(getForegroundColor()));
 		elem.setAttribute("tileIndex", Integer.toString(getTileIndex()));
 		return elem;
-	}
-	
-	private static String colorToString(final Color color) {
-		return String.format("%s%s%s%s",
-				Integer.toHexString(color.getAlpha()),
-				Integer.toHexString(color.getRed()),
-				Integer.toHexString(color.getGreen()),
-				Integer.toHexString(color.getBlue()));
-	}
-	
-	private static Color stringToColor(final String text) {
-		return new Color(
-				Integer.parseInt(text.substring(2, 4), 16),
-				Integer.parseInt(text.substring(4, 6), 16),
-				Integer.parseInt(text.substring(6, 8), 16),
-				Integer.parseInt(text.substring(0, 2), 16));
 	}
 }
