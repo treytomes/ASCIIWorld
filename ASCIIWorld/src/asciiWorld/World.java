@@ -27,7 +27,7 @@ public class World {
 	
 	public void setPlayer(Entity value) {
 		_player = value;
-		_player.getChunk().updateAmbientLighting(_worldTime);
+		_player.getChunk().setWorld(this);
 	}
 	
 	public Chunk getChunk() {
@@ -40,8 +40,8 @@ public class World {
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int delta) {
-		_worldTime.update(delta / 14); //
-		_player.getChunk().update(container, game, delta, _worldTime);
+		_worldTime.update(delta / 14);
+		_player.getChunk().update(container, game, delta);
 	}
 	
 	public void render(Graphics g, EntityCamera camera) {

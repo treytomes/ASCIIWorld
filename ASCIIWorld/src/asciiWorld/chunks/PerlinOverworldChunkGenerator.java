@@ -41,6 +41,8 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		chunk = generateTrees(chunk);
 		chunk = generateCaveEntrances(chunk);
 		
+		chunk.getComponents().add(new DayNightCycleComponent(chunk));
+		
 		return chunk;
 	}
 

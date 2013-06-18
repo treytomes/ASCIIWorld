@@ -11,12 +11,11 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Camera;
-import asciiWorld.DateTime;
+import asciiWorld.World;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityCamera;
 import asciiWorld.lighting.FrameBufferObject;
 import asciiWorld.lighting.Light;
-import asciiWorld.math.MathHelper;
 import asciiWorld.math.RandomFactory;
 import asciiWorld.math.Vector3f;
 
@@ -34,6 +33,8 @@ public class Chunk {
 	private static final double RAD = Math.PI / 180;
 
 	private List<Entity> _entities;
+	private List<ChunkComponent> _components;
+	
 	private List<Light> _lights;
 	private Color _ambientLightColor;
 	private FrameBufferObject _framebuffer;
@@ -42,10 +43,15 @@ public class Chunk {
 	private Vector3f _cameraPosition;
 	private List<Entity> _entitiesInRange;
 	
+	private World _world;
+	
 	public Chunk() {
+		_world = null;
 		_entities = new ArrayList<Entity>();
-		_lights = new ArrayList<Light>();
+		_components = new ArrayList<ChunkComponent>();
 		
+		_ambientLightColor = Color.white;
+		_lights = new ArrayList<Light>();
 		_framebuffer = null;
 		
 		_entitiesInRange = new ArrayList<Entity>();
@@ -53,8 +59,24 @@ public class Chunk {
 		resetSearchIndex();
 	}
 	
+	public World getWorld() {
+		return _world;
+	}
+	
+	public void setWorld(World value) {
+		_world = value;
+	}
+	
+	public void setAmbientLightColor(Color value) {
+		_ambientLightColor = value;
+	}
+
 	public List<Light> getLights() {
 		return _lights;
+	}
+	
+	public List<ChunkComponent> getComponents() {
+		return _components;
 	}
 
 	public void clearEntities() {
@@ -195,7 +217,11 @@ public class Chunk {
 		}
 	}
 	
-	public void update(GameContainer container, StateBasedGame game, int deltaTime, DateTime worldTime) {
+	public void update(GameContainer container, StateBasedGame game, int deltaTime) {
+		for (ChunkComponent component : _components) {
+			component.update(deltaTime);
+		}
+		
 		List<Entity> entities = getEntities();
 		
 		for (int index = 0; index < entities.size(); index++) {
@@ -207,14 +233,6 @@ public class Chunk {
 		}
 		
 		updateSearchIndex();
-		updateAmbientLighting(worldTime);
-	}
-	
-	public void updateAmbientLighting(DateTime worldTime) {
-		float hour = (float)((worldTime.getHour() - 6) + (float)worldTime.getMinute() / 60.0f);
-		float hourRatio = hour / 24.0f;
-		float ambientLightWeight = (float)(Math.sin(2 * Math.PI * hourRatio) + 1.0f) / 2.0f;
-		_ambientLightColor = MathHelper.lerp(Color.black, Color.white, ambientLightWeight);
 	}
 	
 	private void updateSearchIndex() {
