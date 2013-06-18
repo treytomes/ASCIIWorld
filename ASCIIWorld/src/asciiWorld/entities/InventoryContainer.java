@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import asciiWorld.Require;
-
 public class InventoryContainer implements Iterable<Entity> {
 	
 	private Entity _owner;
 	private List<Entity> _items;
 	
-	public InventoryContainer(Entity owner) throws Exception {
-		Require.that(owner, "owner").isNotNull();
-		
+	public InventoryContainer(Entity owner) {
 		_owner = owner;
 		_items = new ArrayList<Entity>();
 	}

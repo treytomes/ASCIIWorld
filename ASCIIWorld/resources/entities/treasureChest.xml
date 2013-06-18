@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Entity tile="TreasureChest">
+<Entity tile="treasureChest" name="Treasure Chest">
 	<Components>
 		<Component name="Placeable" />
-		<!--
 		<Component name="TreasureChest" />
-		-->
-		<!--
+		
 		<Component name="LightSource">
 			<Properties>
-				<Property name="Color" value="Orange" />
+				<Property name="Color" value="FFFFA500" />
 				<Property name="Range" value="16" />
 			</Properties>
 		</Component>
-		-->
 	</Components>
 	<Properties>
 		<Property name="MaxHealth" value="100" />
