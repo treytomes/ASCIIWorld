@@ -318,6 +318,14 @@ public class Chunk {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	    GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		
+		renderAnimations(g);
+	}
+	
+	private void renderAnimations(Graphics g) {
+		for (Entity entity : _entitiesInRange) {
+			entity.renderAnimations(g);
+		}
 	}
 	
 	private void drawShadowGeometry(Entity focusEntity, Light light, List<Entity> entities, int layerIndex) {

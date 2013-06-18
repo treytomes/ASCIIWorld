@@ -676,7 +676,9 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		}*/
 		
 		_tile.render(g, _position.x, _position.y);
-		
+	}
+	
+	public void renderAnimations(Graphics g) {
 		for (IAnimation animation : _animations) {
 			animation.render(g);
 		}
