@@ -95,10 +95,8 @@ public class AudioTestApp extends JFrame {
 	    //A panel for the South position.  Note the etched border.
 	    final JPanel outputButtonPanel = new JPanel();
 	    outputButtonPanel.setBorder(BorderFactory.createEtchedBorder());
-	    final ButtonGroup outputButtonGroup = new ButtonGroup();
 
-	    //Register anonymous listeners on the
-	    // Generate button and the Play/File button.
+	    //Register anonymous listeners on the Generate button and the Play/File button.
 	    generateBtn.addActionListener(
 	      new ActionListener(){
 	        public void actionPerformed(ActionEvent e){
@@ -123,8 +121,7 @@ public class AudioTestApp extends JFrame {
 	    synButtonGroup.add(waWaPulse);
 
 	    //Add radio buttons to a physical group and center it in the Center of the GUI. Make additions here if you add new synthetic generator methods.
-	    synButtonPanel.setLayout(
-	                            new GridLayout(0,1));
+	    synButtonPanel.setLayout(new GridLayout(0,1));
 	    synButtonPanel.add(tones);
 	    synButtonPanel.add(stereoPanning);
 	    synButtonPanel.add(stereoPingpong);
@@ -146,6 +143,5 @@ public class AudioTestApp extends JFrame {
 	    setDefaultCloseOperation(EXIT_ON_CLOSE);
 	    setSize(320, 480);
 	    setVisible(true);
-	  }
-
+    }
 }

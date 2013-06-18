@@ -1,7 +1,6 @@
 package asciiWorld.audio;
 
 import java.io.ByteArrayInputStream;
-import java.util.Date;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -15,7 +14,7 @@ import javax.sound.sampled.SourceDataLine;
  * @author Trey
  *
  */
-class AudioPlaybackThread extends Thread {
+public class AudioPlaybackThread extends Thread {
 	
 	// Allowable 8000, 11025, 16000, 22050, 44100.
 	private static final int SAMPLE_SIZE_INT_BITS = 16;
@@ -49,50 +48,37 @@ class AudioPlaybackThread extends Thread {
 			e.printStackTrace();
 		}
 	}
+	
+	public void run() {
+		int cnt;
 
+		try {
+			// Open and start the SourceDataLine
+			sourceDataLine.open(audioFormat);
+			sourceDataLine.start();
+			
+			//long startTime = new Date().getTime(); // get beginning of elapsed time for playback
 
-public void run() {
-  try {
-    //Open and start the SourceDataLine
-    sourceDataLine.open(audioFormat);
-    sourceDataLine.start();
-
-    int cnt;
-    //Get beginning of elapsed time for playback
-    long startTime = new Date().getTime();
-
-    //Transfer the audio data to the speakers
-    while((cnt = audioInputStream.read(
-                            playBuffer, 0,
-                            playBuffer.length))
-                                        != -1){
-      //Keep looping until the input read
-      // method returns -1 for empty stream.
-      if(cnt > 0){
-        //Write data to the internal buffer of
-        // the data line where it will be
-        // delivered to the speakers in real
-        // time
-        sourceDataLine.write(
-                           playBuffer, 0, cnt);
-      }//end if
-    }//end while
-
-    //Block and wait for internal buffer of the
-    // SourceDataLine to become empty.
-    sourceDataLine.drain();
-
-
-    //Get and display the elapsed time for the previous playback.
-    //int elapsedTime = (int)(new Date().getTime() - startTime);
-
-    //Finish with the SourceDataLine
-    sourceDataLine.stop();
-    sourceDataLine.close();
-  }catch (Exception e) {
-    e.printStackTrace();
-    System.exit(0);
-  }//end catch
-
-}
+			// Transfer the audio data to the speakers
+			while ((cnt = audioInputStream.read(playBuffer, 0, playBuffer.length)) != -1) {
+				// Keep looping until the input read method returns -1 for empty stream.
+				if (cnt > 0) {
+					// Write data to the internal buffer of the data line where it will be delivered to the speakers in real time
+					sourceDataLine.write(playBuffer, 0, cnt);
+				}
+			}
+			
+			// Block and wait for internal buffer of the SourceDataLine to become empty.
+			sourceDataLine.drain();
+	
+			//int elapsedTime = (int)(new Date().getTime() - startTime); // get and display the elapsed time for the previous playback
+			
+			//Finish with the SourceDataLine
+			sourceDataLine.stop();
+			sourceDataLine.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
 }
