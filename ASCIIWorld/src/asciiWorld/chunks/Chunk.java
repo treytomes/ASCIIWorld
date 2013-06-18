@@ -360,7 +360,7 @@ public class Chunk {
 	}
 	
 	private void render(Graphics g, List<Entity> entities, int layerIndex) {
-		for (Entity entity : entities) {
+		for (Entity entity : _entitiesInRange) {
 			if (entity.getLayer() == layerIndex) {
 				entity.render(g);
 			}

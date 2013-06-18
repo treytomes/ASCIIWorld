@@ -70,6 +70,8 @@ public class DungeonChunkGenerator implements IChunkGenerator {
 	}
 
 	private Chunk excavateRooms(Chunk chunk, Dungeon dungeon) {
+		System.out.println("Excavating room...");
+		System.out.println(dungeon.getRooms().size());
 		// Fill tiles with corridor values for each room in dungeon.
 		for (Room room : dungeon.getRooms()) {
 			// Get the room min and max location in tile coordinates.
@@ -83,6 +85,7 @@ public class DungeonChunkGenerator implements IChunkGenerator {
 				}
 			}
 		}
+		System.out.println("Room complete!");
 
 		return chunk;
 	}
@@ -126,7 +129,11 @@ public class DungeonChunkGenerator implements IChunkGenerator {
 	}
 
     private void excavateChunkPoint(Chunk chunk, Vector2f chunkPoint) {
-    	chunk.removeEntity(chunk.getEntityAt(chunkPoint, Chunk.LAYER_OBJECT));
+    	Entity entity = chunk.getEntityAt(chunkPoint, Chunk.LAYER_OBJECT);
+    	if (entity != null) {
+    		System.out.println(String.format("Removing %s at %d,%d.", entity.getName(), (int)chunkPoint.x, (int)chunkPoint.y));
+    		chunk.removeEntity(entity);
+    	}
     }
 
 	private Chunk fillRoomsWithTreasure(Chunk chunk, Dungeon dungeon) {

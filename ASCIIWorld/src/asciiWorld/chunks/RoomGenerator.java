@@ -184,10 +184,26 @@ public class RoomGenerator implements IRoomGenerator {
 		room.initializeRoomCells();
 		return room;
 	}
+	
+	private boolean contains(Rectangle bounds, float x, float y) {
+		float minX = bounds.getMinX();
+		float maxX = bounds.getMaxX();
+		float minY = bounds.getMinY();
+		float maxY = bounds.getMaxY();
+		return (minX <= x) && (x < maxX) && (minY <= y) && (y < maxY);
+	}
+	
+	private boolean contains(Rectangle bounds, Vector2f roomLocation, Room room) {
+		return
+			contains(bounds, roomLocation.x, roomLocation.y) &&
+			contains(bounds, roomLocation.x + room.getColumns() - 1, roomLocation.y) &&
+			contains(bounds, roomLocation.x + room.getColumns() - 1, roomLocation.y + room.getRows() - 1) &&
+			contains(bounds, roomLocation.x, roomLocation.y + room.getRows() - 1);
+	}
 
 	private int calculateRoomPlacementScore(Vector2f location, Dungeon dungeon, Room room) {
 		// Check if the room at the given location will fit inside the bounds of the map.
-		if (dungeon.getBounds().contains(new Rectangle(location.x, location.y, room.getColumns(), room.getRows()))) {
+		if (contains(dungeon.getBounds(), location, room)) { //dungeon.getBounds().contains(new Rectangle(location.x, location.y, room.getColumns(), room.getRows()))) {
 			int roomPlacementScore = 0;
 
 			// Loop for each cell in the room.
