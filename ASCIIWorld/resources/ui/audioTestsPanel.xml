@@ -1,4 +1,4 @@
-<StackPanel x="100" y="100" width="350" height="500" orientation="Vertical">
+<StackPanel x="32" y="32" width="240" height="384" orientation="Vertical">
 	<Children>
 		<Button text="Tones" margin="10">
 			<Button.click>

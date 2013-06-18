@@ -4,13 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 import javax.sound.midi.Instrument;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.SourceDataLine;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -18,12 +13,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
 public class AudioTestApp extends JFrame {
 	
 	public static void main(String args[]){
-		AudioTestApp app = new AudioTestApp();
+		//AudioTestApp app = new AudioTestApp();
+		midiTest();
 	}
 	
 	private static void midiTest() {
@@ -35,10 +30,10 @@ public class AudioTestApp extends JFrame {
 		
 		synth.loadInstrument("Marimba");
 		
-		for (int n = 40; n <= 80; n++) {
+		for (int n = 0; n <= 127; n++) {
 			synth.play(n, 100);
 		}
-		for (int n = 80; n >= 40; n--) {
+		for (int n = 127; n >= 0; n--) {
 			synth.play(n, 100);
 		}
 		
@@ -49,11 +44,6 @@ public class AudioTestApp extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	
-	  // The following are general instance variables used to create a SourceDataLine object..
-	  AudioFormat audioFormat;
-	  AudioInputStream audioInputStream;
-	  SourceDataLine sourceDataLine;
 
 	  // Following components appear in the North position of the GUI.
 	  final JButton generateBtn = new JButton("Generate");
@@ -90,12 +80,6 @@ public class AudioTestApp extends JFrame {
 			  return null;
 		  }
 	  }
-
-	  //Following components appear in the South
-	  // position of the GUI.
-	  final JRadioButton listen = new JRadioButton("Listen",true);
-	  final JRadioButton file = new JRadioButton("File");
-	  final JTextField fileName = new JTextField("junk",10);
 
 	  public AudioTestApp() {
 	    //A panel for the North position.  Note the etched border.
@@ -151,15 +135,6 @@ public class AudioTestApp extends JFrame {
 
 	    //Note that the centerPanel has center alignment by default.
 	    centerPanel.add(synButtonPanel);
-
-	    //Add radio buttons to a mutually exclusive group in the South of the GUI.
-	    outputButtonGroup.add(listen);
-	    outputButtonGroup.add(file);
-
-	    //Add radio buttons to a physical group in the South of the GUI.
-	    outputButtonPanel.add(listen);
-	    outputButtonPanel.add(file);
-	    outputButtonPanel.add(fileName);
 
 	    //Add the panels containing components to the content pane of the GUI in the appropriate positions.
 	    getContentPane().add(controlButtonPanel,BorderLayout.NORTH);
