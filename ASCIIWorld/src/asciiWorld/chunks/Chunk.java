@@ -380,8 +380,8 @@ public class Chunk {
 		for (float angle = 0; angle <= 360; angle++) {
 			for (float distance = 0; distance <= rangeOfVision; distance++) {
 				Vector2f chunkPoint = new Vector2f(
-						(float)Math.floor(focusChunkPoint.x + distance * Math.cos(angle * RAD)),
-						(float)Math.floor(focusChunkPoint.y + distance * Math.sin(angle * RAD))
+						(float)Math.round(focusChunkPoint.x + distance * Math.cos(angle * RAD)),
+						(float)Math.round(focusChunkPoint.y + distance * Math.sin(angle * RAD))
 					);
 				
 				if (!containsPoint(chunkPoint)) {
