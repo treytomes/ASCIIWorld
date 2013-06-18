@@ -52,8 +52,8 @@ public class ChunkTransitionComponent extends EntityComponent {
 		
 		// Place the touchedByEntity in the new chunk.
 		try {
-			newChunk.addEntity(touchedByEntity);
 			touchedByEntity.moveTo(newChunk.findSpawnPoint(transitionBackEntity.getOccupiedChunkPoint(), Chunk.LAYER_OBJECT));
+			newChunk.addEntity(touchedByEntity);
 		} catch (Exception e) {
 			System.err.println("Unable to spawn in the new chunk.");
 			e.printStackTrace();
@@ -91,8 +91,8 @@ public class ChunkTransitionComponent extends EntityComponent {
 		}
 
 		// Place the entrance.
-		newChunk.addEntity(transitionBackEntity);
 		transitionBackEntity.moveTo(chunkPoint, Chunk.LAYER_OBJECT);
+		newChunk.addEntity(transitionBackEntity);
 
 		return transitionBackEntity;
 	}
