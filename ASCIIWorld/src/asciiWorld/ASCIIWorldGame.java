@@ -10,6 +10,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.states.AudioTestsState;
 import asciiWorld.states.ConsoleState;
 import asciiWorld.states.MainMenuState;
 import asciiWorld.states.SlickGameplayState;
@@ -22,6 +23,7 @@ public class ASCIIWorldGame extends StateBasedGame {
 	public static final int STATE_GAMEPLAY = 1;
 	public static final int STATE_TEXTEDITOR = 2;
 	public static final int STATE_CONSOLE = 3;
+	public static final int STATE_AUDIOTESTS = 4;
 	
 	private static final String PATH_SETTINGS = "resources/settings.xml";
 	
@@ -115,6 +117,7 @@ public class ASCIIWorldGame extends StateBasedGame {
 		addState(new SlickGameplayState(STATE_GAMEPLAY));
 		addState(new TextEditorState(STATE_TEXTEDITOR));
 		addState(new ConsoleState(STATE_CONSOLE));
+		addState(new AudioTestsState(STATE_AUDIOTESTS));
 		
 	}
 	

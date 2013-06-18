@@ -1,0 +1,53 @@
+<StackPanel x="100" y="100" width="350" height="500" orientation="Vertical">
+	<Children>
+		<Button text="Tones" margin="10">
+			<Button.click>
+	        	gen = new Packages.asciiWorld.audio.SignalGenerator();
+	        	gen.generate(Packages.asciiWorld.audio.SignalType.Tones);
+				new Packages.asciiWorld.audio.AudioPlaybackThread(gen).start();
+			</Button.click>
+		</Button>
+		<Button text="Stereo Panning" margin="10">
+			<Button.click>
+	        	gen = new Packages.asciiWorld.audio.SignalGenerator();
+	        	gen.generate(Packages.asciiWorld.audio.SignalType.StereoPanning);
+				new Packages.asciiWorld.audio.AudioPlaybackThread(gen).start();
+			</Button.click>
+		</Button>
+		<Button text="Sterio Pingpong" margin="10">
+			<Button.click>
+	        	gen = new Packages.asciiWorld.audio.SignalGenerator();
+	        	gen.generate(Packages.asciiWorld.audio.SignalType.StereoPingPong);
+				new Packages.asciiWorld.audio.AudioPlaybackThread(gen).start();
+			</Button.click>
+		</Button>
+		<Button text="FM Sweep" margin="10">
+			<Button.click>
+	        	gen = new Packages.asciiWorld.audio.SignalGenerator();
+	        	gen.generate(Packages.asciiWorld.audio.SignalType.FMSweep);
+				new Packages.asciiWorld.audio.AudioPlaybackThread(gen).start();
+			</Button.click>
+		</Button>
+		<Button text="Decay Pulse" margin="10">
+			<Button.click>
+	        	gen = new Packages.asciiWorld.audio.SignalGenerator();
+	        	gen.generate(Packages.asciiWorld.audio.SignalType.DecayPulse);
+				new Packages.asciiWorld.audio.AudioPlaybackThread(gen).start();
+			</Button.click>
+		</Button>
+		<Button text="Echo Pulse" margin="10">
+			<Button.click>
+	        	gen = new Packages.asciiWorld.audio.SignalGenerator();
+	        	gen.generate(Packages.asciiWorld.audio.SignalType.EchoPulse);
+				new Packages.asciiWorld.audio.AudioPlaybackThread(gen).start();
+			</Button.click>
+		</Button>
+		<Button text="WaWa Pulse" margin="10">
+			<Button.click>
+	        	gen = new Packages.asciiWorld.audio.SignalGenerator();
+	        	gen.generate(Packages.asciiWorld.audio.SignalType.WaWaPulse);
+				new Packages.asciiWorld.audio.AudioPlaybackThread(gen).start();
+			</Button.click>
+		</Button>
+	</Children>
+</StackPanel>

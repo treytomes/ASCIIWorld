@@ -18,22 +18,25 @@ import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.StackPanel;
 import asciiWorld.ui.UIFactory;
 
-public class MainMenuState extends BasicGameState {
+public class AudioTestsState extends BasicGameState {
 	
 	private int _stateID = -1;
 	
-	public MainMenuState(int stateID) {
+	public AudioTestsState(int stateID) {
 		_stateID = stateID;
 	}
 
 	@Override
-	public void init(GameContainer container, StateBasedGame game)
-			throws SlickException {
+	public int getID() {
+		return _stateID;
+	}
+
+	@Override
+	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 	
 	@Override
-	public void enter(GameContainer container, StateBasedGame game)
-			throws SlickException {
+	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		super.enter(container, game);
 		
 		try {
@@ -45,8 +48,7 @@ public class MainMenuState extends BasicGameState {
 	}
 	
 	@Override
-	public void leave(GameContainer container, StateBasedGame game)
-			throws SlickException {
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 		
 		try {
@@ -58,8 +60,7 @@ public class MainMenuState extends BasicGameState {
 	}
 
 	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g)
-			throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.clear();
 		try {
 			RootVisualPanel.get().render(g);
@@ -69,18 +70,12 @@ public class MainMenuState extends BasicGameState {
 	}
 
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta)
-			throws SlickException {
+	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		try {
 			RootVisualPanel.get().update(container, delta);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public int getID() {
-		return _stateID;
 	}
 
 	private void generateUI(GameContainer container, StateBasedGame game) throws Exception {
@@ -89,19 +84,14 @@ public class MainMenuState extends BasicGameState {
 		int margin = 5;
 		int buttonWidth = 202;
 		int buttonHeight = 42;
-		int numberOfMenuOptions = 5;
+		int numberOfMenuOptions = 2;
 		StackPanel mainMenuButtonPanel = new StackPanel(new Rectangle(containerBounds.getWidth() - buttonWidth - margin, margin, buttonWidth, buttonHeight * numberOfMenuOptions), Orientation.Vertical);
-		mainMenuButtonPanel.addChild(Button.createStateTransitionButton("New Game! :-D", game, ASCIIWorldGame.STATE_GAMEPLAY));
-		mainMenuButtonPanel.addChild(Button.createStateTransitionButton("Script Console", game, ASCIIWorldGame.STATE_CONSOLE));
-		mainMenuButtonPanel.addChild(Button.createStateTransitionButton("Text Editor", game, ASCIIWorldGame.STATE_TEXTEDITOR));
-		mainMenuButtonPanel.addChild(Button.createStateTransitionButton("Audio Tests", game, ASCIIWorldGame.STATE_AUDIOTESTS));
+		mainMenuButtonPanel.addChild(Button.createStateTransitionButton("Main Menu", game, ASCIIWorldGame.STATE_MAINMENU));
 		mainMenuButtonPanel.addChild(Button.createActionButton("Exit :-(", new MethodBinding(container, "exit")));
 		
 		RootVisualPanel root = RootVisualPanel.get();
 		root.addChild(new Label(new Vector2f(10, 10), "ASCII World", Color.red));
-		root.addChild(new Button("A", new Rectangle(50, 50, 50, 50)));
-		root.addChild(new Button("B", new Rectangle(75, 75, 50, 50)));
 		root.addChild(mainMenuButtonPanel);
-		root.addChild(UIFactory.get().getResource("optionButtonPanel"));
+		root.addChild(UIFactory.get().getResource("audioTestsPanel"));
 	}
 }
