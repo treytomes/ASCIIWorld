@@ -68,6 +68,11 @@ public class ListView extends StackPanel {
 		populateChildren();
 	}
 	
+	public void resetBinding() {
+		clearChildren();
+		populateChildren();
+	}
+	
 	@Override
 	protected void setVerticalOrientationBounds() {
 		float myWidth = getBounds().getWidth() - 2;
