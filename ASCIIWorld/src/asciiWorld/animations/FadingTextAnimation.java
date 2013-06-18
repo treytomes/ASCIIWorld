@@ -22,11 +22,11 @@ public class FadingTextAnimation implements IAnimation {
 	private double _totalLiveTime;
 
 	public static FadingTextAnimation createDamageNotification(Entity owner, int amount) {
-		return new FadingTextAnimation(owner, Integer.toString(amount), Color.red);
+		return new FadingTextAnimation(owner, Integer.toString(amount), new Color(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 	
 	public static FadingTextAnimation createRestoreNotification(Entity owner, int amount) {
-		return new FadingTextAnimation(owner, Integer.toString(amount), Color.green);
+		return new FadingTextAnimation(owner, Integer.toString(amount), new Color(0.0f, 1.0f, 0.0f, 1.0f));
 	}
 
 	public FadingTextAnimation(Entity owner, String text, Color color) {
