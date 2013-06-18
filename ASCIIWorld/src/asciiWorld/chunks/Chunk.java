@@ -50,7 +50,7 @@ public class Chunk {
 		_entities = new ArrayList<Entity>();
 		_components = new ArrayList<ChunkComponent>();
 		
-		_ambientLightColor = Color.white;
+		_ambientLightColor = Color.black;
 		_lights = new ArrayList<Light>();
 		_framebuffer = null;
 		

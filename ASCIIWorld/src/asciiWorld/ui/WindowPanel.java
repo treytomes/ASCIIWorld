@@ -1,6 +1,8 @@
 package asciiWorld.ui;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
@@ -21,7 +23,7 @@ public class WindowPanel extends Border {
 	private static final int MARGIN = 5;
 
 	private Border _contentBackground;
-
+	
 	public WindowPanel(Rectangle bounds, String title) throws Exception {
 		super(CreateRectangle.from(bounds).setCornerRadius(CORNER_RADIUS).getRectangle(), CreateColor.from(COLOR_BORDER_WINDOW).changeAlphaTo(0.25f).getColor(), true);
 		
@@ -96,6 +98,22 @@ public class WindowPanel extends Border {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Error while attempting to close the window.");
+		}
+	}
+	
+	boolean firstCall = true;
+	@Override
+	public void update(GameContainer container, int delta) {
+		super.update(container, delta);
+		
+		Input input = container.getInput();
+		if (firstCall) {
+			input.isKeyPressed(Input.KEY_ESCAPE); // clear the pressed state
+			firstCall = false;
+		} else {
+			if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+				closeWindow();
+			}
 		}
 	}
 }

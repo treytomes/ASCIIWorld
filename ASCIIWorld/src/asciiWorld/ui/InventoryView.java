@@ -1,6 +1,8 @@
 package asciiWorld.ui;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.UnicodeFont;
 
 import asciiWorld.FontFactory;
@@ -17,9 +19,12 @@ public class InventoryView extends GridViewPanel {
 	//private InventoryContainer _inventory;
 	private ListView _itemList;
 	private GridViewPanel _itemDetails;
+	private HotKeyManager _hotkeys;
 
 	public InventoryView(InventoryContainer inventory, HotKeyManager hotkeys) throws Exception {
 		super(1, 2);
+		
+		_hotkeys = hotkeys;
 		
 		setColumnWidth(0, 0.25f);
 		setColumnWidth(1, 0.75f);
@@ -31,6 +36,18 @@ public class InventoryView extends GridViewPanel {
 		
 		_itemDetails = createDetailsPanel(hotkeys);
 		addChild(_itemDetails, 0, 1);
+	}
+	
+	@Override
+	public void update(GameContainer container, int delta) {
+		super.update(container, delta);
+		
+		Input input = container.getInput();
+		for (HotKeyInfo info : _hotkeys) {
+			if (input.isKeyDown(info.getKeyboardKey())) {
+				info.setItem(Entity.class.cast(_itemList.getSelectedItem()));
+			}
+		}
 	}
 	
 	private ListView createItemList(InventoryContainer inventory) {

@@ -1,7 +1,7 @@
 package asciiWorld.ui;
 
 import java.io.File;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 
 import org.jdom2.Element;
@@ -21,7 +21,7 @@ public class MessageBox extends WindowPanel {
 	private static final String DEFAULT_MESSAGE_ACCEPT = "Okay";
 	private static final String DEFAULT_MESSAGE_CANCEL = "";
 
-	private List<MessageBoxClosedEvent> _closedListeners;
+	//private List<MessageBoxClosedEvent> _closedListeners;
 
 	private Boolean _isModal;
 	private Label _messageLabel;
@@ -79,7 +79,7 @@ public class MessageBox extends WindowPanel {
 	private MessageBox(RootVisualPanel rootUI, Boolean isModal, String message, String title, String acceptButtonText, String cancelButtonText) throws Exception {
 		super(createBounds(rootUI), title);
 		
-		_closedListeners = new ArrayList<MessageBoxClosedEvent>();
+		//_closedListeners = new ArrayList<MessageBoxClosedEvent>();
 		
 		_isModal = isModal;
 		//_acceptButtonText = acceptButtonText;
@@ -111,6 +111,7 @@ public class MessageBox extends WindowPanel {
 		return _isModal;
 	}
 	
+	/*
 	public void addClosedListener(MessageBoxClosedEvent listener) {
 		_closedListeners.add(listener);
 	}
@@ -118,6 +119,7 @@ public class MessageBox extends WindowPanel {
 	public void removeClosedListener(MessageBoxClosedEvent listener) {
 		_closedListeners.remove(listener);
 	}
+	*/
 	
 	public Boolean isOpen() {
 		return getParent() != null;

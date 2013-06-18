@@ -47,20 +47,6 @@ public class RootVisualPanel extends CanvasPanel {
 	public MessageBox loadMessageBox(String path) throws Exception {
 		try {
 			MessageBox mb = MessageBox.load(this, path);
-			mb.addClosedListener(new MessageBoxClosedEvent() {
-				@Override
-				public void closed(MessageBox sender, Boolean dialogResult) {
-					if (sender.isModal()) {
-						try {
-							sender.getRoot().modalWindowIsClosing();
-							sender.getParent().setParent(null);
-						} catch (Exception e) {
-							e.printStackTrace();
-							System.err.println("Error while closing the modal background.");
-						}
-					}
-				}
-			});
 			
 			if (mb.isModal()) {
 				addModalChild(mb);
@@ -78,20 +64,6 @@ public class RootVisualPanel extends CanvasPanel {
 	public MessageBox showMessageBox(Boolean modal, String message, String title) {
 		try {
 			MessageBox mb = MessageBox.create(this, modal, message, title);
-			mb.addClosedListener(new MessageBoxClosedEvent() {
-				@Override
-				public void closed(MessageBox sender, Boolean dialogResult) {
-					if (sender.isModal()) {
-						try {
-							sender.getRoot().modalWindowIsClosing();
-							sender.getParent().setParent(null);
-						} catch (Exception e) {
-							e.printStackTrace();
-							System.err.println("Error while closing the modal background.");
-						}
-					}
-				}
-			});
 			
 			if (mb.isModal()) {
 				addModalChild(mb);
