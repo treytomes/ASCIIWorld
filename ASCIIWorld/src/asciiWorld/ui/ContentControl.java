@@ -59,12 +59,14 @@ public abstract class ContentControl extends FrameworkElement {
 	@Override
 	public void render(Graphics g) {
 		Rectangle previousWorldClip = setTransform(g);
+		//g.setWorldClip(getBounds());
 		
 		if (getContent() != null) {
 			//setContentBounds();
 			getContent().render(g);
 		}
 		
+		//g.setWorldClip(null);
 		clearTransform(g, previousWorldClip);
 	}
 	

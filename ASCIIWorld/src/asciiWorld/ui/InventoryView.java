@@ -60,6 +60,8 @@ public class InventoryView extends GridViewPanel {
 		MethodBinding selectedItemBinding = new MethodBinding(_itemList, "getSelectedItem");
 		
 		GridViewPanel details = new GridViewPanel(7, 2);
+		details.setColumnWidth(0, 0.4f);
+		details.setColumnWidth(1, 0.6f);
 		
 		UnicodeFont largeFont = FontFactory.get().getResource(30);
 		

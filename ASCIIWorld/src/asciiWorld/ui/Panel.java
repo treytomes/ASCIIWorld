@@ -72,6 +72,7 @@ public abstract class Panel extends FrameworkElement {
 	@Override
 	public void render(Graphics g) {
 		Rectangle previousWorldClip = setTransform(g);
+		g.setWorldClip(getBounds());
 		
 		for (int index = 0; index < _children.size(); index++) {
 			FrameworkElement child = _children.get(index);
@@ -79,6 +80,7 @@ public abstract class Panel extends FrameworkElement {
 			child.render(g);
 		}
 		
+		g.setWorldClip(null);
 		clearTransform(g, previousWorldClip);
 	}
 	

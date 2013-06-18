@@ -238,7 +238,7 @@ public class PlayerControlComponent extends InputAwareComponent {
 		
 		Rectangle bounds = CreateRectangle
 				.from(root.getBounds())
-				.scale(2.0f / 3.0f)
+				.scale(4f / 5f)
 				.centerOn(root.getBounds())
 				.getRectangle();
 		

@@ -130,6 +130,7 @@ public class Label extends FrameworkElement {
 	@Override
 	public void render(Graphics g) {
 		Rectangle previousWorldClip = setTransform(g);
+		//g.setWorldClip(getBounds());
 		
 		g.pushTransform();
 		Vector2f translationPosition = getTextPosition();
@@ -222,6 +223,8 @@ public class Label extends FrameworkElement {
 		}
 		
 		g.popTransform();
+		
+		//g.setWorldClip(null);
 		clearTransform(g, previousWorldClip);
 	}
 

@@ -67,6 +67,7 @@ public class Border extends ContentControl {
 	@Override
 	public void render(Graphics g) {
 		Rectangle previousWorldClip = setTransform(g);
+		//g.setWorldClip(getBounds());
 		
 		float originalLineWidth = g.getLineWidth();
 		g.setLineWidth(getLineWidth());
@@ -80,6 +81,7 @@ public class Border extends ContentControl {
 		
 		g.setLineWidth(originalLineWidth);
 		
+		//g.setWorldClip(null);
 		clearTransform(g, previousWorldClip);
 
 		super.render(g);
