@@ -2,6 +2,7 @@ package asciiWorld.ui;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.UnicodeFont;
 
@@ -32,7 +33,32 @@ public class InventoryView extends GridViewPanel {
 		//_inventory = inventory;
 		
 		_itemList = createItemList(inventory);
-		addChild(_itemList, 0, 0);
+		
+		StackPanel verticalScrollButtons = new StackPanel(Orientation.Vertical);
+		verticalScrollButtons.addChild(new Button("^") {{
+			addClickListener(new ButtonClickedEvent() {
+				@Override
+				public void click(Button button) {
+					_itemList.setTopIndex(_itemList.getTopIndex() - 1);
+				}
+			});
+		}});
+		verticalScrollButtons.addChild(new Button("V") {{
+			addClickListener(new ButtonClickedEvent() {
+				@Override
+				public void click(Button button) {
+					_itemList.setTopIndex(_itemList.getTopIndex() + 1);
+				}
+			});
+		}});
+		
+		GridViewPanel verticalScrollView = new GridViewPanel(1, 2);
+		verticalScrollView.setColumnWidth(0, 0.9f);
+		verticalScrollView.setColumnWidth(1, 0.1f);
+		verticalScrollView.addChild(_itemList, 0, 0);
+		verticalScrollView.addChild(verticalScrollButtons, 0, 1);
+		
+		addChild(verticalScrollView, 0, 0);
 		
 		_itemDetails = createDetailsPanel(hotkeys);
 		addChild(_itemDetails, 0, 1);

@@ -23,6 +23,8 @@ public class ListView extends StackPanel {
 	private Iterable<?> _itemsSource;
 	private Object _selectedItem;
 	private Button _selectedButton;
+	
+	private int _topIndex;
 
 	public ListView() {
 		super(Orientation.Vertical);
@@ -32,6 +34,17 @@ public class ListView extends StackPanel {
 		_itemsSource = null;
 		_selectedItem = null;
 		_selectedButton = null;
+		
+		_topIndex = 0;
+	}
+	
+	public int getTopIndex() {
+		return _topIndex;
+	}
+	
+	public void setTopIndex(int value) {
+		_topIndex = value;
+		resetBounds();
 	}
 	
 	public void addItemSelectedListener(ListViewItemSelectedEvent listener) {
@@ -63,7 +76,7 @@ public class ListView extends StackPanel {
 		float y = getBounds().getY() + 1;
 		for (FrameworkElement child : getChildren()) {
 			child.getBounds().setX(x + child.getMargin().getLeftMargin());
-			child.getBounds().setY(y + child.getMargin().getTopMargin());
+			child.getBounds().setY(y + child.getMargin().getTopMargin() - _topIndex * (child.getBounds().getHeight() + child.getMargin().getTopMargin() + child.getMargin().getBottomMargin() + 1));
 			child.getBounds().setWidth(myWidth - child.getMargin().getLeftMargin() - child.getMargin().getRightMargin());
 			
 			y += child.getBounds().getHeight() + 1;

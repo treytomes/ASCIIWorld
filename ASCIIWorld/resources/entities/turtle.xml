@@ -6,7 +6,7 @@
   	<Component name="SeekOutPlayer" />
   	<Component name="CanSpeak">
   		<Properties>
-  			<Property name="Text" value="I'm a turtle" />
+  			<Property name="Text" value="I'm a turtle!" />
   		</Properties>
   	</Component>
 
