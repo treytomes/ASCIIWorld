@@ -21,8 +21,8 @@
     </Component>-->
   </Components>
   
-  <!--<Properties>
-    <Property name="MaxHealth" value="10" />
+  <Properties>
+    <Property name="Agility" value="10" />
   </Properties>
   <Inventory>
     <Item name="WoodLog" />

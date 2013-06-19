@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Camera;
 import asciiWorld.World;
+import asciiWorld.ai.IAStarMap;
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityCamera;
 import asciiWorld.lighting.FrameBufferObject;
@@ -19,7 +20,7 @@ import asciiWorld.lighting.Light;
 import asciiWorld.math.RandomFactory;
 import asciiWorld.math.Vector3f;
 
-public class Chunk {
+public class Chunk implements IAStarMap {
 	
 	public static final int LAYER_GROUND = 0;
 	public static final int LAYER_OBJECT = 1;
@@ -423,5 +424,20 @@ public class Chunk {
 	
 	private void resetSearchIndex() {
 		_searchIndex = new Entity[LAYERS_COUNT][ROWS][COLUMNS];
+	}
+
+	@Override
+	public int getRows() {
+		return ROWS;
+	}
+
+	@Override
+	public int getColumns() {
+		return COLUMNS;
+	}
+
+	@Override
+	public boolean canWalkHere(int row, int column) {
+		return !isSpaceOccupied(new Vector2f(column, row), LAYER_OBJECT);
 	}
 }
