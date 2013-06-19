@@ -59,6 +59,10 @@ public class ListView extends StackPanel {
 		return _itemsSource;
 	}
 	
+	public boolean isItemSelected() {
+		return _selectedItem != null;
+	}
+	
 	public Object getSelectedItem() {
 		return _selectedItem;
 	}
@@ -71,6 +75,8 @@ public class ListView extends StackPanel {
 	public void resetBinding() {
 		clearChildren();
 		populateChildren();
+		_selectedItem = null;
+		_selectedButton = null;
 	}
 	
 	@Override
@@ -103,9 +109,9 @@ public class ListView extends StackPanel {
 	
 	private void clearChildren() {
 		List<FrameworkElement> children = getChildren();
-		for (int index = 0; index < children.size(); index++) {
+		while (children.size() > 0) {
 			try {
-				removeChild(children.get(index));
+				removeChild(children.get(0));
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("Unable to remove a child from the ListView.");

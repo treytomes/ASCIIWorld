@@ -77,18 +77,22 @@ public class TreasureChestView extends GridViewPanel {
 	}
 	
 	private void storeItem() throws Exception {
-		Entity itemToStore = Entity.class.cast(_playerList.getSelectedItem());
-		_playerInventoryContainer.remove(itemToStore);
-		_treasureChestInventory.add(itemToStore);
-		_playerList.resetBinding();
-		_treasureChestList.resetBinding();
+		if (_playerList.isItemSelected()) {
+			Entity itemToStore = Entity.class.cast(_playerList.getSelectedItem());
+			_playerInventoryContainer.remove(itemToStore);
+			_treasureChestInventory.add(itemToStore);
+			_playerList.resetBinding();
+			_treasureChestList.resetBinding();
+		}
 	}
 	
 	private void takeItem() throws Exception {
-		Entity itemToTake = Entity.class.cast(_treasureChestList.getSelectedItem());
-		_treasureChestInventory.remove(itemToTake);
-		_playerInventoryContainer.add(itemToTake);
-		_treasureChestList.resetBinding();
-		_playerList.resetBinding();
+		if (_treasureChestList.isItemSelected()) {
+			Entity itemToTake = Entity.class.cast(_treasureChestList.getSelectedItem());
+			_treasureChestInventory.remove(itemToTake);
+			_playerInventoryContainer.add(itemToTake);
+			_treasureChestList.resetBinding();
+			_playerList.resetBinding();
+		}
 	}
 }

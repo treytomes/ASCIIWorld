@@ -220,7 +220,12 @@ public class PlayerControlComponent extends InputAwareComponent {
 	}
 	
 	private void openInventoryInterface() {
-		if (isInventoryUIOpen()) {
+		try {
+			if (isInventoryUIOpen() || RootVisualPanel.get().isModalWindowOpen()) {
+				return;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			return;
 		}
 		

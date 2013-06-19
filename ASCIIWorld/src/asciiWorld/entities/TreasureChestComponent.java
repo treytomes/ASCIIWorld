@@ -5,8 +5,6 @@ import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.CreateRectangle;
 import asciiWorld.chunks.Chunk;
-import asciiWorld.ui.Button;
-import asciiWorld.ui.InventoryView;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.TreasureChestView;
 import asciiWorld.ui.WindowPanel;
