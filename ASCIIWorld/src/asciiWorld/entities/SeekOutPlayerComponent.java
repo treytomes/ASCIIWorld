@@ -7,7 +7,6 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import asciiWorld.Direction;
-import asciiWorld.ai.AStarImproved;
 import asciiWorld.ai.AStarOriginal;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.math.Point;
@@ -72,7 +71,6 @@ public class SeekOutPlayerComponent extends EntityComponent {
 			}
 			
 			if ((_currentPath != null) && (_currentPath.size() > 0) && (_pathIndex < _currentPath.size())) {
-				System.out.println("Following the path...");
 				Point nextPoint = _currentPath.get(_pathIndex);
 				Direction nextDirection;
 				if (nextPoint.x < sourcePosition.x) {
