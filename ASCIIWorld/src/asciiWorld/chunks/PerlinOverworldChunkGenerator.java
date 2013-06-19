@@ -182,19 +182,18 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		return chunk;
     }
 
-	private Entity generateTree(Chunk chunk, Vector3f seedPoint)
-			throws Exception {
-		// Pick a random angle.
-		float angle = (float)(RandomFactory.get().nextInt(0, 360) * Math.PI / 180.0f);
-
-		// Keep searching outward until a suitable spawn point is found.
-		int distance = 1;
+	private Entity generateTree(Chunk chunk, Vector3f seedPoint) throws Exception {
+		float angle = (float)(RandomFactory.get().nextInt(0, 360) * Math.PI / 180.0f); // pick a random angle
+		int distance = 1; // keep searching outward until a suitable spawn point is found
+		
 		while (true) {
 			Vector3f chunkPoint = new Vector3f(seedPoint.x + distance * (float)Math.cos(angle), seedPoint.y + distance * (float)Math.sin(angle), seedPoint.z);
 			Entity groundEntity = chunk.getEntityAt(chunkPoint.toVector2f(), Chunk.LAYER_GROUND); 
 			if ((groundEntity == null) || !groundEntity.getName().equals("Grass")) {
 				// We're moving out into the desert; start over.
-				return generateTree(chunk, seedPoint);
+				angle = (float)(RandomFactory.get().nextInt(0, 360) * Math.PI / 180.0f); // pick a random angle
+				distance = 1; // keep searching outward until a suitable spawn point is found
+				continue;
 			}
 			if (!chunk.isSpaceOccupied(chunkPoint)) {
 				return EntityFactory.get().createTreeEntity(chunk, (int)chunkPoint.x, (int)chunkPoint.y);
@@ -204,8 +203,7 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		}
 	}
 	
-	private Chunk generateCaveEntrances(Chunk chunk)
-			throws Exception {
+	private Chunk generateCaveEntrances(Chunk chunk) throws Exception {
 		_logStream.print("Generating cave entrances...");
 		
 		for (int n = 0; n < CAVES_COUNT; n++) {
