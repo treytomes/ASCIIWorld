@@ -3,7 +3,6 @@
 	<Components>
 		<Component name="Placeable" />
 		<Component name="TreasureChest" />
-		
 		<Component name="LightSource">
 			<Properties>
 				<Property name="Color" value="FFFFA500" />

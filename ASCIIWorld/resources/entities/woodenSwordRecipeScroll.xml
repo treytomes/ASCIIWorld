@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="recipeScroll" name="Recipe Scroll">
+  <Components>
+  	<Component name="CanSpeak">
+  		<Properties>
+  			<Property name="Text" value="Recipe for Wooden Sword" />
+  		</Properties>
+  	</Component>
+
+    <Component name="Placeable" />
+  </Components>
+</Entity>
