@@ -9,11 +9,12 @@
       </Properties>
     </Component>-->
     
-	<!--<Component name="GeneratesChildren">
+	<Component name="GeneratesChildren">
       <Properties>
         <Property name="SpawnRate" value="0.0001" />
+        <Property name="ChildType" value="tree" />
       </Properties>
-    </Component>-->
+    </Component>
     
   	<Component name="Placeable" />
   </Components>

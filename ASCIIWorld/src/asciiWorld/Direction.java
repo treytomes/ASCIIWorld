@@ -12,6 +12,15 @@ public enum Direction {
 	East,
 	West;
 	
+	public static Direction[] all() {
+		return new Direction[] {
+			North,
+			South,
+			East,
+			West
+		};
+	}
+	
 	public static Direction fromVector2f(Vector2f position) {
 		position = position.normalise();
 		if ((position.x == 0) && (position.y == -1)) {

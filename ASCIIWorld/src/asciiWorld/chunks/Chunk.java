@@ -157,7 +157,7 @@ public class Chunk implements IAStarMap {
 	}
 
 	public Boolean isSpaceOccupied(Vector2f chunkPoint, int layer) {
-		return getEntityAt(chunkPoint, layer) != null;
+		return (getEntityAt(chunkPoint, layer) != null) || !containsPoint(chunkPoint, layer);
 	}
 
 	public Entity findClosestEntity(Vector3f chunkPoint, double range) {
