@@ -8,6 +8,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.entities.Entity;
 import asciiWorld.entities.EntityFactory;
+import asciiWorld.entities.TreasureChestComponent;
 import asciiWorld.math.IRandom;
 import asciiWorld.math.RandomFactory;
 
@@ -181,13 +182,12 @@ public class DungeonChunkGenerator implements IChunkGenerator {
 		// Create the treasure chest.
 		Entity treasureChest = EntityFactory.get().createEntity(ENTITY_TREASURECHEST, chunk, (int)chunkPoint.x, (int)chunkPoint.y);
 
-		// TODO: Implement the TreasureChestComponent.
-		/*TreasureChestComponent inventory = treasureChest.findComponent(TreasureChestComponent.class);
+		TreasureChestComponent inventory = treasureChest.findComponent(TreasureChestComponent.class);
 
 		// Each treasure chest will have up to 16 pieces of random treasure.
         for (int n = 0; n < RandomFactory.get().nextInt(MIN_ITEMS_IN_TREASURE_CHEST, MAX_ITEMS_IN_TREASURE_CHEST + 1); n++) {
 			inventory.addItemToChest(EntityFactory.get().getResource(getRandomTreasure()));
-		}*/
+		}
 
 		return chunk;
 	}
