@@ -156,7 +156,8 @@ public class Chunk implements IAStarMap {
 	}
 
 	public Boolean isSpaceOccupied(Vector3f chunkPoint) {
-		return containsPoint(new Vector2f(chunkPoint.x, chunkPoint.y), (int)chunkPoint.z) && getEntityAt(chunkPoint.toVector2f(), (int)chunkPoint.z) != null;
+		boolean pointExists = containsPoint(new Vector2f(chunkPoint.x, chunkPoint.y), (int)chunkPoint.z);
+		return !pointExists || (pointExists && (getEntityAt(chunkPoint.toVector2f(), (int)chunkPoint.z) != null));
 	}
 
 	public Boolean isSpaceOccupied(Vector2f chunkPoint, int layer) {
