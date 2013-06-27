@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="stoneSword" name="Stone Sword">
+	<Components>
+		<Component name="CanBePickedUp" />
+		<Component name="Attack">
+			<Properties>
+				<Property name="DamageModifier" value="2" />
+				<Property name="Range" value="4" />
+			</Properties>
+		</Component>
+	</Components>
+
+	<Properties>
+		<Property name="Agility" value="20" />
+	</Properties>
+ 
+	<Inventory>
+		<Item name="stoneRubble" />
+		<Item name="stoneRubble" />
+		<Item name="woodStick" />
+	</Inventory>
+</Entity>
