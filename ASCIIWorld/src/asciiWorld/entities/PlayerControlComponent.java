@@ -111,7 +111,7 @@ public class PlayerControlComponent extends InputAwareComponent {
 	
 	private Boolean isAcceptingMouseInput() {
 		try {
-			return RootVisualPanel.get().findMouseHover() instanceof HUDView;
+			return !RootVisualPanel.get().isModalWindowOpen() && (RootVisualPanel.get().findMouseHover() instanceof HUDView);
 		} catch (Exception e) {
 			return true;
 		}
