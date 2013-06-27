@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="woodWall" name="Wood Wall" isTranslucent="false">
+	<Components>
+		<Component name="Placeable" />
+	</Components>
+  <Properties>
+    <Property name="MaxHealth" value="20" />
+  </Properties>
+	<Inventory>
+		<Item name="WoodPlank" />
+		<Item name="WoodPlank" />
+		<Item name="WoodPlank" />
+		<Item name="WoodPlank" />
+	</Inventory>
+</Entity>

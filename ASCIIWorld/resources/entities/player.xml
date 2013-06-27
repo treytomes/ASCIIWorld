@@ -26,6 +26,7 @@
     <Item name="treasureChest" />
     <Item name="woodenClubRecipeScroll" />
     <Item name="woodenSwordRecipeScroll" />
+    <Item name="woodWallRecipeScroll" />
     <Item name="craftingTable" />
     <Item name="turtle" />
     <Item name="giraffe" />
