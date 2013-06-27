@@ -364,6 +364,7 @@ public class Chunk implements IAStarMap {
 	
 	private void render(Graphics g, int layerIndex) {
 		SpriteBatch spriteBatch = new SpriteBatch();
+		SpriteBatch.setUseTriangles(false);
 		
 		for (Entity entity : _entitiesInRange) {
 			if (entity.getLayer() == layerIndex) {

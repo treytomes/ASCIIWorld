@@ -38,9 +38,9 @@ public class FrameStack implements IRenderable {
 	}
 
 	@Override
-	public void renderBatched(TileSet tiles, SpriteBatch spriteBatch, float x, float y) {
+	public void renderBatched(TileSet tiles, SpriteBatch spriteBatch, float x, float y, float rotation) {
 		for (IRenderable frame : _frames) {
-			frame.renderBatched(tiles, spriteBatch, x, y);
+			frame.renderBatched(tiles, spriteBatch, x, y, rotation);
 		}
 	}
 	

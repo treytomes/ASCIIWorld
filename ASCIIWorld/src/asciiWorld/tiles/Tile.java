@@ -211,7 +211,7 @@ public class Tile {
 	}
 	
 	public void renderBatched(SpriteBatch spriteBatch, float x, float y) {
-		getCurrentFrame().renderBatched(getTileSet(), spriteBatch, x, y);
+		getCurrentFrame().renderBatched(getTileSet(), spriteBatch, x, y, getRotation());
 	}
 	
 	public Tile clone() {

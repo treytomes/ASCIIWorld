@@ -274,11 +274,11 @@ public class SpriteBatch {
 		
 		checkRender(image);
 		
-		float scaleX = w/image.getWidth();
-		float scaleY = h/image.getHeight();
+		float scaleX = w / image.getWidth();
+		float scaleY = h / image.getHeight();
 		
-		float cx = image.getCenterOfRotationX()*scaleX;
-		float cy = image.getCenterOfRotationY()*scaleY;
+		float cx = image.getCenterOfRotationX() * scaleX;
+		float cy = image.getCenterOfRotationY() * scaleY;
 
 		float p1x = -cx;
 		float p1y = -cy;
@@ -330,8 +330,7 @@ public class SpriteBatch {
 		drawSubImage(image, srcx, srcy, srcwidth, srcheight, x, y, srcwidth, srcheight);
 	}
 	
-	public void drawSubImage(Image image, float srcx, float srcy,
-			float srcwidth, float srcheight, float x, float y, float w, float h) {
+	public void drawSubImage(Image image, float srcx, float srcy, float srcwidth, float srcheight, float x, float y, float w, float h) {
 		drawSubImage(image, srcx, srcy, srcwidth, srcheight, x, y, w, h, null);
 	}
 
@@ -344,11 +343,66 @@ public class SpriteBatch {
 		float ty = (srcy / ih * image.getTextureHeight()) + image.getTextureOffsetY();
 		float tw = w / iw * image.getTextureWidth();
 		float th = h / ih * image.getTextureHeight();
-		drawQuadElement(x, y, tx, ty, corners != null ? corners[0] : null, x
-				+ w, y, tx + tw, ty, corners != null ? corners[1] : null,
-				x + w, y + h, tx + tw, ty + th, corners != null ? corners[2]
-						: null, x, y + h, tx, ty + th,
-				corners != null ? corners[3] : null);
+		
+		drawQuadElement(
+				x, y, tx, ty, corners != null ? corners[0] : null,
+				x + w, y, tx + tw, ty, corners != null ? corners[1] : null,
+				x + w, y + h, tx + tw, ty + th, corners != null ? corners[2] : null,
+				x, y + h, tx, ty + th, corners != null ? corners[3] : null);
+	}
+
+	public void drawSubImage(Image image, float srcx, float srcy, float srcwidth, float srcheight, float x, float y, float rotation, float w, float h, Color[] corners) {
+		if (rotation==0) {
+			drawSubImage(image, srcx, srcy, srcwidth, srcheight, x, y, w, h, corners);
+			return;
+		}
+		
+		checkRender(image);
+
+		float iw = image.getWidth();
+		float ih = image.getHeight();
+		float tx = (srcx / iw * image.getTextureWidth()) + image.getTextureOffsetX();
+		float ty = (srcy / ih * image.getTextureHeight()) + image.getTextureOffsetY();
+		float tw = w / iw * image.getTextureWidth();
+		float th = h / ih * image.getTextureHeight();
+		
+		float scaleX = w / image.getWidth();
+		float scaleY = h / image.getHeight();
+		
+		float cx = image.getCenterOfRotationX() * scaleX;
+		float cy = image.getCenterOfRotationY() * scaleY;
+
+		float p1x = -cx;
+		float p1y = -cy;
+		float p2x = w - cx;
+		float p2y = -cy;
+		float p3x = w - cx;
+		float p3y = h - cy;
+		float p4x = -cx;
+		float p4y = h - cy;
+
+		double rad = Math.toRadians(rotation);
+		final float cos = (float)FastTrig.cos(rad);
+		final float sin = (float)FastTrig.sin(rad);
+
+		float x1 = (cos * p1x - sin * p1y) + cx; // TOP LEFT
+		float y1 = (sin * p1x + cos * p1y) + cy;
+		float x2 = (cos * p2x - sin * p2y) + cx; // TOP RIGHT
+		float y2 = (sin * p2x + cos * p2y) + cy;
+		float x3 = (cos * p3x - sin * p3y) + cx; // BOTTOM RIGHT
+		float y3 = (sin * p3x + cos * p3y) + cy;
+		float x4 = (cos * p4x - sin * p4y) + cx; // BOTTOM LEFT
+		float y4 = (sin * p4x + cos * p4y) + cy;
+		drawQuadElement(x+x1, y+y1, tx, ty, corners!=null ? corners[0] : null,
+				 		x+x2, y+y2, tx+tw, ty, corners!=null ? corners[1] : null,
+				 		x+x3, y+y3, tx+tw, ty+th, corners!=null ? corners[2] : null,
+				 		x+x4, y+y4, tx, ty+th, corners!=null ? corners[3] : null);
+		
+		/*drawQuadElement(
+				x, y, tx, ty, corners != null ? corners[0] : null,
+				x + w, y, tx + tw, ty, corners != null ? corners[1] : null,
+				x + w, y + h, tx + tw, ty + th, corners != null ? corners[2] : null,
+				x, y + h, tx, ty + th, corners != null ? corners[3] : null);*/
 	}
 	
 	public void drawImage(Image image, float x, float y, float width, float height, 
