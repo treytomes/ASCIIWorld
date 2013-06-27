@@ -411,8 +411,10 @@ public class Chunk implements IAStarMap {
 					if (!entities.contains(objectEntity)) {
 						entities.add(objectEntity);
 					}
-					if (objectEntity != focusEntity) { // the entity at the camera focus cannot obstruct it's own vision
-						break; // break on obstruction of vision
+					if (!objectEntity.getIsTranslucent()) { // translucent entities don't block vision
+						if (objectEntity != focusEntity) { // the entity at the camera focus cannot obstruct it's own vision
+							break; // break on obstruction of vision
+						}
 					}
 				}
 			}

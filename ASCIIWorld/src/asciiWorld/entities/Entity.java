@@ -30,6 +30,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	public static final float MOVEMENT_STEP = 8.0f;
 	
+	private static final boolean DEFAULT_IS_TRANSLUCENT = true;
 	private static final int DEFAULT_AGILITY = 1;
 	private static final int DEFAULT_STRENGTH = 2;
 	private static final int DEFAULT_PERCEPTION = 10;
@@ -45,6 +46,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	private Chunk _chunk;
 	
+	private boolean _isTranslucent;
 	private Tile _tile;
 	private List<IAnimation> _animations;
 	
@@ -148,6 +150,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		_totalTimeAlive = 0;
 		
 		_chunk = null;
+		_isTranslucent = DEFAULT_IS_TRANSLUCENT;
 		_tile = null;
 		_animations = new ArrayList<IAnimation>();
 		_position = new Vector3f();
@@ -271,6 +274,14 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 				component.afterAddedToChunk(chunk);
 			}
 		}
+	}
+	
+	public boolean getIsTranslucent() {
+		return _isTranslucent;
+	}
+	
+	public void setIsTranslucent(boolean value) {
+		_isTranslucent = value;
 	}
 	
 	public Tile getTile() {

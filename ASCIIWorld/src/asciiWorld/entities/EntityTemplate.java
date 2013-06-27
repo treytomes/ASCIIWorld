@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 
@@ -13,9 +14,12 @@ import asciiWorld.tiles.TileFactory;
 
 public class EntityTemplate {
 	
+	private static final boolean DEFAULT_IS_TRANSLUCENT = true;
+	
 	private String _entityType;
 	private String _name;
 	private String _tileResourceName;
+	private boolean _isTranslucent;
 	private List<EntityComponentTemplate> _components;
 	private List<String> _inventory;
 	private Map<String, String> _properties;
@@ -32,6 +36,13 @@ public class EntityTemplate {
 		
 		_name = elem.getAttributeValue("name");
 		_tileResourceName = elem.getAttributeValue("tile");
+		
+		Attribute isTranslucentAttr = elem.getAttribute("isTranslucent");
+		if (isTranslucentAttr != null) {
+			_isTranslucent = Boolean.parseBoolean(isTranslucentAttr.getValue());
+		} else {
+			_isTranslucent = DEFAULT_IS_TRANSLUCENT;
+		}
 		
 		loadComponents(elem.getChild("Components"));
 		loadInventory(elem.getChild("Inventory"));
@@ -55,6 +66,7 @@ public class EntityTemplate {
 		entity.setType(getEntityType());
 		entity.setName(getName());
 		entity.setTile(TileFactory.get().getResource(_tileResourceName));
+		entity.setIsTranslucent(_isTranslucent);
 		
 		for (EntityComponentTemplate component : _components) {
 			entity.getComponents().add(component.createInstance(entity));
