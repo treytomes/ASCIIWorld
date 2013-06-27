@@ -10,7 +10,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import asciiWorld.Camera;
 import asciiWorld.World;
 import asciiWorld.ai.IAStarMap;
 import asciiWorld.entities.Entity;
@@ -31,7 +30,7 @@ public class Chunk implements IAStarMap {
 	public static final int COLUMNS = 64;
 	public static final int ROWS = 64;
 
-	private static final boolean ENABLE_SHADOWS = false;
+	//private static final boolean ENABLE_SHADOWS = false;
 	private static final double RAD = Math.PI / 180;
 
 	private List<Entity> _entities;
@@ -156,7 +155,7 @@ public class Chunk implements IAStarMap {
 	}
 
 	public Boolean isSpaceOccupied(Vector3f chunkPoint) {
-		return getEntityAt(chunkPoint.toVector2f(), (int)chunkPoint.z) != null;
+		return containsPoint(new Vector2f(chunkPoint.x, chunkPoint.y), (int)chunkPoint.z) && getEntityAt(chunkPoint.toVector2f(), (int)chunkPoint.z) != null;
 	}
 
 	public Boolean isSpaceOccupied(Vector2f chunkPoint, int layer) {
@@ -297,12 +296,12 @@ public class Chunk implements IAStarMap {
 		    GL11.glEnable(GL11.GL_DEPTH_TEST);
 			light.render(g);
 			
-			if (ENABLE_SHADOWS) {
+			/*if (ENABLE_SHADOWS) {
 			    // Draw shadow geometry.
 				GL11.glEnable(GL11.GL_BLEND);
 			    GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
 			    drawShadowGeometry(focusEntity, light, _entitiesInRange, LAYER_OBJECT);
-			}
+			}*/
 			
 		    // Draw light color.
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -332,9 +331,9 @@ public class Chunk implements IAStarMap {
 		
 		GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_ZERO);
 		
-		camera.reset(g);
+		/*camera.reset(g);
 		_framebuffer.render(g);
-		camera.apply(g);
+		camera.apply(g);*/
 		
 		// Reset OpenGL settings for Slick.
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -350,7 +349,7 @@ public class Chunk implements IAStarMap {
 		}
 	}
 	
-	private void drawShadowGeometry(Entity focusEntity, Light light, List<Entity> entities, int layerIndex) {
+	/*private void drawShadowGeometry(Entity focusEntity, Light light, List<Entity> entities, int layerIndex) {
 		for (Entity entity : entities) {
 			if (entity.getLayer() == layerIndex) {
 				if (entity == focusEntity) {
@@ -361,7 +360,7 @@ public class Chunk implements IAStarMap {
 				}
 			}
 		}
-	}
+	}*/
 	
 	private void render(Graphics g, int layerIndex) {
 		SpriteBatch spriteBatch = new SpriteBatch();
