@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Entity tile="recipeScroll" name="Wooden Sword Recipe Scroll">
+<Entity tile="recipeScroll" name="Wooden Club Recipe Scroll">
   <Components>
   	<Component name="CanSpeak">
   		<Properties>
-  			<Property name="Text" value="Recipe for Wooden Sword" />
+  			<Property name="Text" value="Recipe for Wooden Club" />
   		</Properties>
   	</Component>
   	
   	<Component name="Recipe">
   		<Properties>
-  			<Property name="RecipeName" value="woodenSword" />
+  			<Property name="RecipeName" value="woodenClub" />
   		</Properties>
   	</Component>
 

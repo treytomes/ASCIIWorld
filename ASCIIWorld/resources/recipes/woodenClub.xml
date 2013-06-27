@@ -1,0 +1,3 @@
+<Recipe output="woodenClub">
+	<Ingredient name="woodPlank" amount="3" />
+</Recipe>

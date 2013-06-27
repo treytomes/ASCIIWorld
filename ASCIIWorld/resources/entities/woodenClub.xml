@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="woodenClub" name="Wooden Club">
+	<Components>
+		<Component name="CanBePickedUp" />
+		<Component name="Attack">
+			<Properties>
+				<Property name="DamageModifier" value="4" />
+				<Property name="Range" value="1" />
+			</Properties>
+		</Component>
+	</Components>
+
+	<Properties>
+		<Property name="Agility" value="10" />
+	</Properties>
+ 
+	<Inventory>
+		<Item name="woodPlank" />
+		<Item name="woodPlank" />
+		<Item name="woodPlank" />
+	</Inventory>
+</Entity>
