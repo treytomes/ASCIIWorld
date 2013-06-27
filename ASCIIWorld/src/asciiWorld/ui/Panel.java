@@ -39,6 +39,17 @@ public abstract class Panel extends FrameworkElement {
 		}
 	}
 	
+	public void clearChildren() {
+		while (getChildren().size() > 0) {
+			try {
+				removeChild(getChildren().get(0));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+	
 	protected List<FrameworkElement> getChildren() {
 		return _children;
 	}

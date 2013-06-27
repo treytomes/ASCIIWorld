@@ -12,14 +12,17 @@ import org.jdom2.input.SAXBuilder;
 import asciiWorld.tiles.TileFactory;
 
 public class EntityTemplate {
+	
+	private String _entityType;
 	private String _name;
 	private String _tileResourceName;
 	private List<EntityComponentTemplate> _components;
 	private List<String> _inventory;
 	private Map<String, String> _properties;
 	
-	public EntityTemplate(String path) throws Exception {
+	public EntityTemplate(String entityType, String path) throws Exception {
 		this((Element)new SAXBuilder().build(new File(path)).getRootElement());
+		_entityType = entityType;
 	}
 	
 	public EntityTemplate(Element elem) throws Exception {
@@ -35,6 +38,10 @@ public class EntityTemplate {
 		loadProperties(elem.getChild("Properties"));
 	}
 	
+	public String getEntityType() {
+		return _entityType;
+	}
+	
 	public String getName() {
 		return _name;
 	}
@@ -45,6 +52,7 @@ public class EntityTemplate {
 	
 	public Entity createInstance() throws Exception {
 		Entity entity = new Entity();
+		entity.setType(getEntityType());
 		entity.setName(getName());
 		entity.setTile(TileFactory.get().getResource(_tileResourceName));
 		

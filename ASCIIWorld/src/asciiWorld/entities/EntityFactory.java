@@ -79,12 +79,20 @@ public class EntityFactory {
 	 */
 	public Entity getResource(String name) {
 		try {
+			return getTemplate(name).createInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public EntityTemplate getTemplate(String name) {
+		try {
 			if (!_cachedResources.containsKey(name)) {
-				_cachedResources.put(name, new EntityTemplate(getPathForResource(name)));
+				_cachedResources.put(name, new EntityTemplate(name, getPathForResource(name)));
 			}
 			
-			return _cachedResources.get(name).createInstance();
-			//return Entity.load(getPathForResource(name));
+			return _cachedResources.get(name);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

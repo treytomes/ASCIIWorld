@@ -146,7 +146,9 @@ public class Chunk implements IAStarMap {
 			_entities.remove(entity);
 			entity.setChunk(null);
 			
-			_searchIndex[entity.getLayer()][(int)entity.getOccupiedChunkPoint().y][(int)entity.getOccupiedChunkPoint().x] = null;
+			if (containsPoint(entity.getOccupiedChunkPoint(), entity.getLayer())) {
+				_searchIndex[entity.getLayer()][(int)entity.getOccupiedChunkPoint().y][(int)entity.getOccupiedChunkPoint().x] = null;
+			}
 			
 			cacheEntitiesInRange();
 		}

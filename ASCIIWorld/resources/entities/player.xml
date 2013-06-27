@@ -25,18 +25,7 @@
     <Item name="torch" />
     <Item name="treasureChest" />
     <Item name="woodenSwordRecipeScroll" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
-    <Item name="tree" />
+    <Item name="craftingTable" />
     <Item name="turtle" />
     <Item name="giraffe" />
 	<!--

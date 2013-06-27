@@ -1,8 +1,5 @@
 ﻿<Tile tileSet="OEM437_8">
 	<Frames framesPerSecond="1">
-		<Frame backgroundColor="88000000" foregroundColor="FFA28756" tileIndex="127" />
+		<Frame backgroundColor="88000000" foregroundColor="FFA28756" tileIndex="227" />
 	</Frames>
-	<Transformations>
-		<Transformation rotation="0" effect="FlipVertically" />
-	</Transformations>
 </Tile>

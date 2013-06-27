@@ -6,6 +6,12 @@
   			<Property name="Text" value="Recipe for Wooden Sword" />
   		</Properties>
   	</Component>
+  	
+  	<Component name="Recipe">
+  		<Properties>
+  			<Property name="RecipeName" value="woodenSword" />
+  		</Properties>
+  	</Component>
 
     <Component name="Placeable" />
   </Components>

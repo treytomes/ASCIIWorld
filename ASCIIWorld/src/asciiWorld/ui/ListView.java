@@ -107,7 +107,7 @@ public class ListView extends StackPanel {
 		}
 	}
 	
-	private void clearChildren() {
+	/*private void clearChildren() {
 		List<FrameworkElement> children = getChildren();
 		while (children.size() > 0) {
 			try {
@@ -117,7 +117,7 @@ public class ListView extends StackPanel {
 				System.err.println("Unable to remove a child from the ListView.");
 			}
 		}
-	}
+	}*/
 	
 	private Button createItemButton(final Object item) throws Exception {
 		Button btn;

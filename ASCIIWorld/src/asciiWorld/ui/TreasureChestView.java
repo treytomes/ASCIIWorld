@@ -24,14 +24,14 @@ public class TreasureChestView extends GridViewPanel {
 		
 		try {
 			// Treasure Chest Inventory
-			addChild(new Label("Items to Store", Color.yellow), 0, 0);
+			addChild(new Label("Items to Store", Color.white), 0, 0);
 			_treasureChestList = createItemList(_treasureChestInventory);
 			addChild(new ScrollableListView(_treasureChestList), 1, 0);
 			
 			addChild(createButtonPanel(), 1, 1);
 			
 			// Player Inventory
-			addChild(new Label("Items to Take", Color.yellow), 0, 2);
+			addChild(new Label("Items to Take", Color.white), 0, 2);
 			_playerList = createItemList(_playerInventoryContainer);
 			addChild(new ScrollableListView(_playerList), 1, 2);
 		} catch (Exception e) {

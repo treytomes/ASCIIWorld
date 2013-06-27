@@ -53,6 +53,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	private Vector3f _moveToPosition;
 	private float _movementWeight;
 	
+	private String _type;
 	private String _name;
 	
 	private int _agility;
@@ -154,6 +155,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		_movementWeight = 0.0f;
 		_direction = Direction.South;
 		
+		setType("");
 		setName("");
 		
 		setMaxHealth(DEFAULT_MAX_HEALTH);
@@ -312,6 +314,14 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	public Direction getDirection() {
 		return _direction;
+	}
+	
+	public String getType() {
+		return _type;
+	}
+	
+	public void setType(String value) {
+		_type = value;
 	}
 	
 	public String getName() {

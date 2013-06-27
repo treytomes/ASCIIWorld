@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="craftingTable" name="Crafting Table">
+	<Components>
+		<Component name="Placeable" />
+		<Component name="Crafting" />
+		<Component name="LightSource">
+			<Properties>
+				<Property name="Color" value="FFFFA500" />
+				<Property name="Range" value="16" />
+			</Properties>
+		</Component>
+	</Components>
+	<Properties>
+		<Property name="MaxHealth" value="100" />
+	</Properties>
+	<Inventory>
+		<Item name="WoodPlank" />
+		<Item name="WoodPlank" />
+		<Item name="WoodPlank" />
+		<Item name="WoodPlank" />
+	</Inventory>
+</Entity>
