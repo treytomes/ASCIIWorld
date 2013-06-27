@@ -9,6 +9,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.FastTrig;
 
 import asciiWorld.World;
 import asciiWorld.ai.IAStarMap;
@@ -389,8 +390,8 @@ public class Chunk implements IAStarMap {
 		for (float angle = 0; angle <= 360; angle++) {
 			for (float distance = 0; distance <= rangeOfVision; distance++) {
 				Vector2f chunkPoint = new Vector2f(
-						(float)Math.round(focusChunkPoint.x + distance * Math.cos(angle * RAD)),
-						(float)Math.round(focusChunkPoint.y + distance * Math.sin(angle * RAD))
+						(float)Math.round(focusChunkPoint.x + distance * FastTrig.cos(angle * RAD)),
+						(float)Math.round(focusChunkPoint.y + distance * FastTrig.sin(angle * RAD))
 					);
 				
 				if (!containsPoint(chunkPoint)) {

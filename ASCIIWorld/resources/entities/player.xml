@@ -14,7 +14,7 @@
     <Property name="HealthRegenRate" value="2" />
     <Property name="Agility" value="15" />
     <Property name="Strength" value="5" />
-    <Property name="Perception" value="10" />
+    <Property name="Perception" value="5" />
   </Properties>
   
   <Inventory>
