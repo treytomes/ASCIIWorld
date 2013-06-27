@@ -1,6 +1,6 @@
 <Settings>
 	<Property key="ScreenWidth" value="1280" />
 	<Property key="ScreenHeight" value="720" />
-	<Property key="ShowFPS" value="false" />
+	<Property key="ShowFPS" value="true" />
 	<Property key="FullScreen" value="false" />
 </Settings>

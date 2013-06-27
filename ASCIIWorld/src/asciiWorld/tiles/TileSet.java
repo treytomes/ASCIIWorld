@@ -135,6 +135,11 @@ public class TileSet implements IHasSize {
 		reset();
 	}
 	
+	public void drawBatched(SpriteBatch spriteBatch, float x, float y, int tileIndex, Color color) {
+		Rectangle srcRect = getSourceRectangle(tileIndex);
+		spriteBatch.drawSubImage(_sourceImage, srcRect.getX(), srcRect.getY(), _size.x, _size.y, x, y, _size.x, _size.y, new Color[] { color, color, color, color });
+	}
+	
 	public void draw(int tileIndex, Color color) {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		color.bind();

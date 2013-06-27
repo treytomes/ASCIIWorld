@@ -23,6 +23,7 @@ import asciiWorld.lighting.IConvexHull;
 import asciiWorld.lighting.Light;
 import asciiWorld.math.MathHelper;
 import asciiWorld.math.Vector3f;
+import asciiWorld.tiles.SpriteBatch;
 import asciiWorld.tiles.Tile;
 
 public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
@@ -686,6 +687,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		}*/
 		
 		_tile.render(g, _position.x, _position.y);
+	}
+	
+	public void renderBatched(SpriteBatch spriteBatch) {
+		_tile.renderBatched(spriteBatch, (int)_position.x, (int)_position.y);
 	}
 	
 	public void renderAnimations(Graphics g) {

@@ -40,7 +40,7 @@ public class World {
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int delta) {
-		_worldTime.update(delta / 14);
+		_worldTime.update(delta * 2); // / 14);
 		_player.getChunk().update(container, game, delta);
 	}
 	

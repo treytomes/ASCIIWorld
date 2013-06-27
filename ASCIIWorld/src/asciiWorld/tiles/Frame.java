@@ -84,6 +84,17 @@ public class Frame implements ITile, IRenderable {
 			tiles.draw(_tileIndex, _foregroundColor);
 		}
 	}
+
+	@Override
+	public void renderBatched(TileSet tiles, SpriteBatch spriteBatch, float x, float y) {
+		if (_backgroundColor.a > 0) {
+			tiles.drawBatched(spriteBatch, x, y, TILEINDEX_SOLID, _backgroundColor);
+		}
+		
+		if (_foregroundColor.a > 0) {
+			tiles.drawBatched(spriteBatch, x, y, _tileIndex, _foregroundColor);
+		}
+	}
 	
 	public Frame clone() {
 		return new Frame(this);

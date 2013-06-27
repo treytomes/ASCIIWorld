@@ -19,6 +19,7 @@ import asciiWorld.lighting.FrameBufferObject;
 import asciiWorld.lighting.Light;
 import asciiWorld.math.RandomFactory;
 import asciiWorld.math.Vector3f;
+import asciiWorld.tiles.SpriteBatch;
 
 public class Chunk implements IAStarMap {
 	
@@ -51,7 +52,7 @@ public class Chunk implements IAStarMap {
 		_entities = new ArrayList<Entity>();
 		_components = new ArrayList<ChunkComponent>();
 		
-		_ambientLightColor = Color.black;
+		_ambientLightColor = new Color(0, 0, 0, 0); // Color.black;
 		_lights = new ArrayList<Light>();
 		_framebuffer = null;
 		
@@ -322,9 +323,9 @@ public class Chunk implements IAStarMap {
 		
 		GL11.glClearColor(0, 0, 0, 1.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-		render(g, _entitiesInRange, LAYER_GROUND);
-		render(g, _entitiesInRange, LAYER_OBJECT);
-		render(g, _entitiesInRange, LAYER_SKY);
+		render(g, LAYER_GROUND);
+		render(g, LAYER_OBJECT);
+		render(g, LAYER_SKY);
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -362,12 +363,17 @@ public class Chunk implements IAStarMap {
 		}
 	}
 	
-	private void render(Graphics g, List<Entity> entities, int layerIndex) {
+	private void render(Graphics g, int layerIndex) {
+		SpriteBatch spriteBatch = new SpriteBatch();
+		
 		for (Entity entity : _entitiesInRange) {
 			if (entity.getLayer() == layerIndex) {
-				entity.render(g);
+				entity.renderBatched(spriteBatch);
+				//entity.render(g);
 			}
 		}
+		
+		spriteBatch.flush();
 	}
 	
 	private void cacheEntitiesInRange() {

@@ -36,6 +36,13 @@ public class FrameStack implements IRenderable {
 			_frames.get(index).render(tiles);
 		}*/
 	}
+
+	@Override
+	public void renderBatched(TileSet tiles, SpriteBatch spriteBatch, float x, float y) {
+		for (IRenderable frame : _frames) {
+			frame.renderBatched(tiles, spriteBatch, x, y);
+		}
+	}
 	
 	private void addFrame(IRenderable frame) {
 		_frames.add(frame);
