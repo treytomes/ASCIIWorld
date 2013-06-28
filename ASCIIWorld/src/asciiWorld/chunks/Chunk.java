@@ -214,7 +214,7 @@ public class Chunk implements IAStarMap {
 		}
 	}
 
-	public Vector3f findRandomSpawnPoint(int layer) throws Exception {
+	public Vector3f findRandomSpawnPoint(int layer) {
 		while (true) {
 			Vector3f chunkPoint = new Vector3f(RandomFactory.get().nextInt(0, COLUMNS), RandomFactory.get().nextInt(0, ROWS), layer);
 			if (!isSpaceOccupied(chunkPoint)) {

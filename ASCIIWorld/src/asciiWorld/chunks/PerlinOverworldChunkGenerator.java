@@ -42,6 +42,12 @@ public class PerlinOverworldChunkGenerator implements IChunkGenerator {
 		chunk = generateCaveEntrances(chunk);
 		
 		chunk.getComponents().add(new DayNightCycleComponent(chunk));
+		chunk.getComponents().add(new SpawnEntitiesComponent(chunk) {{
+			setEntityType("ruffian");
+			setSpawnFrequency(10000);
+			setSpawnChance(0.75);
+			setDistanceFromPlayer(15);
+		}});
 		
 		return chunk;
 	}

@@ -32,8 +32,16 @@ public class DungeonChunkGenerator implements IChunkGenerator {
 		IDungeonGenerator generator = createDungeonGenerator(RandomFactory.get().getRandom());
 		Dungeon dungeon = generator.generate();
 		logStream.println(" done!");
+
+		Chunk chunk = convertToChunk(blankChunk, dungeon, logStream);;
+		chunk.getComponents().add(new SpawnEntitiesComponent(chunk) {{
+			setEntityType("ruffian");
+			setSpawnFrequency(10000);
+			setSpawnChance(0.75);
+			setDistanceFromPlayer(15);
+		}});
 		
-		return convertToChunk(blankChunk, dungeon, logStream);
+		return chunk;
 	}
 
 	private Chunk convertToChunk(Chunk chunk, Dungeon dungeon, PrintStream logStream) {
@@ -132,7 +140,6 @@ public class DungeonChunkGenerator implements IChunkGenerator {
     private void excavateChunkPoint(Chunk chunk, Vector2f chunkPoint) {
     	Entity entity = chunk.getEntityAt(chunkPoint, Chunk.LAYER_OBJECT);
     	if (entity != null) {
-    		System.out.println(String.format("Removing %s at %d,%d.", entity.getName(), (int)chunkPoint.x, (int)chunkPoint.y));
     		chunk.removeEntity(entity);
     	}
     }
