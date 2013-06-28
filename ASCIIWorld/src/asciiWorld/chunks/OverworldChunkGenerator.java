@@ -11,7 +11,7 @@ import asciiWorld.entities.EntityFactory;
 import asciiWorld.math.RandomFactory;
 import asciiWorld.math.Vector3f;
 
-public class PerlinOverworldChunkGenerator implements IChunkGenerator {
+public class OverworldChunkGenerator implements IChunkGenerator {
 	
 	private static final int SEEDTREE_MAX = 80;
 	private static final int SEEDTREE_MIN = 20;

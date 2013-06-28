@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="ironOre" name="Iron Ore" isTranslucent="false">
+  <Components>
+  </Components>
+  <Properties>
+    <Property name="MaxHealth" value="20" />
+  </Properties>
+  <Inventory>
+    <Item name="iron" />
+  </Inventory>
+</Entity>

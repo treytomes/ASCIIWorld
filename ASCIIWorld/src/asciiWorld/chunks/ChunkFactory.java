@@ -4,6 +4,7 @@ import java.io.PrintStream;
 
 import org.newdawn.slick.geom.Vector2f;
 
+import asciiWorld.World;
 import asciiWorld.entities.CanBePickedUpComponent;
 import asciiWorld.entities.CanBePushedComponent;
 import asciiWorld.entities.CanSpeakComponent;
@@ -94,18 +95,31 @@ public class ChunkFactory {
 		return chunk;
 	}
 	
-	public static Chunk generateOverworld(PrintStream logStream) throws Exception {
+	public static Chunk generateOverworld(PrintStream logStream, World world) throws Exception {
 		Chunk chunk = new Chunk();
+		chunk.setWorld(world);
 		long seed = RandomFactory.get().nextInt(0, Integer.MAX_VALUE);
-		return new PerlinOverworldChunkGenerator().generate(chunk, seed, logStream);
+		return new OverworldChunkGenerator().generate(chunk, seed, logStream);
+	}
+
+	public static Chunk generateCavern(PrintStream logStream, World world) throws Exception {
+		long seed = RandomFactory.get().nextInt(0, Integer.MAX_VALUE);
+		return generateCavern(logStream, seed, world);
+	}
+
+	public static Chunk generateCavern(PrintStream logStream, long seed, World world) throws Exception {
+		Chunk chunk = new Chunk();
+		chunk.setWorld(world);
+		return new CavernChunkGenerator().generate(chunk, seed, logStream);
 	}
 	
-	public static Chunk generateDungeon(PrintStream logStream, long seed) throws Exception {
+	public static Chunk generateDungeon(PrintStream logStream, long seed, World world) throws Exception {
 		Chunk chunk = new Chunk();
+		chunk.setWorld(world);
 		return new DungeonChunkGenerator().generate(chunk, seed, logStream);
 	}
 	
-	public static Chunk generateDungeon(PrintStream logStream) throws Exception {
-		return generateDungeon(logStream, RandomFactory.get().nextInt(0, Integer.MAX_VALUE));
+	public static Chunk generateDungeon(PrintStream logStream, World world) throws Exception {
+		return generateDungeon(logStream, RandomFactory.get().nextInt(0, Integer.MAX_VALUE), world);
 	}
 }

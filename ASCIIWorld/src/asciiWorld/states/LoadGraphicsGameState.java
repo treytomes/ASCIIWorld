@@ -35,8 +35,8 @@ public class LoadGraphicsGameState extends GameState {
 	private Boolean _isComplete;
 	
 	public LoadGraphicsGameState(Chunk chunk) {
-		_world = new World();
 		_chunk = chunk;
+		_world = _chunk.getWorld();
 		_isComplete = false;
 	}
 	

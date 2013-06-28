@@ -1,5 +1,5 @@
 ﻿<Tile tileSet="OEM437_8">
 	<Frames framesPerSecond="1">
-		<Frame backgroundColor="Black" foregroundColor="FFB5B5B5" tileIndex="178" />
+		<Frame backgroundColor="FF000000" foregroundColor="FFB5B5B5" tileIndex="178" />
 	</Frames>
 </Tile>

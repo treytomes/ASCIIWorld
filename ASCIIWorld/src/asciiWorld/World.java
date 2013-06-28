@@ -27,7 +27,6 @@ public class World {
 	
 	public void setPlayer(Entity value) {
 		_player = value;
-		_player.getChunk().setWorld(this);
 	}
 	
 	public Chunk getChunk() {

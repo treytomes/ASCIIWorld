@@ -63,7 +63,11 @@ public class ChunkTransitionComponent extends EntityComponent {
 	private Chunk generateChunk() {
 		if (_chunk == null) {
 			try {
-				_chunk = ChunkFactory.generateDungeon(System.out, _seed);
+				if (RandomFactory.get().nextDouble() < 0.75) {
+					_chunk = ChunkFactory.generateCavern(System.out, _seed, getOwner().getChunk().getWorld());
+				} else {
+					_chunk = ChunkFactory.generateDungeon(System.out, _seed, getOwner().getChunk().getWorld());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

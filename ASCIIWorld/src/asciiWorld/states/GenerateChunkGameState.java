@@ -8,6 +8,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
+import asciiWorld.World;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.chunks.ChunkFactory;
 import asciiWorld.stateManager.GameState;
@@ -25,6 +26,7 @@ public class GenerateChunkGameState extends GameState {
 	
 	private static final TextWrappingMode DEFAULT_TEXT_WRAPPING_MODE = TextWrappingMode.CharacterWrap;
 	
+	private World _world;
 	private Chunk _chunk;
 	
 	private Thread _chunkGenerationThread;
@@ -32,6 +34,7 @@ public class GenerateChunkGameState extends GameState {
 	private MessageBox _loggingWindow;
 
 	public GenerateChunkGameState() {
+		_world = new World();
 		createLogStream();
 		createLoggingWindow();
 		createGenerationThread();
@@ -105,7 +108,8 @@ public class GenerateChunkGameState extends GameState {
 	private void generateChunk() {
 		try {
 			PrintStream printStream = new PrintStream(_logStream, true);
-			_chunk = ChunkFactory.generateOverworld(printStream);
+			_chunk = ChunkFactory.generateOverworld(printStream, _world);
+			//_chunk = ChunkFactory.generateCavern(printStream);
 			//_chunk = ChunkFactory.generateDungeon(printStream);
 			//_chunk = ChunkFactory.generateGrassyPlain();
 		} catch (Exception e) {
