@@ -1,0 +1,5 @@
+<Recipe output="torch">
+	<Ingredient name="woodStick" amount="1" />
+	<Ingredient name="slimeBall" amount="1" />
+	<!--<Ingredient name="silk" amount="1" />-->
+</Recipe>

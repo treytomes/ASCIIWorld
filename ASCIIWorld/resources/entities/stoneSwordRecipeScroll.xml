@@ -3,7 +3,7 @@
   <Components>
   	<Component name="CanSpeak">
   		<Properties>
-  			<Property name="Text" value="Recipe for Stone Sword" />
+  			<Property name="Text" value="Recipe for Stone Sword." />
   		</Properties>
   	</Component>
   	

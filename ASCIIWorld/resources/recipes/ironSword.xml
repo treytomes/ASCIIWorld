@@ -1,0 +1,4 @@
+<Recipe output="ironSword">
+	<Ingredient name="iron" amount="2" />
+	<Ingredient name="woodStick" amount="1" />
+</Recipe>

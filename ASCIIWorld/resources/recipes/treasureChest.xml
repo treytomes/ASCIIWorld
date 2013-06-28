@@ -1,0 +1,3 @@
+<Recipe output="treasureChest">
+	<Ingredient name="woodPlank" amount="8" />
+</Recipe>
