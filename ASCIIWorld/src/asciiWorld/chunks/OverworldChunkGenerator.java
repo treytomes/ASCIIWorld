@@ -34,7 +34,7 @@ public class OverworldChunkGenerator implements IChunkGenerator {
 		
 		_logStream = logStream;
 		
-		RandomFactory.get().reseed(seed);
+		RandomFactory.get().reseed(0); //seed);
 		
 		chunk = generatePerlinNoise(chunk);
 		chunk = generateRiver(chunk, findWater(chunk), findWater(chunk));
@@ -57,8 +57,9 @@ public class OverworldChunkGenerator implements IChunkGenerator {
     	_logStream.print("Generating perlin noise...");
     	
 		// This will generate weird grainy landscapes with random seeds > 25000.  Don't know why.
-		ITerrainGenerator generator = new PerlinTerrainGenerator(PERSISTENCE, FREQUENCY, AMPLITUDE, OCTAVES, RandomFactory.get().nextInt(0, 25000));
-		double[][] terrain = generator.generate(Chunk.COLUMNS, Chunk.ROWS);
+    	long seed = RandomFactory.get().nextInt(0, 25000);
+		ITerrainGenerator generator = new PerlinTerrainGenerator(PERSISTENCE, FREQUENCY, AMPLITUDE, OCTAVES, seed);
+		double[][] terrain = generator.generate(Chunk.COLUMNS, Chunk.ROWS, 0, 0);
 		for (int y = 0; y < Chunk.ROWS; y++) {
 			for (int x = 0; x < Chunk.COLUMNS; x++) {
 				int value = (int)terrain[y][x];

@@ -78,12 +78,14 @@ public class PerlinTerrainGenerator implements ITerrainGenerator {
 	}
 
 	@Override
-	public double[][] generate(int width, int height)
-			throws Exception {
+	public double[][] generate(int width, int height, int xPage, int yPage) throws Exception {
+		int xOffset = width * xPage;
+		int yOffset = height * yPage;
+		
 		double[][] terrain = new double[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				terrain[y][x] = getHeight(x, y);
+				terrain[y][x] = getHeight(x + xOffset, y + yOffset);
 			}
 		}
 		return terrain;
@@ -95,8 +97,7 @@ public class PerlinTerrainGenerator implements ITerrainGenerator {
 		return getAmplitude() * total(x, y);
 	}
 
-	private double total(double i, double j)
-			throws Exception {
+	private double total(double i, double j) throws Exception {
 		// Properties of 1 octave (changing each loop).
 		double t = 0.0;
 		double amplitude = 1.0;
