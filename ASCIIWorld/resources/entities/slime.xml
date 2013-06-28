@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Entity tile="ruffian" name="Ruffian">
+<Entity tile="slime" name="Slime">
   <Components>
-  	<Component name="CanBePushed" />
   	<Component name="SeekOther" />
     <Component name="AttackOther">
       <Properties>
@@ -11,18 +10,19 @@
   
     <Component name="LightSource">
       <Properties>
-        <Property name="Color" value="FFA52A2A" />
+        <Property name="Color" value="FF00FF00" />
         <Property name="Range" value="32" />
       </Properties>
     </Component>
   </Components>
   
   <Properties>
-    <Property name="MaxHealth" value="4" />
-    <Property name="Agility" value="10" />
-    <Property name="Strength" value="5" />
+    <Property name="MaxHealth" value="6" />
+    <Property name="Agility" value="5" />
+    <Property name="Strength" value="30" />
   </Properties>
   <Inventory>
-    <Item name="woodenSword" />
+    <Item name="miniSlime" />
+    <Item name="miniSlime" />
   </Inventory>
 </Entity>

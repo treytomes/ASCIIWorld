@@ -22,17 +22,15 @@ public class CavernChunkGenerator implements IChunkGenerator {
 		RandomFactory.get().reseed(seed);
 		
 		chunk = generatePerlinNoise(chunk);
-		//chunk = generateRiver(chunk, findWater(chunk), findWater(chunk));
-		//chunk = generateTrees(chunk);
-		//chunk = generateCaveEntrances(chunk);
 		
-		/*chunk.getComponents().add(new DayNightCycleComponent(chunk));
+		chunk.getComponents().add(new DayNightCycleComponent(chunk));
 		chunk.getComponents().add(new SpawnEntitiesComponent(chunk) {{
-			setEntityType("ruffian");
+			setEntityType("slime");
 			setSpawnFrequency(10000);
 			setSpawnChance(0.75);
-			setDistanceFromPlayer(15);
-		}});*/
+			setDistanceFromPlayer(10);
+			setUpperLimit(15);
+		}});
 		
 		return chunk;
 	}
