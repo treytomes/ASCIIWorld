@@ -192,7 +192,7 @@ public class TileSet implements IHasSize {
 	private void reset() {
 		if ((_rows != 0) && (_columns != 0)) {
 			_size = new Vector2f(_sourceImage.getWidth() / _columns, _sourceImage.getHeight() / _rows);
-			_sourceImage.setCenterOfRotation(_size.x / 2, _size.y / 2);
+			//_sourceImage.setCenterOfRotation(_size.x / 2, _size.y / 2);
 		}
 	}
 }

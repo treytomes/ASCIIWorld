@@ -2,7 +2,7 @@
 <Entity tile="ruffian" name="Ruffian">
   <Components>
   	<Component name="CanBePushed" />
-  	<Component name="SeekOutPlayer" />
+  	<Component name="SeekOther" />
     <Component name="AttackOther">
       <Properties>
         <Property name="TypeToAttack" value="player" />
