@@ -29,13 +29,12 @@
     <Item name="woodWallRecipeScroll" />
     <Item name="stoneSwordRecipeScroll" />
     <Item name="craftingTable" />
-    <Item name="ruffian" />
+    <Item name="bauble" />
     <Item name="turtle" />
     <Item name="giraffe" />
 	<!--
 	<Item name="ironSword" />
 	<Item name="healingPotion" />
-	<Item name="bauble" />
 	<Item name="debugDeathStick" />
     -->
   </Inventory>

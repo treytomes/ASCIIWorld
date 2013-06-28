@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="bauble" name="Bauble">
+  <Components>
+  	<Component name="SeekOther" />
+	<Component name="LightSource">
+		<Properties>
+			<Property name="Color" value="FFFFC0CB" />
+			<Property name="Range" value="32" />
+		</Properties>
+	</Component>
+	<Component name="Placeable" />
+	<Component name="CanBePickedUp" />
+	<Component name="Spin">
+		<Properties>
+			<Property name="Speed" value="5" />
+		</Properties>
+	</Component>
+  </Components>
+  
+  <Properties>
+    <Property name="Agility" value="10" />
+  </Properties>
+</Entity>
