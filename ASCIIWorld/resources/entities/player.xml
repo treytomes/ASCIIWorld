@@ -29,6 +29,7 @@
     <Item name="woodWallRecipeScroll" />
     <Item name="stoneSwordRecipeScroll" />
     <Item name="craftingTable" />
+    <Item name="ruffian" />
     <Item name="turtle" />
     <Item name="giraffe" />
 	<!--
@@ -36,12 +37,6 @@
 	<Item name="healingPotion" />
 	<Item name="bauble" />
 	<Item name="debugDeathStick" />
-	<Item name="woodStick" />
-	<Item name="woodStick" />
-	<Item name="woodStick" />
-	<Item name="woodStick" />
-	<Item name="woodStick" />
-	<Item name="woodStick" />
     -->
   </Inventory>
 </Entity>

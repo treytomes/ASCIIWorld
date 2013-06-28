@@ -88,7 +88,6 @@ public class TileSet implements IHasSize {
 		}
 		_sourceImage = new Image(_sourceImagePath);
 		_sourceImage.setFilter(SCALE_FILTER);
-		reset();
 	}
 	
 	public Image getSourceImage() {
@@ -135,9 +134,9 @@ public class TileSet implements IHasSize {
 		reset();
 	}
 	
-	public void drawBatched(SpriteBatch spriteBatch, float x, float y, float rotation, int tileIndex, Color color) {
+	public void drawBatched(SpriteBatch spriteBatch, float x, float y, Vector2f scale, float rotation, int tileIndex, Color color) {
 		Rectangle srcRect = getSourceRectangle(tileIndex);
-		spriteBatch.drawSubImage(_sourceImage, srcRect.getX(), srcRect.getY(), _size.x, _size.y, x, y, rotation, _size.x, _size.y, new Color[] { color, color, color, color });
+		spriteBatch.drawSubImage(_sourceImage, srcRect.getX(), srcRect.getY(), _size.x, _size.y, x, y, scale, rotation, _size.x, _size.y, new Color[] { color, color, color, color });
 	}
 	
 	public void draw(int tileIndex, Color color) {
@@ -193,7 +192,7 @@ public class TileSet implements IHasSize {
 	private void reset() {
 		if ((_rows != 0) && (_columns != 0)) {
 			_size = new Vector2f(_sourceImage.getWidth() / _columns, _sourceImage.getHeight() / _rows);
-			//getSourceImage().setCenterOfRotation(_tileSize.x / 2, _tileSize.y / 2);
+			_sourceImage.setCenterOfRotation(_size.x / 2, _size.y / 2);
 		}
 	}
 }

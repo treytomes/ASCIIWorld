@@ -11,6 +11,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.Convert;
 
@@ -86,13 +87,13 @@ public class Frame implements ITile, IRenderable {
 	}
 
 	@Override
-	public void renderBatched(TileSet tiles, SpriteBatch spriteBatch, float x, float y, float rotation) {
+	public void renderBatched(TileSet tiles, SpriteBatch spriteBatch, float x, float y, Vector2f scale, float rotation) {
 		if (_backgroundColor.a > 0) {
-			tiles.drawBatched(spriteBatch, x, y, rotation, TILEINDEX_SOLID, _backgroundColor);
+			tiles.drawBatched(spriteBatch, x, y, scale, rotation, TILEINDEX_SOLID, _backgroundColor);
 		}
 		
 		if (_foregroundColor.a > 0) {
-			tiles.drawBatched(spriteBatch, x, y, rotation, _tileIndex, _foregroundColor);
+			tiles.drawBatched(spriteBatch, x, y, scale, rotation, _tileIndex, _foregroundColor);
 		}
 	}
 	

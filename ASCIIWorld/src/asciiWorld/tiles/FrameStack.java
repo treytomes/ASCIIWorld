@@ -8,6 +8,7 @@ import java.util.List;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.newdawn.slick.geom.Vector2f;
 
 public class FrameStack implements IRenderable {
 	
@@ -38,9 +39,9 @@ public class FrameStack implements IRenderable {
 	}
 
 	@Override
-	public void renderBatched(TileSet tiles, SpriteBatch spriteBatch, float x, float y, float rotation) {
+	public void renderBatched(TileSet tiles, SpriteBatch spriteBatch, float x, float y, Vector2f scale, float rotation) {
 		for (IRenderable frame : _frames) {
-			frame.renderBatched(tiles, spriteBatch, x, y, rotation);
+			frame.renderBatched(tiles, spriteBatch, x, y, scale, rotation);
 		}
 	}
 	

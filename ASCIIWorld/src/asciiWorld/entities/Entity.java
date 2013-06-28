@@ -40,7 +40,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	private static final float MODIFIER_AGILITY = 15.0f;
 	private static final float SPEED_TIME_DIVISOR = 250f; // 20.0f;
 	private static final int HEALTH_REGEN_UPDATE_MS = 1000;
-	private static final float USE_COOLDOWN_FACTOR = 15000.0f;
+	private static final float USE_COOLDOWN_FACTOR = 35000.0f;
 	
 	private int _totalTimeAlive;
 	
@@ -527,6 +527,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		return getActiveItem() != null;
 	}
 	
+	public void useActiveItem(Vector2f targetChunkPoint, float layer) {
+		useActiveItem(new Vector3f(targetChunkPoint, layer));
+	}
+	
 	public void useActiveItem(Vector3f targetChunkPoint) {
 		if (!_ableToUseSomething) {
 			return;
@@ -676,7 +680,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		}
 		if (!_ableToUseSomething)
 		{
-			if ((_totalTimeAlive - _lastUseTime) >= (USE_COOLDOWN_FACTOR / getAttackSpeed()))
+			if ((_totalTimeAlive - _lastUseTime) >= (USE_COOLDOWN_FACTOR / (getAttackSpeed() / 2)))
 			{
 				_ableToUseSomething = true;
 			}

@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.util.FastTrig;
 
@@ -325,8 +326,7 @@ public class SpriteBatch {
 //				 		x, y+h, tx, ty+th, corners!=null ? corners[3] : null);
 	}
 
-	public void drawSubImage(Image image, float srcx, float srcy,
-			float srcwidth, float srcheight, float x, float y) {
+	public void drawSubImage(Image image, float srcx, float srcy, float srcwidth, float srcheight, float x, float y) {
 		drawSubImage(image, srcx, srcy, srcwidth, srcheight, x, y, srcwidth, srcheight);
 	}
 	
@@ -351,11 +351,11 @@ public class SpriteBatch {
 				x, y + h, tx, ty + th, corners != null ? corners[3] : null);
 	}
 
-	public void drawSubImage(Image image, float srcx, float srcy, float srcwidth, float srcheight, float x, float y, float rotation, float w, float h, Color[] corners) {
-		if (rotation==0) {
+	public void drawSubImage(Image image, float srcx, float srcy, float srcwidth, float srcheight, float x, float y, Vector2f scale, float rotation, float w, float h, Color[] corners) {
+		/*if (rotation==0) {
 			drawSubImage(image, srcx, srcy, srcwidth, srcheight, x, y, w, h, corners);
 			return;
-		}
+		}*/
 		
 		checkRender(image);
 
@@ -365,6 +365,20 @@ public class SpriteBatch {
 		float ty = (srcy / ih * image.getTextureHeight()) + image.getTextureOffsetY();
 		float tw = w / iw * image.getTextureWidth();
 		float th = h / ih * image.getTextureHeight();
+		
+		/*if ((scale.x != 1) || (scale.y != 1)) {
+			System.out.println(String.format("%f, %f", scale.x, scale.y));
+		}*/
+		
+		w *= scale.x;
+		h *= scale.y;
+		
+		if (scale.x < 0) {
+			x -= w;
+		}
+		if (scale.y < 0) {
+			y -= h;
+		}
 		
 		float scaleX = w / image.getWidth();
 		float scaleY = h / image.getHeight();
@@ -393,20 +407,13 @@ public class SpriteBatch {
 		float y3 = (sin * p3x + cos * p3y) + cy;
 		float x4 = (cos * p4x - sin * p4y) + cx; // BOTTOM LEFT
 		float y4 = (sin * p4x + cos * p4y) + cy;
-		drawQuadElement(x+x1, y+y1, tx, ty, corners!=null ? corners[0] : null,
-				 		x+x2, y+y2, tx+tw, ty, corners!=null ? corners[1] : null,
-				 		x+x3, y+y3, tx+tw, ty+th, corners!=null ? corners[2] : null,
-				 		x+x4, y+y4, tx, ty+th, corners!=null ? corners[3] : null);
-		
-		/*drawQuadElement(
-				x, y, tx, ty, corners != null ? corners[0] : null,
-				x + w, y, tx + tw, ty, corners != null ? corners[1] : null,
-				x + w, y + h, tx + tw, ty + th, corners != null ? corners[2] : null,
-				x, y + h, tx, ty + th, corners != null ? corners[3] : null);*/
+		drawQuadElement(x + x1, y + y1, tx,      ty,      corners != null ? corners[0] : null,
+				 		x + x2, y + y2, tx + tw, ty,      corners != null ? corners[1] : null,
+				 		x + x3, y + y3, tx + tw, ty + th, corners != null ? corners[2] : null,
+				 		x + x4, y + y4, tx,      ty + th, corners != null ? corners[3] : null);
 	}
 	
-	public void drawImage(Image image, float x, float y, float width, float height, 
-					float u, float v, float uWidth, float vHeight, Color[] corners) {
+	public void drawImage(Image image, float x, float y, float width, float height,  float u, float v, float uWidth, float vHeight, Color[] corners) {
 		checkRender(image);
 		drawQuadElement(x, y, u, v, corners!=null ? corners[0] : null,
 				 		x+width, y, u+uWidth, v, corners!=null ? corners[1] : null,
@@ -424,8 +431,7 @@ public class SpriteBatch {
 	 * @param offset
 	 * @param corners
 	 */
-	public void drawImage(Image image, float x, float y, float[] points, 
-			float[] texcoords, int offset, int texcoordsOffset, Color[] corners) {
+	public void drawImage(Image image, float x, float y, float[] points, float[] texcoords, int offset, int texcoordsOffset, Color[] corners) {
 		checkRender(image);
 		
 		float x1 = points[offset++];

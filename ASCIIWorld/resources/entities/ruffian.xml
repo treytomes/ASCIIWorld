@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="ruffian" name="Ruffian">
+  <Components>
+  	<Component name="CanBePushed" />
+  	<Component name="SeekOutPlayer" />
+    <Component name="AttackOther">
+      <Properties>
+        <Property name="TypeToAttack" value="player" />
+      </Properties>
+    </Component>
+
+    <Component name="Placeable" />
+  
+    <Component name="LightSource">
+      <Properties>
+        <Property name="Color" value="FFA52A2A" />
+        <Property name="Range" value="32" />
+      </Properties>
+    </Component>
+  </Components>
+  
+  <Properties>
+    <Property name="MaxHealth" value="4" />
+    <Property name="Agility" value="10" />
+    <Property name="Strength" value="5" />
+  </Properties>
+  <Inventory>
+    <Item name="woodenSword" />
+  </Inventory>
+</Entity>
