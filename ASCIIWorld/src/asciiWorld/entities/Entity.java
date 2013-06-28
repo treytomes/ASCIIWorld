@@ -31,7 +31,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	public static final float MOVEMENT_STEP = 8.0f;
 	
 	private static final boolean DEFAULT_IS_TRANSLUCENT = true;
-	private static final int DEFAULT_AGILITY = 1;
+	private static final int DEFAULT_AGILITY = 5;
 	private static final int DEFAULT_STRENGTH = 2;
 	private static final int DEFAULT_PERCEPTION = 10;
 	private static final float DEFAULT_WEIGHT = 1;
