@@ -11,7 +11,7 @@ import asciiWorld.ai.AStarOriginal;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.math.Point;
 
-public class SeekOutPlayerComponent extends EntityComponent {
+public class SeekOtherComponent extends EntityComponent {
 	
 	private static final String DEFAULT_TARGET_ENTITY_NAME = "Player";
 
@@ -21,7 +21,7 @@ public class SeekOutPlayerComponent extends EntityComponent {
 	private List<Point> _currentPath;
 	private int _pathIndex;
 	
-	public SeekOutPlayerComponent(Entity owner) {
+	public SeekOtherComponent(Entity owner) {
 		super(owner);
 		setTargetEntityName(DEFAULT_TARGET_ENTITY_NAME);
 		_lastTargetPosition = null;
