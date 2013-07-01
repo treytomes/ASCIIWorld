@@ -9,6 +9,8 @@ import asciiWorld.math.Vector3f;
 
 public class ChunkTransitionComponent extends EntityComponent {
 
+	private static final double ODDS_CAVERN = 0.5; // 0.75
+	
 	private int _seed;
 	private Chunk _chunk;
 	
@@ -63,7 +65,7 @@ public class ChunkTransitionComponent extends EntityComponent {
 	private Chunk generateChunk() {
 		if (_chunk == null) {
 			try {
-				if (RandomFactory.get().nextDouble() < 0.75) {
+				if (RandomFactory.get().nextDouble() < ODDS_CAVERN) {
 					_chunk = ChunkFactory.generateCavern(System.out, _seed, getOwner().getChunk().getWorld());
 				} else {
 					_chunk = ChunkFactory.generateDungeon(System.out, _seed, getOwner().getChunk().getWorld());

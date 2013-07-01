@@ -158,6 +158,9 @@ public class PlayerControlComponent extends InputAwareComponent {
 			case KEY_INVENTORY:
 				openInventoryInterface();
 				break;
+			case Input.KEY_P:
+				getOwner().getChunk().onlyRenderInRange = !getOwner().getChunk().onlyRenderInRange;
+				break;
 			default:
 				for (HotKeyInfo info : getHotKeyManager()) {
 					if (info.getKeyboardKey() == key) {

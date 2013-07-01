@@ -34,7 +34,7 @@ public class OverworldChunkGenerator implements IChunkGenerator {
 		
 		_logStream = logStream;
 		
-		RandomFactory.get().reseed(0); //seed);
+		RandomFactory.get().reseed(seed);
 		
 		chunk = generatePerlinNoise(chunk);
 		chunk = generateRiver(chunk, findWater(chunk), findWater(chunk));

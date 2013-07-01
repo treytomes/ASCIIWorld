@@ -346,8 +346,11 @@ public class Chunk implements IAStarMap {
 		renderAnimations(g);
 	}
 	
+	public boolean onlyRenderInRange = true;
+	
 	private void renderAnimations(Graphics g) {
-		for (Entity entity : _entitiesInRange) {
+		List<Entity> renderable = onlyRenderInRange ? _entitiesInRange : _entities;
+		for (Entity entity : renderable) {
 			entity.renderAnimations(g);
 		}
 	}
@@ -366,10 +369,12 @@ public class Chunk implements IAStarMap {
 	}
 	
 	private void render(Graphics g, int layerIndex) {
+		List<Entity> renderable = onlyRenderInRange ? _entitiesInRange : _entities;
+
 		SpriteBatch spriteBatch = new SpriteBatch();
 		SpriteBatch.setUseTriangles(false);
 		
-		for (Entity entity : _entities) {// _entitiesInRange) {
+		for (Entity entity : renderable) {
 			if (entity.getLayer() == layerIndex) {
 				entity.renderBatched(spriteBatch);
 				//entity.render(g);
