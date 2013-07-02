@@ -80,6 +80,7 @@ public class EntityTemplate {
 			entity.setProperty(propertyName, getPropertyValue(propertyName));
 		}
 		
+		entity.setHealth(entity.getMaxHealth());
 		return entity;
 	}
 	

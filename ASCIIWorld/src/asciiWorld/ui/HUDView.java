@@ -118,6 +118,8 @@ public class HUDView extends CanvasPanel {
 				setTextWrappingMode(TextWrappingMode.NoWrap);
 			}});
 		}});
+		
+		addChild(new HealthMeter(new Rectangle(hotKeyPanel.getBounds().getMaxX(), 32, 400, 32), new MethodBinding(new MethodBinding(this, "getWorld"), "getPlayer")));
 
 		addChild(createMenuPanel(container, game));
 		addChild(createZoomPanel());

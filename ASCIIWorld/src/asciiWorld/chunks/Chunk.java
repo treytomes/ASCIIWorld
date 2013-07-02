@@ -369,7 +369,7 @@ public class Chunk implements IAStarMap {
 		SpriteBatch spriteBatch = new SpriteBatch();
 		SpriteBatch.setUseTriangles(false);
 		
-		for (Entity entity : _entities) {// _entitiesInRange) {
+		for (Entity entity : _entitiesInRange) {
 			if (entity.getLayer() == layerIndex) {
 				entity.renderBatched(spriteBatch);
 				//entity.render(g);
@@ -377,6 +377,12 @@ public class Chunk implements IAStarMap {
 		}
 		
 		spriteBatch.flush();
+		
+		for (Entity entity : _entitiesInRange) {
+			if (entity.getLayer() == layerIndex) {
+				entity.renderHealth(g);
+			}
+		}
 	}
 	
 	private void cacheEntitiesInRange() {

@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
@@ -447,8 +448,17 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		return _health;
 	}
 	
-	private void setHealth(int value) {
+	/**
+	 * You should normally call restoreHealth, but this is used by the EntityTemplate.createInstance method.
+	 * @param value
+	 */
+	public void setHealth(int value) {
 		_health = value;
+		if (_health > _maxHealth) {
+			_health = _maxHealth;
+		} else if (_health < 0) {
+			_health = 0;
+		}
 	}
 	
 	/**
@@ -486,11 +496,6 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		int originalHealth = _health;
 		
 		setHealth(getHealth() + amount);
-		if (getHealth() < 0) {
-			setHealth(0);
-		} else if (getHealth() > getMaxHealth()) {
-			setHealth(getMaxHealth());
-		}
 		
 		if (originalHealth != _health) {
 			addAnimation(FadingTextAnimation.createRestoreNotification(this, amount));
@@ -697,15 +702,26 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	}
 	
 	public void render(Graphics g) {
-		/*if (isBlockedInAllDirections()) {
-			return;
-		}*/
-		
 		_tile.render(g, _position.x, _position.y);
+		
+		renderHealth(g);
 	}
 	
 	public void renderBatched(SpriteBatch spriteBatch) {
 		_tile.renderBatched(spriteBatch, (int)_position.x, (int)_position.y);
+	}
+	
+	public void renderHealth(Graphics g) {
+		if (_health < _maxHealth) {
+			float percent = (float)_health / (float)_maxHealth;
+			
+			float height = MOVEMENT_STEP / 8;
+			
+			g.setColor(Color.green);
+			g.fillRect(_position.x, _position.y + MOVEMENT_STEP, MOVEMENT_STEP * percent, height);
+			g.setColor(Color.red);
+			g.fillRect(_position.x + MOVEMENT_STEP * percent, _position.y + MOVEMENT_STEP, MOVEMENT_STEP - MOVEMENT_STEP * percent, height);
+		}
 	}
 	
 	public void renderAnimations(Graphics g) {

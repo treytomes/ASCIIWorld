@@ -22,7 +22,7 @@ public class CavernChunkGenerator implements IChunkGenerator {
 		
 		chunk = generatePerlinNoise(chunk);
 		
-		chunk.getComponents().add(new DayNightCycleComponent(chunk));
+		//chunk.getComponents().add(new DayNightCycleComponent(chunk));
 		chunk.getComponents().add(new SpawnEntitiesComponent(chunk) {{
 			setEntityType("slime");
 			setSpawnFrequency(10000);
