@@ -2,11 +2,13 @@ package asciiWorld.ui;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import asciiWorld.CreateColor;
 import asciiWorld.FontFactory;
+import asciiWorld.entities.Entity;
 import asciiWorld.entities.HotKeyInfo;
 
 public class HotKeyView extends Border {
@@ -97,6 +99,23 @@ public class HotKeyView extends Border {
 		return getTileBinding;
 	}
 
+	@Override
+	public void render(Graphics g) {
+		super.render(g);
+		
+		g.pushTransform();
+		g.scale(4, 4);
+		try {
+			Entity item = _info.getItem();
+			if (item != null) {
+				_info.getItem().renderHealth(g);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		g.popTransform();
+	}
+	
 	@Override
 	public void update(GameContainer container, int delta) {
 		try {

@@ -553,7 +553,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		
 		if (hasActiveItem()) {
 			_somethingIsBeingUsed = true;
-			getActiveItem().use(targetChunkPoint);
+			getActiveItem().use(this, targetChunkPoint);
 		}
 	}
 	
@@ -602,10 +602,15 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		_knockBackMovement = true;
 	}
 	
-	public void use(Vector3f targetChunkPoint) {
+	public void use(Entity usedByEntity, Vector3f targetChunkPoint) {
 		Entity owner = getContainer().getOwner();
 		for (EntityComponent component : getComponents()) {
 			component.use(owner, targetChunkPoint);
+		}
+		
+		takeDamage(usedByEntity, 1); // using an item wears it out
+		if (getHealth() <= 0) {
+			breakMe();
 		}
 	}
 	
@@ -654,6 +659,18 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 			}
 			item.moveTo(cachedChunk.findSpawnPoint(chunkPoint, getLayer()));
 			cachedChunk.addEntity(item);
+		}
+	}
+	
+	private void breakMe() {
+		try {
+			if (getContainer() != null) {
+				getContainer().remove(this);
+			} else {
+				die();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

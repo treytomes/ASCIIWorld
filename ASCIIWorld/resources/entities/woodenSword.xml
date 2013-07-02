@@ -12,6 +12,7 @@
 
 	<Properties>
 		<Property name="Agility" value="15" />
+		<Property name="MaxHealth" value="70" />
 	</Properties>
  
 	<Inventory>
