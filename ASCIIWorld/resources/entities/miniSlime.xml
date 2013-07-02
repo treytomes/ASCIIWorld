@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity tile="miniSlime" name="Mini Slime">
   <Components>
+ 	<Component name="KnockBack" />
   	<Component name="SeekOther" />
     <Component name="AttackOther">
       <Properties>

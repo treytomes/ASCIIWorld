@@ -38,6 +38,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	private static final float DEFAULT_WEIGHT = 1;
 	private static final int DEFAULT_MAX_HEALTH = 10;
 	
+	private static final float MULTIPLIER_KNOCKBACK = 4.0f;
 	private static final float MODIFIER_AGILITY = 15.0f;
 	private static final float SPEED_TIME_DIVISOR = 250f; // 20.0f;
 	private static final int HEALTH_REGEN_UPDATE_MS = 1000;
@@ -56,6 +57,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	private Vector3f _moveFromPosition;
 	private Vector3f _moveToPosition;
 	private float _movementWeight;
+	private boolean _knockBackMovement; // implies faster movement
 	
 	private String _type;
 	private String _name;
@@ -421,7 +423,11 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 			}
 		}
 		
-		return movementSpeed;
+		float knockBackMultiplier = _knockBackMovement ? MULTIPLIER_KNOCKBACK : 1.0f;
+		if (knockBackMultiplier > 1.0f) {
+			System.out.println(knockBackMultiplier);
+		}
+		return movementSpeed * knockBackMultiplier;
 	}
 	
 	public float getBaseRangeOfVision() {
@@ -489,6 +495,10 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		
 		if (originalHealth != _health) {
 			addAnimation(FadingTextAnimation.createDamageNotification(this, amount));
+			
+			for (EntityComponent component : _components) {
+				component.afterDamaged(damagedByEntity, amount);
+			}
 		}
 	}
 	
@@ -584,6 +594,14 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		}
 	}
 	
+	public void knockBack(Direction direction) {
+		_position = _moveToPosition.clone();
+		_moveFromPosition = _moveToPosition.clone();
+		_movementWeight = 0.0f;
+		move(direction);
+		_knockBackMovement = true;
+	}
+	
 	public void use(Vector3f targetChunkPoint) {
 		Entity owner = getContainer().getOwner();
 		for (EntityComponent component : getComponents()) {
@@ -650,6 +668,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 					_position = _moveToPosition.clone();
 					_moveFromPosition = _moveToPosition.clone();
 					_movementWeight = 0.0f;
+					_knockBackMovement = false;
 				}
 			}
 		}

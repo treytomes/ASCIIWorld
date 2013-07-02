@@ -110,4 +110,13 @@ public class EntityComponent {
 	 * @param item
 	 */
 	public void itemWasLost(Entity item) { }
+
+	/**
+	 * Called after this entity has been successfully damaged.
+	 * 
+	 * @param damagedByEntity
+	 * @param amount
+	 */
+	public void afterDamaged(Entity damagedByEntity, int amount) {
+	}
 }

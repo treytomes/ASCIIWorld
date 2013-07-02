@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Entity tile="player" name="Player">
   <Components>
+  	<Component name="KnockBack" />
+  	
     <Component name="LightSource">
       <Properties>
         <Property name="Color" value="FFFFFFFF" />
