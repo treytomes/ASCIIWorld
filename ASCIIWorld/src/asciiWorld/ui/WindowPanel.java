@@ -112,7 +112,7 @@ public class WindowPanel extends Border {
 		
 		try {
 			_buttonPanel.addChild(0, button);
-			_buttonPanel.getBounds().setX(MARGIN);
+			_buttonPanel.getBounds().setX(dialogBounds.getX() + MARGIN);
 			_buttonPanel.getBounds().setWidth(myWidth);
 			_buttonPanel.resetBounds();
 		} catch (Exception e) {
