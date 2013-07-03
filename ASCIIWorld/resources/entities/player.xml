@@ -20,6 +20,7 @@
   </Properties>
   
   <Inventory>
+    <Item name="debugDeathStick" />
     <Item name="woodenSword" />
     <Item name="torch" />
     <Item name="torch" />

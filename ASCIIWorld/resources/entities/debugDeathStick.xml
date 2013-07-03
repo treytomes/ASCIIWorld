@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity tile="debugDeathStick" name="Debug Death Stick">
+	<Components>
+		<Component name="Attack">
+			<Properties>
+				<Property name="DamageModifier" value="1000" />
+				<Property name="Range" value="100" />
+			</Properties>
+		</Component>
+	</Components>
+
+	<Properties>
+		<Property name="Agility" value="100" />
+		<Property name="MaxHealth" value="9999" />
+	</Properties>
+</Entity>
