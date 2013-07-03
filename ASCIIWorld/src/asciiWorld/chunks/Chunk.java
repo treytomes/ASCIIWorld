@@ -385,7 +385,12 @@ public class Chunk implements IAStarMap {
 		
 		for (Entity entity : renderable) {
 			if (entity.getLayer() == layerIndex) {
+				
+				// Translation must be done here for health to be rendered correctly in the HotKeyView.
+				Vector3f position = entity.getPosition();
+				g.translate(position.x, position.y);
 				entity.renderHealth(g);
+				g.translate(-position.x, -position.y);
 			}
 		}
 	}

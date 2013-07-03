@@ -754,9 +754,9 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 			float height = MOVEMENT_STEP / 8;
 			
 			g.setColor(Color.green);
-			g.fillRect(_position.x, _position.y + MOVEMENT_STEP, MOVEMENT_STEP * percent, height);
+			g.fillRect(0, MOVEMENT_STEP, MOVEMENT_STEP * percent, height);
 			g.setColor(Color.red);
-			g.fillRect(_position.x + MOVEMENT_STEP * percent, _position.y + MOVEMENT_STEP, MOVEMENT_STEP - MOVEMENT_STEP * percent, height);
+			g.fillRect(MOVEMENT_STEP * percent, MOVEMENT_STEP, MOVEMENT_STEP - MOVEMENT_STEP * percent, height);
 		}
 	}
 	

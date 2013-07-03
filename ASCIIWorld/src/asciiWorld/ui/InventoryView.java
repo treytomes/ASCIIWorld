@@ -53,10 +53,14 @@ public class InventoryView extends GridViewPanel {
 		return itemsList;
 	}
 	
+	public String getHealthText(Entity item) {
+		return String.format("%d / %d", item.getHealth(), item.getMaxHealth());
+	}
+	
 	private GridViewPanel createDetailsPanel(final HotKeyManager hotkeys) throws Exception {
 		MethodBinding selectedItemBinding = new MethodBinding(_itemList, "getSelectedItem");
 		
-		GridViewPanel details = new GridViewPanel(7, 2);
+		GridViewPanel details = new GridViewPanel(8, 2);
 		details.setColumnWidth(0, 0.4f);
 		details.setColumnWidth(1, 0.6f);
 		
@@ -65,22 +69,25 @@ public class InventoryView extends GridViewPanel {
 		details.addChild(new Label(largeFont, "Details for:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 0, 0);
 		details.addChild(new Label(largeFont, new MethodBinding(selectedItemBinding, "getName"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 0, 1);
 		
-		details.addChild(new Label("Weight:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 1, 0);
-		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getTotalWeight"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 1, 1);
+		details.addChild(new Label("Health:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 1, 0);
+		details.addChild(new Label(new MethodBinding(this, "getHealthText", selectedItemBinding), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 1, 1);
+		
+		details.addChild(new Label("Weight:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 2, 0);
+		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getTotalWeight"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 2, 1);
 
-		details.addChild(new Label("Agility:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 2, 0);
-		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getAgility"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 2, 1);
+		details.addChild(new Label("Agility:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 3, 0);
+		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getAgility"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 3, 1);
 		
-		details.addChild(new Label("Perception:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 3, 0);
-		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getPerception"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 3, 1);
+		details.addChild(new Label("Perception:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 4, 0);
+		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getPerception"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 4, 1);
 		
-		details.addChild(new Label("Movement speed:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 4, 0);
-		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getMovementSpeed"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 4, 1);
+		details.addChild(new Label("Movement speed:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 5, 0);
+		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getMovementSpeed"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 5, 1);
 		
-		details.addChild(new Label("Range of vision:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 5, 0);
-		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getRangeOfVision"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 5, 1);
+		details.addChild(new Label("Range of vision:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 6, 0);
+		details.addChild(new Label(new MethodBinding(selectedItemBinding, "getRangeOfVision"), COLOR_TEXT_DETAILS) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 6, 1);
 		
-		details.addChild(new Label("Hot key assignment:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 6, 0);
+		details.addChild(new Label("Hot key assignment:", COLOR_TEXT_DESCRIPTION) {{ setHorizontalContentAlignment(HorizontalAlignment.Left); }}, 7, 0);
 		HotKeyPanel hotkeyPanel = new HotKeyPanel(hotkeys);
 		hotkeyPanel.addItemSelectedListener(new HotKeySelectedEvent() {
 			@Override
@@ -100,7 +107,7 @@ public class InventoryView extends GridViewPanel {
 				info.setItem(item);
 			}
 		});
-		details.addChild(hotkeyPanel, 6, 1);
+		details.addChild(hotkeyPanel, 7, 1);
 		
 		return details;
 	}

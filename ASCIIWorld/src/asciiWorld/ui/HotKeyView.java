@@ -104,7 +104,9 @@ public class HotKeyView extends Border {
 		super.render(g);
 		
 		g.pushTransform();
+		g.translate(_tileView.getBounds().getX(), getBounds().getY());
 		g.scale(4, 4);
+		g.translate(0, -Entity.MOVEMENT_STEP / 4);
 		try {
 			Entity item = _info.getItem();
 			if (item != null) {
