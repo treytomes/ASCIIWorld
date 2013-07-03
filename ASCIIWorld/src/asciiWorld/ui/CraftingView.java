@@ -19,6 +19,7 @@ public class CraftingView extends GridViewPanel {
 	private int _craftingLevel;
 	private ListView _playerList;
 	private StackPanel _outputView;
+	private ListView _recipeList;
 	
 	public CraftingView(InventoryContainer playerInventory, int craftingLevel) {
 		super(1, 2);
@@ -62,6 +63,15 @@ public class CraftingView extends GridViewPanel {
 		}
 	}
 	
+	public Entity getSelectedInventoryItem() {
+		return Entity.class.cast(_playerList.getSelectedItem());
+	}
+	
+	public void resetBinding() {
+		resetOutputViewBinding(_recipeList.getSelectedItem());
+		_playerList.resetBinding();
+	}
+	
 	private ListView createItemList(InventoryContainer inventory) {
 		ListView itemsList = new ListView();
 		itemsList.setItemsSource(inventory);
@@ -69,7 +79,7 @@ public class CraftingView extends GridViewPanel {
 	}
 	
 	private ScrollableListView createRecipeList() throws Exception {
-		ListView recipeList = new ListView();
+		_recipeList = new ListView();
 		List<RecipeComponent> recipes = new ArrayList<RecipeComponent>();
 		
 		for (Entity item : _playerInventoryContainer) {
@@ -83,20 +93,24 @@ public class CraftingView extends GridViewPanel {
 			}
 		}
 		
-		recipeList.setItemsSource(recipes);
+		_recipeList.setItemsSource(recipes);
 		
-		recipeList.addItemSelectedListener(new ListViewItemSelectedEvent() {
+		_recipeList.addItemSelectedListener(new ListViewItemSelectedEvent() {
 			@Override
 			public void itemSelected(ListView listView, Object selectedItem) {
 				resetOutputViewBinding(selectedItem);
 			}
 		});
 		
-		return new ScrollableListView(recipeList);
+		return new ScrollableListView(_recipeList);
 	}
 	
 	private void resetOutputViewBinding(final Object selectedItem) {
 		final RecipeComponent recipe = RecipeComponent.class.cast(selectedItem);
+		if (recipe == null) {
+			return;
+		}
+		
 		final Map<String, Integer> ingredients = recipe.getIngredients();
 		
 		_outputView.clearChildren();
