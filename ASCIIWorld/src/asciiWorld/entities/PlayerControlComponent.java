@@ -10,8 +10,11 @@ import asciiWorld.Camera;
 import asciiWorld.CreateRectangle;
 import asciiWorld.Direction;
 import asciiWorld.math.Vector3f;
+import asciiWorld.ui.Button;
+import asciiWorld.ui.EntityDetailsPanel;
 import asciiWorld.ui.HUDView;
 import asciiWorld.ui.InventoryView;
+import asciiWorld.ui.MethodBinding;
 import asciiWorld.ui.RootVisualPanel;
 import asciiWorld.ui.WindowPanel;
 
@@ -232,27 +235,44 @@ public class PlayerControlComponent extends InputAwareComponent {
 			return;
 		}
 		
+		createInventoryWindow();
+	}
+	
+	private void createInventoryWindow() {
 		try {
-			InventoryContainer inventory = getOwner().getInventory();
-			createInventoryWindow(inventory);
+			RootVisualPanel root = RootVisualPanel.get();
+		
+			Rectangle bounds = CreateRectangle
+					.from(root.getBounds())
+					//.scale(4f / 5f)
+					.centerOn(root.getBounds())
+					.getRectangle();
+			
+			_inventoryUI = new WindowPanel(bounds, "Inventory");
+			_inventoryUI.addButton(Button.createActionButton("Inventory", new MethodBinding(this, "openInventoryTab")));
+			_inventoryUI.addButton(Button.createActionButton("Status", new MethodBinding(this, "openStatusTab")));
+			openInventoryTab();
+			
+			root.addModalChild(_inventoryUI);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to open the inventory interface.");
 		}
 	}
 	
-	private void createInventoryWindow(InventoryContainer inventory) throws Exception {
-		RootVisualPanel root = RootVisualPanel.get();
-		
-		Rectangle bounds = CreateRectangle
-				.from(root.getBounds())
-				.scale(4f / 5f)
-				.centerOn(root.getBounds())
-				.getRectangle();
-		
-		_inventoryUI = new WindowPanel(bounds, "Inventory");
-		_inventoryUI.setWindowContent(new InventoryView(inventory, getHotKeyManager()));
-		
-		root.addModalChild(_inventoryUI);
+	public void openInventoryTab() {
+		try {
+			_inventoryUI.setWindowContent(new InventoryView(getOwner().getInventory(), getHotKeyManager()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void openStatusTab() {
+		try {
+			_inventoryUI.setWindowContent(new EntityDetailsPanel(new MethodBinding(this, "getOwner")));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

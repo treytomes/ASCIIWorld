@@ -69,7 +69,7 @@ public class InventoryView extends GridViewPanel {
 		return itemsList;
 	}
 	
-	private GridViewPanel createDetailsPanel(final HotKeyManager hotkeys) throws Exception {
+	private GridViewPanel createDetailsPanel(HotKeyManager hotkeys) throws Exception {
 		MethodBinding selectedItemBinding = new MethodBinding(_itemList, "getSelectedItem");
 		return new ItemDetailsPanel(selectedItemBinding, hotkeys);
 	}
