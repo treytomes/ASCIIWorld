@@ -6,7 +6,7 @@ import org.newdawn.slick.geom.Rectangle;
 
 public class RootVisualPanel extends CanvasPanel {
 
-	private static final Color COLOR_MODAL_BACKGROUND = new Color(0, 0, 0, 0.5f);
+	private static final Color COLOR_MODAL_BACKGROUND = new Color(0, 0, 0, 0.75f);
 
 	private static RootVisualPanel _instance;
 	

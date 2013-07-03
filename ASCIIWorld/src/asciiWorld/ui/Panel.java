@@ -31,6 +31,15 @@ public abstract class Panel extends FrameworkElement {
 		}
 	}
 	
+	public void addChild(int index, FrameworkElement child) throws Exception {
+		if (!containsChild(child)) {
+			getChildren().add(index, child);
+			child.setParent(this);
+			//setChildBounds(child);
+			resetBounds();
+		}
+	}
+	
 	public void removeChild(FrameworkElement child) throws Exception {
 		if (containsChild(child)) {
 			getChildren().remove(child);

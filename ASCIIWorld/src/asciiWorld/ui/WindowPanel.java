@@ -23,6 +23,7 @@ public class WindowPanel extends Border {
 	private static final int MARGIN = 5;
 
 	private Border _contentBackground;
+	private StackPanel _buttonPanel;
 	
 	public WindowPanel(Rectangle bounds, String title) throws Exception {
 		super(CreateRectangle.from(bounds).setCornerRadius(CORNER_RADIUS).getRectangle(), CreateColor.from(COLOR_BORDER_WINDOW).changeAlphaTo(0.25f).getColor(), true);
@@ -44,7 +45,9 @@ public class WindowPanel extends Border {
 		windowCanvas.addChild(new Label(titlePosition, font, title, COLOR_TEXT_TITLE) {{
 			setTextWrappingMode(TextWrappingMode.NoWrap);
 		}});
-		windowCanvas.addChild(getButtons(getBounds()));
+		
+		_buttonPanel = getButtons();
+		windowCanvas.addChild(_buttonPanel);
 		windowCanvas.addChild(contentBorder);
 		
 		Border windowBorder = new Border(getBounds(), COLOR_BORDER_WINDOW, false);
@@ -69,7 +72,8 @@ public class WindowPanel extends Border {
 		_contentBackground.setContent(content);
 	}
 	
-	private StackPanel getButtons(Rectangle dialogBounds) throws Exception {
+	private StackPanel getButtons() throws Exception {
+		Rectangle dialogBounds = getBounds();
 		int numberOfButtons = 1;
 		int myWidth = BUTTON_WIDTH * numberOfButtons;
 		
@@ -83,6 +87,20 @@ public class WindowPanel extends Border {
 		buttonPanel.addChild(Button.createActionButton("Close", new MethodBinding(this, "closeWindow")));
 
 		return buttonPanel;
+	}
+	
+	public void addButton(Button button) {
+		Rectangle dialogBounds = getBounds();
+		float myWidth = dialogBounds.getWidth() - MARGIN * 2;
+		
+		try {
+			_buttonPanel.addChild(0, button);
+			_buttonPanel.getBounds().setX(MARGIN);
+			_buttonPanel.getBounds().setWidth(myWidth);
+			_buttonPanel.resetBounds();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void closeWindow() {
