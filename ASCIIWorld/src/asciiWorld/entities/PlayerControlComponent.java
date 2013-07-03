@@ -263,6 +263,7 @@ public class PlayerControlComponent extends InputAwareComponent {
 	public void openInventoryTab() {
 		try {
 			_inventoryUI.setWindowContent(new InventoryView(getOwner().getInventory(), getHotKeyManager()));
+			_inventoryUI.setTitle("Inventory");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -271,6 +272,7 @@ public class PlayerControlComponent extends InputAwareComponent {
 	public void openStatusTab() {
 		try {
 			_inventoryUI.setWindowContent(new EntityDetailsPanel(new MethodBinding(this, "getOwner")));
+			_inventoryUI.setTitle("Status");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

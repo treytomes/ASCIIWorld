@@ -14,7 +14,7 @@ public class EntityDetailsPanel extends GridViewPanel {
 	private Object _entityBinding;
 	
 	public EntityDetailsPanel(Object entityBinding) {
-		super(8, 2);
+		super(9, 2);
 		
 		_entityBinding = entityBinding;
 		

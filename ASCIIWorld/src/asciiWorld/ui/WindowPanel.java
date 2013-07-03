@@ -22,13 +22,15 @@ public class WindowPanel extends Border {
 	private static final int BUTTON_HEIGHT = 42;
 	private static final int MARGIN = 5;
 
+	private UnicodeFont _font;
+	private Label _titleLabel;
 	private Border _contentBackground;
 	private StackPanel _buttonPanel;
 	
 	public WindowPanel(Rectangle bounds, String title) throws Exception {
 		super(CreateRectangle.from(bounds).setCornerRadius(CORNER_RADIUS).getRectangle(), CreateColor.from(COLOR_BORDER_WINDOW).changeAlphaTo(0.25f).getColor(), true);
 		
-		UnicodeFont font = FontFactory.get().getDefaultFont();
+		_font = FontFactory.get().getDefaultFont();
 		
 		int buttonHeight = BUTTON_HEIGHT;
 		
@@ -40,11 +42,12 @@ public class WindowPanel extends Border {
 		
 		CanvasPanel windowCanvas = new CanvasPanel();
 		Vector2f titlePosition = new Vector2f(
-				bounds.getMinX() + (bounds.getWidth() - font.getWidth(title)) / 2,
+				bounds.getMinX() + (bounds.getWidth() - _font.getWidth(title)) / 2,
 				bounds.getMinY() + 10);
-		windowCanvas.addChild(new Label(titlePosition, font, title, COLOR_TEXT_TITLE) {{
+		_titleLabel = new Label(titlePosition, _font, title, COLOR_TEXT_TITLE) {{
 			setTextWrappingMode(TextWrappingMode.NoWrap);
-		}});
+		}};
+		windowCanvas.addChild(_titleLabel);
 		
 		_buttonPanel = getButtons();
 		windowCanvas.addChild(_buttonPanel);
@@ -54,6 +57,19 @@ public class WindowPanel extends Border {
 		windowBorder.setContent(windowCanvas);
 
 		setContent(windowBorder);
+	}
+	
+	public String getTitle() {
+		return _titleLabel.getText();
+	}
+	
+	public void setTitle(String value) {
+		Rectangle bounds = getBounds();
+		Vector2f titlePosition = new Vector2f(
+				bounds.getMinX() + (bounds.getWidth() - _font.getWidth(value)) / 2,
+				bounds.getMinY() + 10);
+		_titleLabel.setText(value);
+		_titleLabel.moveTo(titlePosition);
 	}
 	
 	public Boolean isClosed() {
