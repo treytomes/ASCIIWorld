@@ -16,11 +16,14 @@ public class CraftingView extends GridViewPanel {
 
 	private InventoryContainer _playerInventoryContainer;
 	
+	private int _craftingLevel;
 	private ListView _playerList;
 	private StackPanel _outputView;
 	
-	public CraftingView(InventoryContainer playerInventory) {
+	public CraftingView(InventoryContainer playerInventory, int craftingLevel) {
 		super(1, 2);
+		
+		_craftingLevel = craftingLevel;
 		
 		_playerInventoryContainer = playerInventory;
 		
@@ -72,7 +75,10 @@ public class CraftingView extends GridViewPanel {
 		for (Entity item : _playerInventoryContainer) {
 			for (EntityComponent component : item.getComponents()) {
 				if (component instanceof RecipeComponent) {
-					recipes.add(RecipeComponent.class.cast(component));
+					RecipeComponent recipe = RecipeComponent.class.cast(component);
+					if (recipe.getCraftingLevel() <= _craftingLevel) {
+						recipes.add(RecipeComponent.class.cast(component));
+					}
 				}
 			}
 		}

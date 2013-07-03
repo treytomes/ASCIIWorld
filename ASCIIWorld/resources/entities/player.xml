@@ -26,14 +26,14 @@
     <Item name="torch" />
     <Item name="torch" />
     <Item name="treasureChest" />
+    <Item name="bauble" />
+    <Item name="turtle" />
+    <Item name="giraffe" />
     <Item name="woodenClubRecipeScroll" />
     <Item name="woodenSwordRecipeScroll" />
     <Item name="woodWallRecipeScroll" />
     <Item name="stoneSwordRecipeScroll" />
-    <Item name="craftingTable" />
-    <Item name="bauble" />
-    <Item name="turtle" />
-    <Item name="giraffe" />
+    <Item name="craftingTableRecipeScroll" />
 	<!--
 	<Item name="ironSword" />
 	<Item name="healingPotion" />

@@ -1,4 +1,4 @@
-<Recipe output="woodenSword">
+<Recipe output="woodenSword" craftingLevel="0">
 	<Ingredient name="woodPlank" amount="2" />
 	<Ingredient name="woodStick" amount="1" />
 </Recipe>

@@ -11,6 +11,7 @@ import asciiWorld.CreateRectangle;
 import asciiWorld.Direction;
 import asciiWorld.math.Vector3f;
 import asciiWorld.ui.Button;
+import asciiWorld.ui.CraftingView;
 import asciiWorld.ui.EntityDetailsPanel;
 import asciiWorld.ui.HUDView;
 import asciiWorld.ui.InventoryView;
@@ -249,6 +250,7 @@ public class PlayerControlComponent extends InputAwareComponent {
 					.getRectangle();
 			
 			_inventoryUI = new WindowPanel(bounds, "Inventory");
+			_inventoryUI.addButton(Button.createActionButton("Basic Crafting", new MethodBinding(this, "openCraftingTab")));
 			_inventoryUI.addButton(Button.createActionButton("Inventory", new MethodBinding(this, "openInventoryTab")));
 			_inventoryUI.addButton(Button.createActionButton("Status", new MethodBinding(this, "openStatusTab")));
 			openInventoryTab();
@@ -257,6 +259,15 @@ public class PlayerControlComponent extends InputAwareComponent {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to open the inventory interface.");
+		}
+	}
+	
+	public void openCraftingTab() {
+		try {
+			_inventoryUI.setWindowContent(new CraftingView(getOwner().getInventory(), 0));
+			_inventoryUI.setTitle("Basic Crafting");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

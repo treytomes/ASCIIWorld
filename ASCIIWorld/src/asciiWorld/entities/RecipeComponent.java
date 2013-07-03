@@ -12,12 +12,14 @@ public class RecipeComponent extends EntityComponent {
 	private String _recipeName;
 	private String _entityType;
 	private Map<String, Integer> _ingredients;
+	private int _craftingLevel;
 	
 	public RecipeComponent(Entity owner) {
 		super(owner);
 		_recipeName = null;
 		_entityType = null;
 		_ingredients = new HashMap<String, Integer>();
+		_craftingLevel = 0;
 	}
 	
 	@Override
@@ -46,6 +48,14 @@ public class RecipeComponent extends EntityComponent {
 	
 	public Map<String, Integer> getIngredients() {
 		return _ingredients;
+	}
+
+	public Integer getCraftingLevel() {
+		return _craftingLevel;
+	}
+	
+	public void setCraftingLevel(Integer value) {
+		_craftingLevel = value;
 	}
 	
 	public boolean meetsRequirements(InventoryContainer inventory) {
@@ -120,6 +130,7 @@ public class RecipeComponent extends EntityComponent {
 				throw new Exception("This file does not describe a recipe.");
 			} else {
 				_entityType = recipeElem.getAttributeValue("output");
+				_craftingLevel = Integer.parseInt(recipeElem.getAttributeValue("craftingLevel"));
 				_ingredients.clear();
 				for (Element ingredientElem : recipeElem.getChildren("Ingredient")) {
 					_ingredients.put(ingredientElem.getAttributeValue("name"), Integer.parseInt(ingredientElem.getAttributeValue("amount")));

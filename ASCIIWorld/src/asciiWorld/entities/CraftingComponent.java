@@ -39,7 +39,7 @@ public class CraftingComponent extends EntityComponent {
 				.getRectangle();
 		
 		_entityUI = new WindowPanel(bounds, "Crafting Table");
-		_entityUI.setWindowContent(new CraftingView(player.getInventory()));
+		_entityUI.setWindowContent(new CraftingView(player.getInventory(), 1));
 		
 		root.addModalChild(_entityUI);
 	}

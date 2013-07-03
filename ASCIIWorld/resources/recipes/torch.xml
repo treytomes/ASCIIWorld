@@ -1,4 +1,4 @@
-<Recipe output="torch">
+<Recipe output="torch" craftingLevel="1">
 	<Ingredient name="woodStick" amount="1" />
 	<Ingredient name="slimeBall" amount="1" />
 	<!--<Ingredient name="silk" amount="1" />-->

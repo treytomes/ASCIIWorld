@@ -69,6 +69,7 @@ public class WindowPanel extends Border {
 				bounds.getMinX() + (bounds.getWidth() - _font.getWidth(value)) / 2,
 				bounds.getMinY() + 10);
 		_titleLabel.setText(value);
+		_titleLabel.getBounds().setWidth(_font.getWidth(value));
 		_titleLabel.moveTo(titlePosition);
 	}
 	
