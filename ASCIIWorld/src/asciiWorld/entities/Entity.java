@@ -16,6 +16,7 @@ import asciiWorld.Direction;
 import asciiWorld.IHasPosition;
 import asciiWorld.IHasRangeOfVision;
 import asciiWorld.animations.FadingTextAnimation;
+import asciiWorld.animations.HealthPercentAnimation;
 import asciiWorld.animations.IAnimation;
 import asciiWorld.chunks.Chunk;
 import asciiWorld.collections.MethodIterator;
@@ -501,6 +502,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		
 		if (originalHealth != _health) {
 			addAnimation(FadingTextAnimation.createDamageNotification(this, amount));
+			addAnimation(new HealthPercentAnimation(this));
 			
 			for (EntityComponent component : _components) {
 				component.afterDamaged(damagedByEntity, amount);
@@ -515,6 +517,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		
 		if (originalHealth != _health) {
 			addAnimation(FadingTextAnimation.createRestoreNotification(this, amount));
+			addAnimation(new HealthPercentAnimation(this));
 		}
 	}
 	
@@ -754,14 +757,18 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	}
 	
 	public void renderHealth(Graphics g) {
+		renderHealth(g, 1.0f);
+	}
+	
+	public void renderHealth(Graphics g, float alpha) {
 		if (_health < _maxHealth) {
 			float percent = (float)_health / (float)_maxHealth;
 			
 			float height = MOVEMENT_STEP / 8;
 			
-			g.setColor(Color.green);
+			g.setColor(new Color(0.0f, 1.0f, 0.0f, alpha));
 			g.fillRect(0, MOVEMENT_STEP, MOVEMENT_STEP * percent, height);
-			g.setColor(Color.red);
+			g.setColor(new Color(1.0f, 0.0f, 0.0f, alpha));
 			g.fillRect(MOVEMENT_STEP * percent, MOVEMENT_STEP, MOVEMENT_STEP - MOVEMENT_STEP * percent, height);
 		}
 	}

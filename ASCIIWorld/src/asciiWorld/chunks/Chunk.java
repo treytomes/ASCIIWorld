@@ -383,6 +383,8 @@ public class Chunk implements IAStarMap {
 		
 		spriteBatch.flush();
 		
+		// Health rendering has been moved into an Entity animation.
+		/*
 		for (Entity entity : renderable) {
 			if (entity.getLayer() == layerIndex) {
 				
@@ -393,6 +395,7 @@ public class Chunk implements IAStarMap {
 				g.translate(-position.x, -position.y);
 			}
 		}
+		*/
 	}
 	
 	private void cacheEntitiesInRange() {
