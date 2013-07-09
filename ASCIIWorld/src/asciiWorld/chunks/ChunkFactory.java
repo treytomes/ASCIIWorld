@@ -22,8 +22,8 @@ public class ChunkFactory {
 	public static Chunk generateGrassyPlain() throws Exception {
 		Chunk chunk = generateVoid();
 		
-		for (int x = 0; x < 128; x++) {
-			for (int y = 0; y < 128; y++) {
+		for (int x = 0; x < Chunk.COLUMNS; x++) {
+			for (int y = 0; y < Chunk.ROWS; y++) {
 				Entity entity = new Entity();
 				entity.setTile(TileFactory.get().getResource("grass"));
 				entity.moveTo(new Vector2f(x, y), Chunk.LAYER_GROUND);
@@ -36,8 +36,8 @@ public class ChunkFactory {
 	
 	public static Chunk generateDesert() throws Exception {
 		Chunk chunk = generateVoid();
-		for (int x = 0; x < 128; x++) {
-			for (int y = 0; y < 128; y++) {
+		for (int x = 0; x < Chunk.COLUMNS; x++) {
+			for (int y = 0; y < Chunk.ROWS; y++) {
 				Entity entity = new Entity();
 				entity.setTile(TileFactory.get().getResource("sand"));
 				entity.moveTo(new Vector2f(x, y), Chunk.LAYER_GROUND);
@@ -93,6 +93,13 @@ public class ChunkFactory {
 		chunk.addEntity(entity);
 		
 		return chunk;
+	}
+	
+	public static Chunk generateVillage(PrintStream logStream, World world) throws Exception {
+		Chunk chunk = new Chunk();
+		chunk.setWorld(world);
+		long seed = RandomFactory.get().nextInt(0, Integer.MAX_VALUE);
+		return new VillageChunkGenerator().generate(chunk, seed, logStream);
 	}
 	
 	public static Chunk generateOverworld(PrintStream logStream, World world) throws Exception {

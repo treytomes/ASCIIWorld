@@ -125,7 +125,7 @@ public class Chunk implements IAStarMap {
 	}
 	
 	public Boolean containsEntity(Entity entity) {
-		return _entities.contains(entity);
+		return (entity != null) && _entities.contains(entity);
 	}
 	
 	public void addEntity(Entity entity) {
