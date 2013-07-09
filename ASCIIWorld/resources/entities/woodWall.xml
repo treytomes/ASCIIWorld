@@ -2,6 +2,7 @@
 <Entity tile="woodWall" name="Wood Wall" isTranslucent="false">
 	<Components>
 		<Component name="Placeable" />
+		<Component name="DoubleLinedWall" />
 	</Components>
   <Properties>
     <Property name="MaxHealth" value="20" />
