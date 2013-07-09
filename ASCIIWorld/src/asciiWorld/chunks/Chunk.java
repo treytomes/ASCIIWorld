@@ -398,8 +398,10 @@ public class Chunk implements IAStarMap {
 		*/
 	}
 	
-	private void cacheEntitiesInRange() {
-		// This will trigger the render method to cache the entities in range.
+	/**
+	 * This will trigger the render method to cache the entities in range.
+	 */
+	public void cacheEntitiesInRange() {
 		_cameraPosition = null;
 	}
 	
