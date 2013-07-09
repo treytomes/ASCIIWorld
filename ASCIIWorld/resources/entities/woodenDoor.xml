@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Entity tile="woodenDoor" name="Wooden Door">
+<Entity tile="woodenDoor" name="Wooden Door" isTranslucent="false">
 	<Components>
 		<Component name="Placeable" />
+		<Component name="AllowPassage" />
 	</Components>
 	<Properties>
 		<Property name="MaxHealth" value="40" />
