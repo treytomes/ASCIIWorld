@@ -1,5 +1,0 @@
-﻿<Tile tileSet="OEM437_8">
-	<Frames framesPerSecond="1">
-		<Frame backgroundColor="00000000" foregroundColor="FFFFFFFF" tileIndex="2" />
-	</Frames>
-</Tile>

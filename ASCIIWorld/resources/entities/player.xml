@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Entity tile="player" name="Player">
+<Entity tile="human" name="Player">
   <Components>
   	<Component name="KnockBack" />
   	

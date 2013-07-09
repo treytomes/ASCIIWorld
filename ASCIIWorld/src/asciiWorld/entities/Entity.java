@@ -38,6 +38,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	private static final int DEFAULT_PERCEPTION = 10;
 	private static final float DEFAULT_WEIGHT = 1;
 	private static final int DEFAULT_MAX_HEALTH = 10;
+	private static final Gender DEFAULT_GENDER = Gender.Male;
 	
 	private static final float MULTIPLIER_KNOCKBACK = 4.0f;
 	private static final float MODIFIER_AGILITY = 15.0f;
@@ -69,6 +70,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	private int _perception;
 	private int _strength;
 	private float _weight;
+	private Gender _gender;
 	
 	private int _health;
 	private int _maxHealth;
@@ -165,6 +167,7 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 		_movementWeight = 0.0f;
 		_direction = Direction.South;
 		
+		setGender(DEFAULT_GENDER);
 		setType("");
 		setName("");
 		
@@ -332,6 +335,14 @@ public class Entity implements IHasPosition, IHasRangeOfVision, IConvexHull {
 	
 	public Direction getDirection() {
 		return _direction;
+	}
+
+	public Gender getGender() {
+		return _gender;
+	}
+	
+	public void setGender(Gender value) {
+		_gender = value;
 	}
 	
 	public String getType() {

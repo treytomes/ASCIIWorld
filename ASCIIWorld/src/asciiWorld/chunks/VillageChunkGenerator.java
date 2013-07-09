@@ -60,14 +60,15 @@ public class VillageChunkGenerator implements IChunkGenerator {
 	}
 	
 	private Chunk generateHouses(PrintStream logStream, Chunk chunk) {
-		logStream.print("Generating houses...");
-		
 		int numHouses = RandomFactory.get().nextInt(COUNT_HOUSE_MIN, COUNT_HOUSE_MAX + 1);
+		logStream.println(String.format("Generating %d houses.", numHouses));
+		
 		for (int index = 0; index < numHouses; index++) {
+			logStream.print(String.format("Generating house #%d...", index));
 			chunk = generateHouse(chunk);
+			logStream.println(" done!");
 		}
 		
-		logStream.println(" done!");
 		return chunk;
 	}
 	
@@ -78,6 +79,7 @@ public class VillageChunkGenerator implements IChunkGenerator {
 		chunk = generateFloor(chunk, area);
 		chunk = generateDoor(chunk, area);
 		chunk = generateTorches(chunk, area);
+		chunk = generateVillager(chunk, area);
 		
 		return chunk;
 	}
@@ -195,6 +197,16 @@ public class VillageChunkGenerator implements IChunkGenerator {
 		Entity door = EntityFactory.get().getResource("torch");
 		door.moveTo(chunkPoint, Chunk.LAYER_OBJECT);
 		chunk.addEntity(door);
+		return chunk;
+	}
+	
+	private Chunk generateVillager(Chunk chunk, Rectangle area) {
+		Vector2f chunkPoint = new Vector2f(area.getCenterX(), area.getCenterY());
+		chunk.removeEntity(chunk.getEntityAt(chunkPoint, Chunk.LAYER_OBJECT));
+		
+		Entity villager = EntityFactory.get().getResource("villager");
+		villager.moveTo(chunkPoint, Chunk.LAYER_OBJECT);
+		chunk.addEntity(villager);
 		return chunk;
 	}
 }
