@@ -57,6 +57,7 @@ public class AllowPassageComponent extends EntityComponent {
 		if ((owner.getLayer() == Chunk.LAYER_SKY) && !owner.getChunk().isSpaceOccupied(chunkPoint, Chunk.LAYER_OBJECT)) {
 			owner.moveTo(chunkPoint, Chunk.LAYER_OBJECT);
 			owner.setIsTranslucent(false);
+			owner.getChunk().cacheEntitiesInRange();
 			setAlpha(1.0f);
 		}
 	}
@@ -66,6 +67,7 @@ public class AllowPassageComponent extends EntityComponent {
 		if (owner.getLayer() == Chunk.LAYER_OBJECT) {
 			owner.moveTo(owner.getOccupiedChunkPoint(), Chunk.LAYER_SKY);
 			owner.setIsTranslucent(true);
+			owner.getChunk().cacheEntitiesInRange();
 			setAlpha(0.5f);
 		}
 	}
