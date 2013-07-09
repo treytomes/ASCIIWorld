@@ -27,6 +27,7 @@ public class TileFactory {
 	 * @throws Exception
 	 */
 	public Tile getResource(String name) throws Exception {
+		/*
 		try {
 			if (!_resourceCache.containsKey(name)) {
 				_resourceCache.put(name, Tile.load(getPathForResource(name)));
@@ -36,6 +37,8 @@ public class TileFactory {
 			throw new Exception(String.format("The tile '%s' does not exist.", name), e);
 		}
 		return _resourceCache.get(name).clone();
+		*/
+		return Tile.load(getPathForResource(name));
 	}
 	
 	private String getPathForResource(String name) {
