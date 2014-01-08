@@ -1,6 +1,7 @@
 package org.newdawn.slick;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.security.AccessController;
@@ -492,6 +493,16 @@ public class AppGameContainer extends GameContainer {
 	public void setIcon(String ref) throws SlickException {
 		setIcons(new String[] { ref });
 	}
+	
+	/**
+	 * Load the app icon from an input stream.
+	 * 
+	 * @param stream The stream to load the app icon from.
+	 * @throws SlickException Failed to load the icon.
+	 */
+	public void setIcon(InputStream stream) throws SlickException {
+		setIcons(new InputStream[] { stream });
+	}
 
 	/**
 	 * @see org.newdawn.slick.GameContainer#setMouseGrabbed(boolean)
@@ -563,6 +574,29 @@ public class AppGameContainer extends GameContainer {
 			
 			try {
 				bufs[i] = data.loadImage(ResourceLoader.getResourceAsStream(refs[i]), flip, false, null);
+			} catch (Exception e) {
+				Log.error(e);
+				e.printStackTrace();
+				throw new SlickException("Failed to set the icon");
+			}
+		}
+		
+		Display.setIcon(bufs);
+	}
+	
+	/**
+	 * Load the app icons from a collection of input streams.
+	 * 
+	 * @param streams The streams to load the app icons from.
+	 * @throws SlickException Failed to set the icon.
+	 */
+	public void setIcons(InputStream[] streams) throws SlickException {
+		ByteBuffer[] bufs = new ByteBuffer[streams.length];
+		for (int i = 0; i < streams.length; i++) {
+			LoadableImageData data = new ImageIOImageData();
+			
+			try {
+				bufs[i] = data.loadImage(streams[i], false, false, null);
 			} catch (Exception e) {
 				Log.error(e);
 				e.printStackTrace();
