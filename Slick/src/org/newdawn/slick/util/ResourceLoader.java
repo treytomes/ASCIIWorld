@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class ResourceLoader {
 	/** The list of locations to be searched */
-	private static ArrayList locations = new ArrayList();
+	private static ArrayList<ResourceLocation> locations = new ArrayList();
 	
 	static {
 		locations.add(new ClasspathLocation());
@@ -56,16 +56,15 @@ public class ResourceLoader {
 	public static InputStream getResourceAsStream(String ref) {
 		InputStream in = null;
 		
-		for (int i=0;i<locations.size();i++) {
-			ResourceLocation location = (ResourceLocation) locations.get(i);
+		for (int i = 0;i < locations.size(); i++) {
+			ResourceLocation location = locations.get(i);
 			in = location.getResourceAsStream(ref);
 			if (in != null) {
 				break;
 			}
 		}
 		
-		if (in == null)
-		{
+		if (in == null) {
 			throw new RuntimeException("Resource not found: "+ref);
 		}
 			

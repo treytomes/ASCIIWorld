@@ -490,7 +490,7 @@ public class AppGameContainer extends GameContainer {
 	 * @see org.newdawn.slick.GameContainer#setIcon(java.lang.String)
 	 */
 	public void setIcon(String ref) throws SlickException {
-		setIcons(new String[] {ref});
+		setIcons(new String[] { ref });
 	}
 
 	/**
@@ -550,7 +550,7 @@ public class AppGameContainer extends GameContainer {
 	 */
 	public void setIcons(String[] refs) throws SlickException {
 		ByteBuffer[] bufs = new ByteBuffer[refs.length];
-		for (int i=0;i<refs.length;i++) {
+		for (int i = 0; i < refs.length; i++) {
 			LoadableImageData data;
 			boolean flip = true;
 			
@@ -565,6 +565,7 @@ public class AppGameContainer extends GameContainer {
 				bufs[i] = data.loadImage(ResourceLoader.getResourceAsStream(refs[i]), flip, false, null);
 			} catch (Exception e) {
 				Log.error(e);
+				e.printStackTrace();
 				throw new SlickException("Failed to set the icon");
 			}
 		}

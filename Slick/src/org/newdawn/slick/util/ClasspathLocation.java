@@ -9,12 +9,34 @@ import java.net.URL;
  * @author kevin
  */
 public class ClasspathLocation implements ResourceLocation {
+	
+	/**
+	 * The class to load resources relative to.
+	 */
+	private Class<?> resourceClass;
+	
+	/**
+	 * Load resources relative to the given class.
+	 * 
+	 * @param resourceClass The class to load resources relative to.
+	 */
+	public ClasspathLocation(Class<?> resourceClass) {
+		this.resourceClass = resourceClass;
+	}
+	
+	/**
+	 * Load resources from the Slick class path.
+	 */
+	public ClasspathLocation() {
+		this(ResourceLoader.class);
+	}
+	
 	/**
 	 * @see org.newdawn.slick.util.ResourceLocation#getResource(java.lang.String)
 	 */
 	public URL getResource(String ref) {
 		String cpRef = ref.replace('\\', '/');
-		return ResourceLoader.class.getClassLoader().getResource(cpRef);
+		return this.resourceClass.getClassLoader().getResource(cpRef);
 	}
 
 	/**
@@ -22,7 +44,10 @@ public class ClasspathLocation implements ResourceLocation {
 	 */
 	public InputStream getResourceAsStream(String ref) {
 		String cpRef = ref.replace('\\', '/');
-		return ResourceLoader.class.getClassLoader().getResourceAsStream(cpRef);	
+		InputStream stream = this.resourceClass.getClassLoader().getResourceAsStream(cpRef);
+		if (stream == null) {
+			stream = this.resourceClass.getResourceAsStream(cpRef);
+		}
+		return stream;
 	}
-
 }
