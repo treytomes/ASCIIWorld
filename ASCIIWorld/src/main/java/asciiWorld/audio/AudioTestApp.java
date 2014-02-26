@@ -16,6 +16,8 @@ import javax.swing.JRadioButton;
 
 public class AudioTestApp extends JFrame {
 	
+	private static final long serialVersionUID = -2679979295324647669L;
+
 	public static void main(String args[]){
 		//AudioTestApp app = new AudioTestApp();
 		midiTest();
