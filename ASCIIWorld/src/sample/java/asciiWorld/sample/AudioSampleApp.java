@@ -1,11 +1,10 @@
-package asciiWorld.audio;
+package asciiWorld.sample;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.sound.midi.Instrument;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -14,37 +13,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-public class AudioTestApp extends JFrame {
+import asciiWorld.audio.AudioPlaybackThread;
+import asciiWorld.audio.SignalGenerator;
+import asciiWorld.audio.SignalType;
+
+public class AudioSampleApp extends JFrame {
 	
 	private static final long serialVersionUID = -2679979295324647669L;
 
 	public static void main(String args[]){
-		//AudioTestApp app = new AudioTestApp();
-		midiTest();
-	}
-	
-	private static void midiTest() {
-		MidiSynthesizer synth = new MidiSynthesizer();
-		
-		for (Instrument instr : synth.getInstruments()) {
-			System.out.println(instr.getName());
-		}
-		
-		synth.loadInstrument("Marimba");
-		
-		for (int n = 0; n <= 127; n++) {
-			synth.play(n, 100);
-		}
-		for (int n = 127; n >= 0; n--) {
-			synth.play(n, 100);
-		}
-		
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new AudioSampleApp();
 	}
 
 	  // Following components appear in the North position of the GUI.
@@ -83,7 +61,7 @@ public class AudioTestApp extends JFrame {
 		  }
 	  }
 
-	  public AudioTestApp() {
+	  public AudioSampleApp() {
 	    //A panel for the North position.  Note the etched border.
 	    final JPanel controlButtonPanel = new JPanel();
 	    controlButtonPanel.setBorder(BorderFactory.createEtchedBorder());

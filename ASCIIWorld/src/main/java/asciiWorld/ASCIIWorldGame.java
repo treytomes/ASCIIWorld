@@ -118,7 +118,6 @@ public class ASCIIWorldGame extends StateBasedGame {
 		addState(new TextEditorState(STATE_TEXTEDITOR));
 		addState(new ConsoleState(STATE_CONSOLE));
 		addState(new AudioTestsState(STATE_AUDIOTESTS));
-		
 	}
 	
 	public static void main(String[] args) {
