@@ -24,8 +24,7 @@ import org.newdawn.slick.opengl.renderer.SGL;
 import org.newdawn.slick.util.ResourceLoader;
 
 /**
- * A texture loaded based on many old versions that will load image data from a file
- * and produce OpenGL textures.
+ * A texture loaded based on many old versions that will load image data from a file and produce OpenGL textures.
  * 
  * @see ImageData
  * 

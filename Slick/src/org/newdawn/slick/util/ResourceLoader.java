@@ -5,18 +5,20 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A simple wrapper around resource loading should anyone decide to change
- * their minds how this is meant to work in the future.
+ * A simple wrapper around resource loading should anyone decide to change their minds how this is meant to work in the future.
  * 
  * @author Kevin Glass
  */
 public class ResourceLoader {
-	/** The list of locations to be searched */
-	private static ArrayList<ResourceLocation> locations = new ArrayList();
+	
+	/** The list of locations to be searched. */
+	private static List<ResourceLocation> locations;
 	
 	static {
+		locations = new ArrayList<ResourceLocation>();
 		locations.add(new ClasspathLocation());
 		locations.add(new FileSystemLocation(new File(".")));
 	}
@@ -65,7 +67,7 @@ public class ResourceLoader {
 		}
 		
 		if (in == null) {
-			throw new RuntimeException("Resource not found: "+ref);
+			throw new RuntimeException("Resource not found: " + ref);
 		}
 			
 		return new BufferedInputStream(in);
@@ -79,15 +81,13 @@ public class ResourceLoader {
 	 */
 	public static boolean resourceExists(String ref) {
 		URL url = null;
-		
-		for (int i=0;i<locations.size();i++) {
-			ResourceLocation location = (ResourceLocation) locations.get(i);
+		for (int i = 0; i < locations.size(); i++) {
+			ResourceLocation location = locations.get(i);
 			url = location.getResource(ref);
 			if (url != null) {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -98,19 +98,17 @@ public class ResourceLoader {
 	 * @return A URL from which the resource can be read
 	 */
 	public static URL getResource(String ref) {
-
 		URL url = null;
 		
-		for (int i=0;i<locations.size();i++) {
-			ResourceLocation location = (ResourceLocation) locations.get(i);
+		for (int i = 0;i < locations.size(); i++) {
+			ResourceLocation location = locations.get(i);
 			url = location.getResource(ref);
 			if (url != null) {
 				break;
 			}
 		}
 		
-		if (url == null)
-		{
+		if (url == null) {
 			throw new RuntimeException("Resource not found: "+ref);
 		}
 			

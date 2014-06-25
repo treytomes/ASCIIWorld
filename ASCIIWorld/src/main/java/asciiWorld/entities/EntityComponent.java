@@ -37,7 +37,7 @@ public class EntityComponent {
 				component.setProperty(propertyName, propertyValue);
 			}
 		}
-		
+		q
 		return component;
 	}
 	*/

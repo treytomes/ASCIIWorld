@@ -9,8 +9,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.Glyph;
 
 /**
- * Applys a {@link BufferedImageOp} filter to glyphs. Many filters can be found 
- * here: http://www.jhlabs.com/ip/filters/index.html
+ * Applys a {@link BufferedImageOp} filter to glyphs. Many filters can be found  here: http://www.jhlabs.com/ip/filters/index.html
  * 
  * @author Nathan Sweet <misc@n4te.com>
  */

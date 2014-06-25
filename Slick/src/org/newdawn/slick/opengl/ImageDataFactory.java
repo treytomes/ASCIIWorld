@@ -11,6 +11,7 @@ import org.newdawn.slick.util.Log;
  * @author kevin
  */
 public class ImageDataFactory {
+	
 	/** True if we're going to use the native PNG loader - cached so it doesn't have
 	 *  the security check repeatedly
 	 */

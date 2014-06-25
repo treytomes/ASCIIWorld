@@ -349,10 +349,11 @@ public class AppGameContainer extends GameContainer {
 	}
 	
 	/**
-	 * Start running the game
+	 * Start running the game.
 	 * 
-	 * @throws SlickException Indicates a failure to initialise the system
+	 * @throws SlickException Indicates a failure to initialize the system.
 	 */
+	@Override
 	public void start() throws SlickException {
 		try {
 			setup();

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * An image data source that can load images from a stream
+ * An image data source that can load images from a stream.
  *
  * @author kevin
  */

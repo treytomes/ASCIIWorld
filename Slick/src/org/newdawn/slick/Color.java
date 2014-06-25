@@ -2,64 +2,82 @@ package org.newdawn.slick;
 
 import java.io.Serializable;
 import java.nio.FloatBuffer;
+import java.text.MessageFormat;
 
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
 
 /**
- * A simple wrapper round the values required for a colour
+ * A simple wrapper round the values required for a color.
  * 
  * @author Kevin Glass
  */
 public class Color implements Serializable {
+	
 	/** The version ID for this class  */
 	private static final long serialVersionUID = 1393939L;
 	
 	/** The renderer to use for all GL operations */
 	protected transient SGL GL = Renderer.get();
 	
-	/** The fixed color transparent */
-    public static final Color transparent = new Color(0.0f,0.0f,0.0f,0.0f);
-	/** The fixed colour white */
-	public static final Color white = new Color(1.0f,1.0f,1.0f,1.0f);
-	/** The fixed colour yellow */
-	public static final Color yellow = new Color(1.0f,1.0f,0,1.0f);
-	/** The fixed colour red */
-	public static final Color red = new Color(1.0f,0,0,1.0f);
-	/** The fixed colour blue */
-	public static final Color blue = new Color(0,0,1.0f,1.0f);
-	/** The fixed colour green */
-	public static final Color green = new Color(0,1.0f,0,1.0f);
-	/** The fixed colour black */
-	public static final Color black = new Color(0,0,0,1.0f);
-	/** The fixed colour gray */
-	public static final Color gray = new Color(0.5f,0.5f,0.5f,1.0f);
-	/** The fixed colour cyan */
-	public static final Color cyan = new Color(0,1.0f,1.0f,1.0f);
-	/** The fixed colour dark gray */
-	public static final Color darkGray = new Color(0.3f,0.3f,0.3f,1.0f);
-	/** The fixed colour light gray */
-	public static final Color lightGray = new Color(0.7f,0.7f,0.7f,1.0f);
-	/** The fixed colour dark pink */
-    public final static Color pink      = new Color(255, 175, 175, 255);
-	/** The fixed colour dark orange */
-    public final static Color orange 	= new Color(255, 200, 0, 255);
-	/** The fixed colour dark magenta */
-    public final static Color magenta	= new Color(255, 0, 255, 255);
+	/** The fixed color transparent. */
+    public static final Color transparent = new Color(0.0f, 0.0f, 0.0f, 0.0f);
     
-	/** The red component of the colour */
+	/** The fixed color white. */
+	public static final Color white = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+	
+	/** The fixed color yellow. */
+	public static final Color yellow = new Color(1.0f, 1.0f, 0, 1.0f);
+	
+	/** The fixed color red. */
+	public static final Color red = new Color(1.0f, 0, 0, 1.0f);
+	
+	/** The fixed color blue. */
+	public static final Color blue = new Color(0, 0, 1.0f, 1.0f);
+	
+	/** The fixed color green. */
+	public static final Color green = new Color(0, 1.0f, 0, 1.0f);
+	
+	/** The fixed color black. */
+	public static final Color black = new Color(0, 0, 0, 1.0f);
+	
+	/** The fixed color gray. */
+	public static final Color gray = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+	
+	/** The fixed color cyan. */
+	public static final Color cyan = new Color(0, 1.0f, 1.0f, 1.0f);
+	
+	/** The fixed color dark gray. */
+	public static final Color darkGray = new Color(0.3f, 0.3f, 0.3f, 1.0f);
+	
+	/** The fixed color light gray. */
+	public static final Color lightGray = new Color(0.7f, 0.7f, 0.7f, 1.0f);
+	
+	/** The fixed color dark pink. */
+    public final static Color pink = new Color(255, 175, 175, 255);
+	
+    /** The fixed color dark orange. */
+    public final static Color orange = new Color(255, 200, 0, 255);
+	
+    /** The fixed color dark magenta. */
+    public final static Color magenta = new Color(255, 0, 255, 255);
+    
+	/** The red component of the color. */
 	public float r;
-	/** The green component of the colour */
+	
+	/** The green component of the color. */
 	public float g;
-	/** The blue component of the colour */
+	
+	/** The blue component of the color. */
 	public float b;
-	/** The alpha component of the colour */
+	
+	/** The alpha component of the color. */
 	public float a = 1.0f;
 	
 	/**
-	 * Copy constructor
+	 * Copy constructor.
 	 * 
-	 * @param color The color to copy into the new instance
+	 * @param color The color to copy into the new instance.
 	 */
 	public Color(Color color) {
 		r = color.r;
@@ -69,9 +87,9 @@ public class Color implements Serializable {
 	}
 
 	/**
-	 * Create a component based on the first 4 elements of a float buffer
+	 * Create a component based on the first 4 elements of a float buffer.
 	 * 
-	 * @param buffer The buffer to read the color from
+	 * @param buffer The buffer to read the color from.
 	 */
 	public Color(FloatBuffer buffer) {
 		this.r = buffer.get();
@@ -81,13 +99,13 @@ public class Color implements Serializable {
 	}
 	
 	/**
-	 * Create a 3 component colour
+	 * Create a 3 component color.
 	 * 
-	 * @param r The red component of the colour (0.0 -> 1.0)
-	 * @param g The green component of the colour (0.0 -> 1.0)
-	 * @param b The blue component of the colour (0.0 -> 1.0)
+	 * @param r The red component of the color (0.0 -> 1.0).
+	 * @param g The green component of the color (0.0 -> 1.0).
+	 * @param b The blue component of the color (0.0 -> 1.0).
 	 */
-	public Color(float r,float g,float b) {
+	public Color(float r, float g, float b) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
@@ -95,14 +113,14 @@ public class Color implements Serializable {
 	}
 
 	/**
-	 * Create a 4 component colour
+	 * Create a 4 component color.
 	 * 
-	 * @param r The red component of the colour (0.0 -> 1.0)
-	 * @param g The green component of the colour (0.0 -> 1.0)
-	 * @param b The blue component of the colour (0.0 -> 1.0)
-	 * @param a The alpha component of the colour (0.0 -> 1.0)
+	 * @param r The red component of the color (0.0 -> 1.0).
+	 * @param g The green component of the color (0.0 -> 1.0).
+	 * @param b The blue component of the color (0.0 -> 1.0).
+	 * @param a The alpha component of the color (0.0 -> 1.0).
 	 */
-	public Color(float r,float g,float b,float a) {
+	public Color(float r, float g, float b, float a) {
 		this.r = Math.min(r, 1);
 		this.g = Math.min(g, 1);
 		this.b = Math.min(b, 1);
@@ -110,13 +128,13 @@ public class Color implements Serializable {
 	}
 
 	/**
-	 * Create a 3 component colour
+	 * Create a 3 component color.
 	 * 
-	 * @param r The red component of the colour (0 -> 255)
-	 * @param g The green component of the colour (0 -> 255)
-	 * @param b The blue component of the colour (0 -> 255)
+	 * @param r The red component of the color (0 -> 255).
+	 * @param g The green component of the color (0 -> 255).
+	 * @param b The blue component of the color (0 -> 255).
 	 */
-	public Color(int r,int g,int b) {
+	public Color(int r, int g, int b) {
 		this.r = r / 255.0f;
 		this.g = g / 255.0f;
 		this.b = b / 255.0f;
@@ -124,26 +142,25 @@ public class Color implements Serializable {
 	}
 
 	/**
-	 * Create a 4 component colour
+	 * Create a 4 component color.
 	 * 
-	 * @param r The red component of the colour (0 -> 255)
-	 * @param g The green component of the colour (0 -> 255)
-	 * @param b The blue component of the colour (0 -> 255)
-	 * @param a The alpha component of the colour (0 -> 255)
+	 * @param red The red component of the color (0 -> 255).
+	 * @param green The green component of the color (0 -> 255).
+	 * @param blue The blue component of the color (0 -> 255).
+	 * @param alpha The alpha component of the color (0 -> 255).
 	 */
-	public Color(int r,int g,int b,int a) {
-		this.r = r / 255.0f;
-		this.g = g / 255.0f;
-		this.b = b / 255.0f;
-		this.a = a / 255.0f;
+	public Color(int red, int green, int blue, int alpha) {
+		this.r = red / 255.0f;
+		this.g = green / 255.0f;
+		this.b = blue / 255.0f;
+		this.a = alpha / 255.0f;
 	}
 	
 	/**
-	 * Create a colour from an evil integer packed 0xAARRGGBB. If AA 
-	 * is specified as zero then it will be interpreted as unspecified
-	 * and hence a value of 255 will be recorded.
+	 * Create a color from an integer packed 0xAARRGGBB.
+	 * If AA is specified as zero then it will be interpreted as unspecified and hence a value of 255 will be recorded.
 	 * 
-	 * @param value The value to interpret for the colour
+	 * @param value The value to interpret for the color.
 	 */
 	public Color(int value) {
 		int r = (value & 0x00FF0000) >> 16;
@@ -165,28 +182,27 @@ public class Color implements Serializable {
 	}
 	
 	/**
-	 * Decode a number in a string and process it as a colour
-	 * reference.
+	 * Decode a number in a string and process it as a color reference.
 	 * 
-	 * @param nm The number string to decode
-	 * @return The color generated from the number read
+	 * @param nm The number string to decode.
+	 * @return The color generated from the number read.
 	 */
 	public static Color decode(String nm) {
 		return new Color(Integer.decode(nm).intValue());
 	}
 	
 	/**
-	 * Bind this colour to the GL context
+	 * Bind this color to the GL context.
 	 */
 	public void bind() {
-		GL.glColor4f(r,g,b,a);
+		GL.glColor4f(r, g, b, a);
 	}
 	
 	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
-		return ((int) (r+g+b+a)*255);
+		return (int)((this.r + this.g + this.b + this.a) * 255);
 	}
 	
 	/**
@@ -194,10 +210,9 @@ public class Color implements Serializable {
 	 */
 	public boolean equals(Object other) {
 		if (other instanceof Color) {
-			Color o = (Color) other;
-			return ((o.r == r) && (o.g == g) && (o.b == b) && (o.a == a));
+			Color o = (Color)other;
+			return (o.r == r) && (o.g == g) && (o.b == b) && (o.a == a);
 		}
-		
 		return false;
 	}
 	
@@ -205,23 +220,23 @@ public class Color implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Color ("+r+","+g+","+b+","+a+")";
+		return MessageFormat.format("Color ({0}, {1}, {2}, {3})", this.r, this.g, this.b, this.a);
 	}
 
 	/**
-	 * Make a darker instance of this colour
+	 * Make a darker instance of this color.
 	 * 
-	 * @return The darker version of this colour
+	 * @return The darker version of this color.
 	 */
 	public Color darker() {
 		return darker(0.5f);
 	}
 	
 	/**
-	 * Make a darker instance of this colour
+	 * Make a darker instance of this color
 	 * 
-	 * @param scale The scale down of RGB (i.e. if you supply 0.03 the colour will be darkened by 3%)
-	 * @return The darker version of this colour
+	 * @param scale The scale down of RGB (i.e. if you supply 0.03 the color will be darkened by 3%).
+	 * @return The darker version of this color.
 	 */
 	public Color darker(float scale) {
         scale = 1 - scale;
@@ -231,113 +246,112 @@ public class Color implements Serializable {
 	}
 
 	/**
-	 * Make a brighter instance of this colour
+	 * Make a brighter instance of this color.
 	 * 
-	 * @return The brighter version of this colour
+	 * @return The brighter version of this color.
 	 */
 	public Color brighter() {
 		return brighter(0.2f);
 	}
 
 	/**
-	 * Get the red byte component of this colour
+	 * Get the red byte component of this color.
 	 * 
-	 * @return The red component (range 0-255)
+	 * @return The red component (range 0-255).
 	 */
 	public int getRed() {
-		return (int) (r * 255);
+		return (int)(r * 255);
 	}
 
 	/**
-	 * Get the green byte component of this colour
+	 * Get the green byte component of this color.
 	 * 
-	 * @return The green component (range 0-255)
+	 * @return The green component (range 0-255).
 	 */
 	public int getGreen() {
-		return (int) (g * 255);
+		return (int)(g * 255);
 	}
 
 	/**
-	 * Get the blue byte component of this colour
+	 * Get the blue byte component of this color.
 	 * 
-	 * @return The blue component (range 0-255)
+	 * @return The blue component (range 0-255).
 	 */
 	public int getBlue() {
-		return (int) (b * 255);
+		return (int)(b * 255);
 	}
 
 	/**
-	 * Get the alpha byte component of this colour
+	 * Get the alpha byte component of this color.
 	 * 
-	 * @return The alpha component (range 0-255)
+	 * @return The alpha component (range 0-255).
 	 */
 	public int getAlpha() {
-		return (int) (a * 255);
+		return (int)(a * 255);
 	}
 	
 	/**
-	 * Get the red byte component of this colour
+	 * Get the red byte component of this color.
 	 * 
-	 * @return The red component (range 0-255)
+	 * @return The red component (range 0-255).
 	 */
 	public int getRedByte() {
-		return (int) (r * 255);
+		return (int)(r * 255);
 	}
 
 	/**
-	 * Get the green byte component of this colour
+	 * Get the green byte component of this color.
 	 * 
-	 * @return The green component (range 0-255)
+	 * @return The green component (range 0-255).
 	 */
 	public int getGreenByte() {
-		return (int) (g * 255);
+		return (int)(g * 255);
 	}
 
 	/**
-	 * Get the blue byte component of this colour
+	 * Get the blue byte component of this color.
 	 * 
-	 * @return The blue component (range 0-255)
+	 * @return The blue component (range 0-255).
 	 */
 	public int getBlueByte() {
-		return (int) (b * 255);
+		return (int)(b * 255);
 	}
 
 	/**
-	 * Get the alpha byte component of this colour
+	 * Get the alpha byte component of this color.
 	 * 
-	 * @return The alpha component (range 0-255)
+	 * @return The alpha component (range 0-255).
 	 */
 	public int getAlphaByte() {
-		return (int) (a * 255);
+		return (int)(a * 255);
 	}
 	
 	/**
-	 * Make a brighter instance of this colour
+	 * Make a brighter instance of this color
 	 * 
-	 * @param scale The scale up of RGB (i.e. if you supply 0.03 the colour will be brightened by 3%)
-	 * @return The brighter version of this colour
+	 * @param scale The scale up of RGB (i.e. if you supply 0.03 the color will be brightened by 3%).
+	 * @return The brighter version of this color.
 	 */
 	public Color brighter(float scale) {
         scale += 1;
-		Color temp = new Color(r * scale,g * scale,b * scale,a);
-		
+		Color temp = new Color(r * scale, g * scale, b * scale, a);
 		return temp;
 	}
 	
 	/**
-	 * Multiply this color by another
+	 * Multiply this color by another.
 	 *
-	 * @param c the other color
-	 * @return product of the two colors
+	 * @param c the other color.
+	 * @return product of the two colors.
 	 */
 	public Color multiply(Color c) {
 		return new Color(r * c.r, g * c.g, b * c.b, a * c.a);
 	}
 
 	/**
-	 * Add another colour to this one
+	 * Add another color to this one.
 	 * 
-	 * @param c The colour to add 
+	 * @param c The color to add.
 	 */
 	public void add(Color c) {
 		r += c.r;
@@ -347,9 +361,9 @@ public class Color implements Serializable {
 	}
 	
 	/**
-	 * Scale the components of the colour by the given value
+	 * Scale the components of the color by the given value.
 	 * 
-	 * @param value The value to scale by
+	 * @param value The value to scale by.
 	 */
 	public void scale(float value) {
 		r *= value;
@@ -359,34 +373,32 @@ public class Color implements Serializable {
 	}
 	
 	/**
-	 * Add another colour to this one
+	 * Add another color to this one.
 	 * 
-	 * @param c The colour to add 
-	 * @return The copy which has had the color added to it
+	 * @param c The color to add.
+	 * @return The copy which has had the color added to it.
 	 */
 	public Color addToCopy(Color c) {
-		Color copy = new Color(r,g,b,a);
+		Color copy = new Color(r, g, b, a);
 		copy.r += c.r;
 		copy.g += c.g;
 		copy.b += c.b;
 		copy.a += c.a;
-		
 		return copy;
 	}
 	
 	/**
-	 * Scale the components of the colour by the given value
+	 * Scale the components of the color by the given value.
 	 * 
-	 * @param value The value to scale by
-	 * @return The copy which has been scaled
+	 * @param value The value to scale by.
+	 * @return The copy which has been scaled.
 	 */
 	public Color scaleCopy(float value) {
-		Color copy = new Color(r,g,b,a);
+		Color copy = new Color(r, g, b, a);
 		copy.r *= value;
 		copy.g *= value;
 		copy.b *= value;
 		copy.a *= value;
-		
 		return copy;
 	}
 }

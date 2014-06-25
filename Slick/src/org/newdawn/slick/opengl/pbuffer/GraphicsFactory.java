@@ -10,8 +10,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
 /**
- * A factory to produce an appropriate render to texture graphics context based on current
- * hardware
+ * A factory to produce an appropriate render to texture graphics context based on current hardware.
  *
  * @author kevin
  */

@@ -13,11 +13,12 @@ import org.newdawn.slick.util.Log;
  * 
  * @author kevin
  */
-public class CanvasGameContainer extends Canvas {
+public class CanvasGameContainer extends Canvas implements IGameContainer {
 	/** The actual container implementation */
 	protected Container container;
 	/** The game being held in this container */
 	protected Game game;
+	
 	private boolean destroyed = false;
 
 	/**
@@ -55,6 +56,7 @@ public class CanvasGameContainer extends Canvas {
 	 * 
 	 * @throws SlickException Indicates a failure during game execution
 	 */
+	@Override
 	public void start() throws SlickException {
 		destroyed = false;
 		SwingUtilities.invokeLater(new Runnable() {

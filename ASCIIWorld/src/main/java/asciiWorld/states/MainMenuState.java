@@ -27,13 +27,11 @@ public class MainMenuState extends BasicGameState {
 	}
 
 	@Override
-	public void init(GameContainer container, StateBasedGame game)
-			throws SlickException {
+	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 	
 	@Override
-	public void enter(GameContainer container, StateBasedGame game)
-			throws SlickException {
+	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		super.enter(container, game);
 		
 		try {
@@ -45,8 +43,7 @@ public class MainMenuState extends BasicGameState {
 	}
 	
 	@Override
-	public void leave(GameContainer container, StateBasedGame game)
-			throws SlickException {
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 		
 		try {
@@ -58,8 +55,7 @@ public class MainMenuState extends BasicGameState {
 	}
 
 	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g)
-			throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.clear();
 		try {
 			RootVisualPanel.get().render(g);
@@ -69,8 +65,7 @@ public class MainMenuState extends BasicGameState {
 	}
 
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta)
-			throws SlickException {
+	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		try {
 			RootVisualPanel.get().update(container, delta);
 		} catch (Exception e) {

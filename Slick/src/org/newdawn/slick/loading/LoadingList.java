@@ -7,8 +7,8 @@ import org.newdawn.slick.opengl.InternalTextureLoader;
 import org.newdawn.slick.util.Log;
 
 /**
- * A central list where all deferred loading resoures end up when deferred loading is in use. Each
- * texture and sound loaded will be put in this list and can be loaded in one by one 
+ * A central list where all deferred loading resources end up when deferred loading is in use.  Each
+ * texture and sound loaded will be put in this list and can be loaded in one by one.
  *
  * @author kevin
  */

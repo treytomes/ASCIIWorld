@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import org.newdawn.slick.util.Log;
 
 /**
- * A composite data source that checks multiple loaders in order of
- * preference
+ * A composite data source that checks multiple loaders in order of preference.
  * 
  * @author kevin
  */

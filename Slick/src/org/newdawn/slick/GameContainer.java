@@ -115,6 +115,13 @@ public abstract class GameContainer implements GUIContext, IHasBounds {
 	}
 	
 	/**
+	 * Start running the game.
+	 * 
+	 * @throws SlickException Indicates a failure to initialize the system.
+	 */
+	public abstract void start() throws SlickException;
+	
+	/**
 	 * Called to clean up the program's memory. Destroys AL and Display
 	 * if either is created. 
 	 */

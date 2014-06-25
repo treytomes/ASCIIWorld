@@ -75,6 +75,7 @@ public class AppletGameContainer extends Applet {
    /**
     * @see java.applet.Applet#start()
     */
+   @Override
    public void start() {
       
    }
@@ -250,6 +251,17 @@ public class AppletGameContainer extends Applet {
          width = AppletGameContainer.this.getWidth();
          height = AppletGameContainer.this.getHeight();
       }
+      
+  	
+  	/**
+  	 * Start running the game.
+  	 * 
+  	 * @throws SlickException Indicates a failure to initialize the system.
+  	 */
+    @Override
+	public void start() throws SlickException {
+    	AppletGameContainer.this.start();
+	}
 
       /**
        * Initiliase based on Applet init

@@ -529,9 +529,9 @@ public interface SGL {
 			ByteBuffer scratchByteBuffer);
 
 	/**
-	 * Check if the mirror clamp extension is available
+	 * Check if the mirror clamp extension is available.
 	 * 
-	 * @return True if the mirro clamp extension is available
+	 * @return True if the mirror clamp extension is available.
 	 */
 	public boolean canTextureMirrorClamp();
 

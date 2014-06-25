@@ -5,12 +5,12 @@ import java.nio.ByteBuffer;
 import org.newdawn.slick.opengl.renderer.SGL;
 
 /**
- * A description of any class providing ImageData in a form suitable for OpenGL texture
- * creation.
+ * A description of any class providing ImageData in a form suitable for OpenGL texture creation.
  * 
  * @author kevin
  */
-public interface ImageData {    
+public interface ImageData {
+	
     /**
      * The format of the image data. This class is used to encapsulate the
      * different image formats that could be load and used by OpenGL.
@@ -161,5 +161,4 @@ public interface ImageData {
 	 * @return The stored image
 	 */
 	public ByteBuffer getImageBufferData();
-
 }
